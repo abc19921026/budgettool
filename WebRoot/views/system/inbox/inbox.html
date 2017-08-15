@@ -1,0 +1,412 @@
+<#include "../../inc/layout/page-default-top.html" />
+<link
+	href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all"
+	rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="../../../public/inbox_css/bootstrap-switch.min.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/jquery.fancybox.css" type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/bootstrap-wysihtml5.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/blueimp-gallery.min.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/jquery.fileupload.css" type="text/css"></link>
+<link rel="stylesheet" href="../../../public/inbox_css/inbox.min.css"
+	type="text/css"></link>
+<h3 class="page-title">
+	收件箱 <small>用户收件箱</small>
+</h3>
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="inbox">
+	<div class="row">
+		<div class="col-md-2">
+			<div class="inbox-sidebar">
+				<a href="javascript:;" data-title="Compose"
+					class="btn red compose-btn btn-block"> <i class="fa fa-edit"></i>
+					创建 </a>
+				<ul class="inbox-nav">
+					<#if status ??>
+					<li<#if status==-1> class="active" </#if> ><a
+						href="/inbox?status=-1" data-type="inbox" data-title="收件箱">
+							收件箱 <span class="badge badge-success">${(inbox_length)!0}</span>
+					</a></li>
+					<li class="divider"></li>
+
+					<li<#if status==0> class="active" </#if> ><a
+						href="/inbox?status=0" class="sbold uppercase" data-title="未读信息">
+							未读信息 <span class="badge badge-info">${(inbox_unRead)!0}</span> </a></li>
+					<#else>
+					<li><a href="/inbox?status=-1" data-type="inbox"
+						data-title="收件箱"> 收件箱 <span class="badge badge-success">${(inbox_length)!0}</span>
+					</a></li>
+					<li class="divider"></li>
+
+					<li><a href="/inbox?status=0" class="sbold uppercase"
+						data-title="未读信息"> 未读信息 <span class="badge badge-info">${(inbox_unRead)!0}</span>
+					</a></li> </#if> <#if type ??>
+					<li<#if type==0> class="active" </#if> ><a
+						href="/inbox?type=0" data-type="inbox" data-title="促销活动"> 促销活动
+							<span class="badge badge-warning">${(inbox_activity)!0}</span> </a></li>
+
+
+
+					<li<#if type==1> class="active" </#if> ><a
+						href="/inbox?type=1" data-type="inbox" data-title="通知"> 通知<span
+							class="badge badge-success">${(inbox_info)!0}</span>
+					</a></li> <#else>
+					<li><a href="/inbox?type=0" data-type="inbox"
+						data-title="促销活动"> 促销活动 <span class="badge badge-warning">${(inbox_activity)!0}</span>
+					</a></li>
+
+
+
+					<li><a href="/inbox?type=1" data-type="inbox" data-title="通知">
+							通知<span class="badge badge-success">${(inbox_info)!0}</span>
+					</a></li> </#if>
+				</ul>
+
+
+				<ul class="inbox-contacts">
+					<li class="divider margin-bottom-30"></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar1.jpg"> <span
+							class="contact-name">张三</span> <span
+							class="contact-status bg-green"></span> </a></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar1.jpg"> <span
+							class="contact-name">李四</span> <span
+							class="contact-status bg-red"></span> </a></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar1.jpg"> <span
+							class="contact-name">王五</span> <span
+							class="contact-status bg-green"></span> </a></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar1.jpg"> <span
+							class="contact-name">赵六</span> <span
+							class="contact-status bg-yellow"></span> </a></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar1.jpg"> <span
+							class="contact-name">小七</span> <span
+							class="contact-status bg-green"></span> </a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-10">
+			<div class="inbox-body">
+				<div class="inbox-header">
+					<h1 class="pull-left">${(title)!""}</h1>
+					 <form class="form-inline pull-right" action="/inbox" >
+						<div class="input-group input-medium">
+							<input  type="text" name="info" value="${(info)!}" class="form-control"
+								placeholder="搜索其实很简单"> <span class="input-group-btn">
+								<button type="submit" class="btn green" id="btn">
+									<i class="fa fa-search"></i>
+								</button> </span>
+						</div>
+					  </form>
+				</div>
+				<div class="inbox-content">
+				
+					<table class="table table-striped table-advance table-hover">
+						<thead>
+							<tr>
+								<th colspan="3"><label
+									class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+										<input type="checkbox" class="mail-group-checkbox" /> <span></span>
+								</label>
+									<div class="btn-group input-actions">
+										<a class="btn btn-sm blue btn-outline dropdown-toggle sbold"
+											href="javascript:;" data-toggle="dropdown"> 活动 <i
+											class="fa fa-angle-down"></i> </a>
+										<ul class="dropdown-menu">
+											<li id="isRead"><a href="javascript:;"> <i
+													class="fa fa-pencil"></i> 标记为已读 </a></li>
+
+											<!-- <li id="trash">
+                            <a href="javascript:;">
+                                <i class="fa fa-ban"></i> 垃圾邮件 </a>
+                        </li> -->
+
+											<li class="divider"></li>
+											<li id="deleted"><a href="javascript:;"> <i
+													class="fa fa-trash-o"></i> 删除 </a></li>
+
+										</ul>
+									</div></th>
+								<th class="pagination-control" colspan="3">
+								<div style="width:100px;height:30px;">
+								<span class="pagination-info">${(from)!0}-${(to)!0}  of  ${(totalrow)!0} </span></div>
+								<div>
+								<a class="btn btn-sm blue btn-outline" id="left" style="margin-bottom:5px;"> 
+									<i class="fa fa-angle-left"></i> </a>
+									 <a class="btn btn-sm blue btn-outline" id="right">
+									 <i class="fa fa-angle-right"></i> </a>
+									 </div>
+									 </th>
+							</tr>
+						</thead>
+
+
+						<tbody>
+							<#list list as inbox>
+							<tr class="unread" data-messageid="${(inbox.id)!1}">
+								<td class="inbox-small-cells"><label
+									class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+										<input type="checkbox" name="checkbox" 
+										value="${(inbox.id)!1}" /> <span></span> </label></td> <#if inbox ??> <#if
+								inbox.status==0>
+								<td class="inbox-small-cells"><i
+									class="fa fa-star inbox-started"></i></td> <#else>
+								<td class="inbox-small-cells"><i class="fa fa-star"></i></td>
+								</#if> </#if>
+
+								<td class="view-message hidden-xs" >${inbox.title}</td>
+								<td class="view-message inbox-small-cells"><i
+									class="fa fa-paperclip"></i></td>
+								<td class="view-message text-right"></td>
+							</tr>
+							</#list>
+						</tbody>
+					</table>
+					<#if pageHandler??>
+					<div class="row" style="margin-top:400px;">
+						<div class="col-xs-6" style="height:53px;line-height:80px;">
+							<div class="box-footer clearfix" id="">共
+								${pageHandler.totalRow} 条 ; 共 ${pageHandler.totalPage} 页；当前在第
+								${pageHandler.pageNumber} 页</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="box-footer clearfix">
+								<ul class="pagination no-margin pull-right">
+									<#if pageHandler.hasPreviousPage>
+									<#if status ??>
+									 <#if status==0>
+									<li class="prev"><a
+										href="${pageHandler.basePathUrl}?status=0&&page=${pageHandler.previousPageNumber}">←
+											上一页</a>
+									</li> 
+									<#else>
+									<li class="prev"><a
+										href="${pageHandler.basePathUrl}?page=${pageHandler.previousPageNumber}">←
+											上一页</a>
+									</li>
+									</#if>
+									</#if>
+									 <#if type ??>
+									 <#if type==0>
+									<li class="prev"><a
+										href="${pageHandler.basePathUrl}?type=0&&page=${pageHandler.previousPageNumber}">←上一页
+											</a>
+									</li> 
+									<#else>
+									<li class="prev"><a
+										href="${pageHandler.basePathUrl}?type=1&&page=${pageHandler.previousPageNumber}">←上一页
+											</a>
+									</li> 
+									</#if>
+									</#if>
+									<#else>
+									<li class="prev disabled"><a>← 上一页</a>
+									</li> 
+									</#if> 
+									<#if (pageHandler.startPageNum -
+									1 > 0)>
+									<li><a>...</a>
+									</li> </#if> <#list
+									(pageHandler.startPageNum)..(pageHandler.endPageNum) as pNum>
+									 <#if pNum == pageHandler.pageNumber>
+									<li class="active"><a>${pNum}</a>
+									</li> <#else>
+									<li><a href="${pageHandler.basePathUrl}?page=${pNum}">${pNum}</a>
+									</li> </#if> </#list>  <#if
+									(pageHandler.totalPage - pageHandler.endPageNum > 0)>
+									<li><a>...</a>
+									</li> </#if> 
+									<!-- 在这里我们要判断我们点击的下一页是哪个的下一页 -->
+									<#if pageHandler.hasNextPage>
+									
+									 <#if status ??>
+									 
+									 <#if status==0>
+									<li class="next"><a
+										href="${pageHandler.basePathUrl}?status=${(status)!}&&page=${pageHandler.nextPageNumber}">下一页
+											→</a>
+									</li> 
+									<#else>
+									<li class="next"><a
+										href="${pageHandler.basePathUrl}?page=${pageHandler.nextPageNumber}">下一页
+											→</a>
+									</li> 
+									</#if>
+									</#if>
+									 <#if type ??>
+									 <#if type==0>
+									<li class="next"><a
+										href="${pageHandler.basePathUrl}?type=${(type)!}&&page=${pageHandler.nextPageNumber}">下一页
+											→</a>
+									</li> 
+									<#else>
+									<li class="next"><a
+										href="${pageHandler.basePathUrl}?type=${(type)!}&&page=${pageHandler.nextPageNumber}">下一页
+											→</a>
+									</li> 
+									</#if>
+									</#if>
+									<#else>
+									<li class="next disabled"><a>下一页 →</a>
+									</li> 
+									</#if>
+								</ul>
+							</div>
+						</div>
+					</div>
+					</#if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"
+	src="../../../public/inbox_js/js.cookie.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.blockui.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/bootstrap-switch.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fancybox.pack.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/wysihtml5-0.3.0.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/bootstrap-wysihtml5.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.ui.widget.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/tmpl.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/load-image.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/canvas-to-blob.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.blueimp-gallery.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-process.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-image.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-audio.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-video.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-validate.js"></script>
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-ui.js"></script>
+ <script type="text/javascript" src="../../../public/inbox_js/inbox.js"></script> 
+ <script>
+  var page=${(page)!1};
+ $(function(){
+           //删除邮件
+           $("#deleted").click(function(){
+           var array = new Array();
+            var str="";
+           $("input[name='checkbox']:checked").each(function(){
+            array.push($(this).val());
+            str+=$(this).val()+",";
+           });
+           if(array.length<=0)
+           {
+		     $.messager.alert("系统提示", "请选择您要删除的数据", "warning");
+		      return;
+           }
+           //发送ajax请求
+            $.ajax({
+            type: "post",
+            traditional: true,
+            url: '/inbox/deleteInbox',
+            data:{"ids":str},
+           success:function(data){
+            if(data != null && data.status == "SUCCESS"){
+             //如果删除成功，就显示下面的弹窗
+				$.messager.alert("提示", data.message);
+				 window.location.reload();
+			 }
+           }
+        
+    });
+       });
+         //标记消息为已读
+          $("#isRead").click(function(){
+          var array = new Array();
+            var str="";
+          $("input[name='checkbox']:checked").each(function(){
+            array.push($(this).val());
+            str+=$(this).val()+",";
+           });
+           if(array.length<=0)
+           {
+		     $.messager.alert("系统提示", "请选择您要标记的数据。", "warning");
+		      return;
+           }
+            $.ajax({
+             type: "post",
+            url: '/inbox/isReadInbox',
+            data:{"ids":str},
+           success:function(data){
+            if(data != null && data.status == "SUCCESS"){
+				$.messager.alert("提示", data.message);
+				window.location.reload();
+			 }
+            }
+            });
+          });
+       //上一页
+          $("#left").click(function(){
+          var page =${page!0};
+          var s=0;
+          if(page>1)
+          {
+            s=page-1;
+          }else{
+            s=1
+          }
+          window.location = "inbox?page="+s;
+          });
+          //下一页
+          $("#right").click(function(){
+           var page =${page!0};
+           //在这里我们也要判断如果在最后一页就不跳转
+           var s=0;
+           //获取从后台传的总页数
+           var totalpage=${totalpage};
+           if(page == totalpage){
+             s=page;
+           }else{
+           s=page+1;
+           }
+          window.location = "inbox?page="+s;
+          } );
+ });
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

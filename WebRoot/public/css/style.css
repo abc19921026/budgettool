@@ -1,0 +1,95 @@
+ .page-header.navbar .page-logo .logo-default {
+ margin:0;
+
+ }
+ .page-header.navbar .page-logo{
+  padding:0;
+ }
+ .page-logo a{
+	/*font-family:"Microsoft Yahei";*/
+	color: #e6e6e6;
+	font-size: 16px;
+	line-height:42px;
+}
+ .page-logo a span{
+ 	position: relative;
+	top:3px;
+ }
+.page-logo a:hover{
+	color:#ccc;
+	text-decoration:none;
+}
+
+.datagrid-view table td {
+	/*padding: 8px 4px;*/
+}
+
+.datagrid-view .datagrid-cell{
+	/*padding:6px 4px;*/
+}
+.datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber{
+	/*padding:8px 4px;*/
+}
+.datagrid-wrap.panel-body{
+	/* border-color: #e7ecf1; */
+}
+
+.page-bar{
+	margin-bottom:15px !important;
+}
+.page-title{
+	margin-bottom:15px;
+}
+
+/*  .form-control{height:30px;} */
+
+.select2-dropdown{
+	z-index:10060 !important;
+}
+
+.tabs-left.nav-tabs>li.active>a:hover{
+	border-color:#ddd transparent #ddd #ddd;
+	color:#4d6b8a;
+	background:#fff;
+}
+.tabs-left.nav-tabs>li>a:hover{
+   	border-color:#fff #ddd #fff #fff;
+   	/* color:#32c5d2; */
+   	background:#eee;
+}
+.image-thumbnail{
+	float:left;
+	margin:0px 10px 10px 0;
+}
+.image-thumbnail a{
+	border:1px solid #e0e0e0;
+	display:table-cell; 
+	width:144px; 
+	height:144px; 
+	/* font-size:118px; */
+	text-align:center; 
+	vertical-align:middle;
+}
+
+.image-thumbnail a:hover{
+	border:1px solid #32c5d2;
+}
+.image-thumbnail img{
+	max-width:136px;
+	max-height:136px;
+	vertical-align:middle;
+	padding:4px; 
+}
+
+td.highlighted{
+	color:#d50000;
+}
+
+#page-content-wrapper img{
+	/*border-radius:0 !important;*/
+}
+
+
+.static-info .value{
+	font-weight:normal;
+}

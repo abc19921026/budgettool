@@ -1,0 +1,128 @@
+<#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>客户管理</span>
+            </li>
+        </ul>
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden">客户信息管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改用户信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('customer/customer_list_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<!-- <button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button> -->
+			</div>
+			 <div class="portlet-body">
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:450px"
+			            data-options="
+			                url: 'customer/json_customer_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                fitColumns:true
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'name', title:'姓名', width:'100px'"></th>
+			            	<th data-options="field:'tel', title:'电话', width:'120px'"></th>
+			              	<th data-options="field:'mobile', title:'手机', width:'120px',align:'center'"></th>
+			              	<th data-options="field:'email', title:'邮箱', width:'140px',align:'center'"></th>
+			              	<th data-options="field:'qq', title:'QQ', width:'100px',align:'center'"></th>
+			              	<th data-options="field:'gender', title:'性别', width:'50px',formatter :sexformatter,align:'center'"></th>
+			                <th data-options="field:'desc', title:'描述', width:'258px'"></th>
+							<!-- <th data-options="field:'operation', formatter:field_formatter_operation" width="100" align="right">操作</th> -->
+							<th data-options="field:'id', title:'操作', width:'100px',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+
+<script type="text/javascript">
+
+/*  function field_formatter_operation(value, row, index){
+	var re = "<a href=\""+ row.id +"\">查看</a>";
+	re += "&nbsp;|&nbsp;<a target='_blank' onclick='edit(this);return false;' href='budget_list_edit/" + row.id + "'>编辑</a>";
+	return re;
+}  */
+ 	function idformatter(value,data){
+  return "<a href='budget_list_edit?id=" + value + "'><i class='fa fa-eye'></i> 查看</a>&nbsp;&nbsp;"
+		 +"<a href='javascript:new_window(\"customer/customer_list_edit/"+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+ }
+ function sexformatter(value){
+  if(value==0)
+  {
+   return "女";
+  }else{
+   return "男";
+  }
+ }
+                    
+$(function(){
+	$("#delete").click(function(){
+		var post_url = "customer/customer_list_delete";
+		handle_datagrid_delete(post_url, "list");
+	});
+});
+/*  $("#delete").click(function(){
+  			var rows = $('#list').datagrid('getChecked');  			
+			if(rows.length==0){
+				alert("请选择要删除的数据!");
+				return;
+			}
+  			var temp = "";
+			for(var i = 0; i < rows.length; i++){
+				temp += rows[i]["id"] + ",";	
+			}
+			temp = temp.substring(0, temp.length-1);
+			var param = {"checkedIds" : temp};
+				if(confirm("是否要删除")){			   
+	  				$.ajax({
+		  				url : "budget_list_delete",
+		  				method : "POST",
+		  				data : param,
+		  				dataType : "text",
+		  				success : function(data){
+		  					//console.log(data);
+		  					//$.Messager.alert('', data);
+		  					alert(data);
+		  					$('#list').datagrid('load');
+		  				}
+	  			});
+			}else{
+				
+			}
+  		}); */
+
+function edit(obj){
+	//console.log($(obj));
+	var href = $(obj).attr("href");
+	//console.log(href);
+	new_window(href);
+}
+</script>
+                    <#include "../../inc/layout/page-default-bottom.html" />

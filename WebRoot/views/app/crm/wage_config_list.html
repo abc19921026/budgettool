@@ -1,0 +1,132 @@
+  <#include "../../inc/layout/page-default-top.html" />
+     <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>员工管理</span>
+                <i class="fa fa-circle"></i>
+            </li>
+             <li>
+                <span>工资配置</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                 <span>${(crmStaff.sn)!} | ${(crmStaff.name)!}</span>
+            </li>  
+        </ul>
+    </div>
+    <!-- END PAGE BAR -->
+<form method="post" action=""  data-options="novalidate:false"  id="ff"><!--开始-->
+	<div class="row">
+                 <div class="col-md-6">
+                     <div class="portlet light portlet-fit portlet-form bordered"><!-- BEGIN VALIDATION STATES-->
+                         <div class="portlet-title">
+                             <div class="caption">
+                                 <i class=" icon-layers font-green"></i>
+                                 <span class="caption-subject font-green sbold uppercase">工资配置</span>
+                             </div>
+                         </div>
+					       <div class="portlet-body">
+					           	<div class="form-horizontal"><!--form开始-->
+					                 	<div class="form-body">
+											<#if (wages ?size>0) >
+                                            <#list wages as wage>					
+													<div class="form-group">
+							                           <label class="col-md-3 control-label">${(wage.title)!}</label>
+							                           <div class="col-md-6">
+															<input class="form-control input-small " type="number" name="amount" data-id="${(wage.real_id)!}" data-staff_id="${(staff_id)!}" data-wage_type_id="${(wage.id)!}" data-wage_type_title="${(wage.title)!}" data-wage_type_field="${(wage.field)!}" data-amount="${(wage.amount?string('0.00'))!}" value="${(wage.amount?string('0.00'))!}" />
+							                           </div>
+							                       </div>
+					                        </#list>
+                                            <#else>
+                                           		<#list wagesNull as log>					
+													<div class="form-group">
+							                           <label class="col-md-3 control-label">${(log.title)!}</label>
+							                           <div class="col-md-6">
+															<input class="form-control input-small " type="number" name="amount" data-id="" data-staff_id="${(staff_id)!}" data-wage_type_id="${(log.id)!}" data-wage_type_title="${(log.title)!}" data-wage_type_field="${(log.field)!}" data-amount="" value="" />
+							                           </div>
+							                       </div>
+					                       		</#list>
+                                           </#if> 
+					           	    </div>
+								</div><!--form结束-->
+                         </div> 
+                     </div><!-- END VALIDATION STATES-->
+                 </div>
+
+  </div>
+  
+      <div class="row">
+    	 <div class="col-md-12">
+    	 	 <div class="portlet light portlet-fit portlet-form bordered">
+    	 	 <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-5 col-md-7">
+                             	 <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+				   </div>
+    	 </div>
+    </div>
+  
+</form><!--结束-->
+<script type="text/javascript">
+function save_data(){
+	
+	var datas = [];
+	$("input[name='amount']").each(function(i,n){
+		    var o = new Object();
+			o['id'] = $(n).data('id');
+			o['staff_id'] = $(n).data('staff_id');
+			o['wage_type_id'] = $(n).data('wage_type_id');
+			o['wage_type_title'] = $(n).data('wage_type_title');
+			o['wage_type_field'] = $(n).data('wage_type_field');
+			o['amount'] = $(n).val();
+			datas.push(o);
+	});
+	
+	var post_data = JSON.stringify(datas);//将json数组转成字符串
+	//console.log(post_data);
+	//return;
+
+	$.ajax({
+		type:"POST",
+		url:'/crm/wage/config/wage_config_update',
+		data:{"data":post_data},
+		beforeSend:function(){
+			$("#save").text("提交中...");
+			$("#save").attr("disabled",true);
+		},
+		dataType:"json",
+		success:function(data){
+			if(data.status=="SUCCESS"){
+				$.messager.alert('',data.message,"info",function(r){
+					//window.close();//关闭当前页
+					//self.location=document.referrer;//返回上一页并刷新
+					window.location.reload();
+				});
+			}else{
+				$.messager.alert('',data.message,"error",function(r){
+					//window.location.reload();
+					$("#save").text("提交");
+					$("#save").attr("disabled",false);
+				});
+			}
+			
+		}
+	});
+}
+
+//点击选中事件
+$(function(){
+	$("input.form-control").focus(function(){$(this).select();});
+});
+
+</script>
+	
+	<#include "../../inc/layout/page-default-bottom.html" />

@@ -1,0 +1,262 @@
+
+<style type="text/css">
+	#UPLOADER_drop_element{
+		border:1px dashed #ccc;
+		height:100px;
+		line-height:100px;
+		text-align:center;
+	}
+	#UPLOADER_drop_element:hover{
+		border:1px solid #aaa;
+	}
+	#UPLOADER_filelist{
+		maring:20px 0;
+		/*border:1px solid #ccc;*/
+		padding:5px 10px;
+	}
+	#UPLOADER_filelist div{
+		
+	}
+
+	.preview{
+		float:left;
+		margin-right:15px;
+	}
+</style>
+
+
+<div class="container-fluid" id="page-content-wrapper-main">
+<!-- 	<div class="page-title">文件上传</div> -->
+	<p><a id="UPLOADER_pickfiles" class="btn btn-primary" href="javascript:;"><i class="fa fa-file-image-o"></i> 选择文件</a></p> 
+	<div id="UPLOADER_drop_element">或把要上传的文件拖放到这里（请使用支持HTML5的浏览器）</div>
+	<div id="UPLOADER_filelist">浏览器不支持 Flash, Silverlight or HTML5 .</div>
+<div id="preview"></div>
+	<input type="hidden" name="upload_callback" value="${upload_callback!}" />
+	<input type="hidden" name="data" value="" />
+	<input type="hidden" name="fids" id="UPLOADER_fids" value="" /><!-- 1,2,3,4 -->
+	<div class="note note-info">上传文件成功后，请点击“保存”按钮提交。</div>
+	<p>
+	<a id="UPLOADER_uploadfiles" class="btn btn-success" href="javascript:;"><i class="fa fa-upload"></i> 开始上传</a>
+	<a id="UPLOADER_save" class="btn btn-danger" href="javascript:;"><i class="fa fa-save"></i> 保存</a>
+	<p>
+
+	<div id="UPLOADER_console" class="alert alert-danger display-none"></div>
+</div>
+<script type="text/javascript" src="/public/js/plupload-2.1.9/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="/public/js/plupload-2.1.9/js/i18n/zh_CN.js"></script>
+<script type="text/javascript">
+// Custom example logic
+var FIDS = [];//服务器file id数组， 格式为1,2,3
+var FID_FILE_ID = {};//保存格式为客户端id => 服务器端 id, file_id => fid
+
+var uploader = new plupload.Uploader({
+	runtimes : 'html5,flash,silverlight,html4',
+	browse_button : 'UPLOADER_pickfiles', // you can pass an id...
+	container: document.getElementById('page-content-wrapper-main'), // ... or DOM Element itself
+	url : '/file/do_upload?upload_path=${upload_path!}&type=${type!}',
+	flash_swf_url : '/public/js/plupload-2.1.9/js/Moxie.swf',
+	silverlight_xap_url : '/public/js/plupload-2.1.9/js/Moxie.xap',
+
+	filters : {
+		max_file_size : '${max_file_size!"10mb"}',
+		mime_types: [
+			<#if extensions??>
+			{title : "Other files", extensions: '${extensions!"*"}'}
+			<#else>
+			{title : "Image files", extensions : "jpg,jpeg,gif,png"},
+			{title : "Zip files", extensions : "zip,rar"},
+			{title : "Microsoft Office files", extensions : "doc,docx,ppt,pptx,xls,xlsx"}
+			</#if>
+		]
+	},
+	//自定义参数,JFINAL不支持getPara()
+	//multipart_params:{upload_path:"module"},
+	multi_selection: ${multi_selection!"false"},//单个文件选择or多个文件选择
+	drop_element: "UPLOADER_drop_element",
+/* 	views: {
+		list: true,
+		thumbs: true, // Show thumbs
+		active: 'thumbs'
+	}, */
+
+	init: {
+		PostInit: function() {
+			document.getElementById('UPLOADER_filelist').innerHTML = '';
+
+			document.getElementById('UPLOADER_uploadfiles').onclick = function() {
+				uploader.start();
+				return false;
+			};
+		},
+
+		FilesAdded: function(up, files) {
+			var max_files = 10;//default 最大同时上传最多文件数
+		
+			<#if multi_selection = "true">
+				max_files = ${max_files!"10"};	
+			<#else>
+			 var max_files = 1;
+			</#if>
+		
+
+			var max_files_error = false;//文件超出个数错误
+			if (up.files.length > max_files) {
+				$.messager.alert('错误', '您最多只能上传 ' + max_files + ' 个文件.', "error");
+				max_files_error = true;
+			}
+			plupload.each(files, function(file) {
+				if (max_files_error) {
+					up.removeFile(file);
+		            return;
+				}
+				
+				//document.getElementById('filelist').innerHTML += '<div id="' + file.id + '"><div class="preview"></div>' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>&nbsp;|&nbsp;<a href="javascript:remove(\''+ file.id + '\')"><i class="fa fa-remove"></i>删除</a></div>';
+				var file_list_html = '<div class="clearfix" id="' + file.id + '"><div class="preview"></div>' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>&nbsp;|&nbsp;<a href="javascript:remove(\''+ file.id + '\')"><i class="fa fa-remove"></i>删除</a></div>';
+				$("#UPLOADER_filelist").append(file_list_html);
+				var img = new mOxie.Image();
+
+				img.onload = function() {
+					this.embed($('#' + file.id + " .preview").get(0), {
+					//this.embed($("#preview").get(0), {
+						width: 100,
+						height: 100,
+						crop: false
+					});
+				};
+
+				img.onembedded = function() {
+					//this.destroy();
+				};
+
+				img.onerror = function() {
+					//this.destroy();
+				};
+
+				img.load(file.getSource());  
+			});      
+	        
+		},
+
+		UploadProgress: function(up, file) {
+			document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span> --- 完成：' + file.percent + "%</span>";//完成进度
+			//$("#" + file.id).find("a").remove();//移除删除按钮
+		},
+
+		Error: function(up, err) {
+			//document.getElementById('console').appendChild(document.createTextNode("\nError #" + err.code + ": " + err.message));
+			$("#UPLOADER_console").append(document.createTextNode("\nError #" + err.code + ": " + err.message)).show();
+		},
+		
+		//上传结束回调
+/* 		UploadComplete: function(up, files){
+			plupload.each(files, function(file) {
+				 console.log(file);
+			});
+		} */
+		//每传一个触发一次
+		FileUploaded: function(up, file, responseObject){
+			
+			var status = responseObject.status;
+			var response_data = responseObject.response;//String
+			response_data = $.parseJSON(response_data);//JSON
+			if(response_data.fid != null){
+				var fid =  response_data.fid;//服务器端fid
+				var uploader_fid = file.id;//客户端file id
+				//console.log(FID_FILE_ID);
+				FIDS.push(fid);
+				FID_FILE_ID[uploader_fid] = fid;
+				//console.log(FID_FILE_ID);
+				//console.log(FIDS);
+				$("#UPLOADER_fids").val(FIDS.join());
+			}else{
+				$.messager.show({
+					title:"发生错误", 
+					showType:"fade", 
+					msg:"上传失败，请重试",
+					timeout:0
+				});
+			}
+
+		},
+		//全部上传结束
+		UploadComplete:function(uploader, files){
+			//todo 自动保存
+			//$("#save").click();
+		}
+	}
+	
+	
+});
+
+uploader.init();
+
+function remove(file_id){
+
+	$("#" + file_id).remove();
+	var fid = FID_FILE_ID[file_id];
+
+	//删除该fid
+	var i = FIDS.indexOf(fid);
+	if(i != -1) {
+		FIDS.splice(i, 1);
+	}
+
+	$("#UPLOADER_fids").val(FIDS.join());
+
+	uploader.removeFile(uploader.getFile(file_id));
+}
+
+$(function(){
+
+
+	$("#UPLOADER_save").click(function(){
+		
+		var save_button = this;
+		var fids = $("#UPLOADER_fids").val();
+		if($.trim(fids) == ""){
+			//直接上传
+			//$("#uploadfiles").click();
+			$.messager.alert("提示", "请先上传文件", "info");
+			return;
+		}
+		<#if callback??>
+		$.ajax({
+			url:"${callback!""}",
+			data:{fids:fids},
+			method:"GET",
+			dataType:"json",
+			success:function(data){
+				//console.log(data);
+
+				if(data.status == "SUCCESS"){
+					$.messager.alert("提示", "保存成功.", "info", function(){
+						//关闭窗口
+						$(save_button).parents(".window .window-body").window("close");
+						//$(this).parents(".window .window-body").css("background","#f00");
+						//window.close();
+						//$(".panel-tool-close").click();
+						//刷新页面
+						<#if refresh??>
+						window.location.reload();
+						</#if>
+						}
+					);
+				}else{
+					$.messager.alert("提示", "保存失败，请重试.", "error");
+				}
+			},
+			error:function(e){
+				//console.log(e);
+				$.messager.alert("系统错误", e.status + ": " + e.statusText, "error");
+			}
+		});
+		</#if>
+		
+	});
+	
+});
+
+
+
+</script>
+

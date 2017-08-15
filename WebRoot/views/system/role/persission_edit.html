@@ -1,0 +1,97 @@
+<!-- BEGIN PAGE TITLE-->
+
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">权限管理详情</span>
+               </div>
+               <div class="actions" style="display:none;">
+                   <div class="btn-group btn-group-devided" data-toggle="buttons">
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm active">
+                           <input type="radio" name="options" class="toggle" id="option1">Actions</label>
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm">
+                           <input type="radio" name="options" class="toggle" id="option2">Settings</label>
+                   </div>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="form">
+           	<div class="form-body">
+           	   				<input type="hidden" name="permission.id" value="${(permission.id)!}" />
+           	   				
+           	   				
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">perm_name</label>
+                           <div class="col-md-6">
+                               <input  class="form-control input-medium easyui-validatebox" data-options="missingMessage:'请输入perm_name',required:true" type="text" name="permission.name" value="${(permission.name)!}" />
+                           </div>
+                       </div>
+                       
+                         <div class="form-group">
+                           <label class="col-md-3 control-label">权限名称</label>
+                           <div class="col-md-6">
+                               <input  class="form-control input-medium easyui-validatebox" data-options="missingMessage:'请输入权限名称',required:true" type="text" name="permission.title" value="${(permission.title)!}" />
+                           </div>
+                       </div>
+                       
+                         <div class="form-group">
+                           <label class="col-md-3 control-label">权限描述</label>
+                           <div class="col-md-6">
+								<textarea  class="form-control input-medium" rows="5" name="permission.description">${(permission.description)!}</textarea>
+                           </div>
+                       </div> 
+                       
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">分组</label>
+                           <div class="col-md-6">
+                               <input  class="form-control input-medium" type="text" name="permission.module" value="${(permission.module)!}" />
+                           </div>
+                       </div>
+                       
+                         <div class="form-group">
+                           <label class="col-md-3 control-label">排序</label>
+                           <div class="col-md-6">
+                               <input  class="form-control input-medium" type="text" name="permission.weight" value="${(permission.weight)!}" />
+                           </div>
+                       </div>
+ 
+
+                       
+                  </div>
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+<script type="text/javascript">
+
+function save_data(){
+	form_data_save("#form", "/admin/permission/permission_update", function(data){
+		$("#treegrid").treegrid("reload");
+	}, {window_close:true,window_reload:true});
+}
+
+
+
+
+</script>

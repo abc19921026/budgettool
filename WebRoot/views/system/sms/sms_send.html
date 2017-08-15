@@ -1,0 +1,322 @@
+    <#include "../../inc/layout/page-default-top.html" />
+<link href="${BASE_PATH}assets/apps/css/todo-2.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${BASE_PATH}assets/global/plugins/layer/layer.js"></script>
+<script type="text/javascript" src="${BASE_PATH}assets/global/plugins/jquery-tags-input/jquery.tagsinput.js"></script>
+<link rel="stylesheet" type="text/css" href="${BASE_PATH}assets/global/plugins/jquery-tags-input/jquery.tagsinput.css"/>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">客服中心</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>短信平台</span>
+            </li>
+        </ul>
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+                        <div class="col-md-12">
+                            <!-- BEGIN TODO SIDEBAR -->
+                            <div class="todo-ui">
+                                <!-- END TODO SIDEBAR -->
+                                <!-- BEGIN TODO CONTENT -->
+                                <div class="todo-content">
+                                    <div class="portlet light ">
+                                        <!-- PROJECT HEAD -->
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="icon-bar-chart font-green-sharp hide"></i>
+                                                
+                                                <span class="caption-subject font-green-sharp bold uppercase">短信平台</span>
+                                                <span class="caption-helper">支持单条发送，批量发送，定时发送</span>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="btn-group">
+                                                    <a class="btn green btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">操作
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li>
+                                                            <a href="javascript:void(0)" onclick="querySmsLog()">查询发送短信</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end PROJECT HEAD -->
+                                        <div class="portlet-body">
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-4">
+                                                	<div class="tabbable-line boxless tabbable-reversed margin-bottom-10">
+                                                		<ul class="nav nav-tabs">
+						                                    <li class="active">
+						                                        <a data-toggle="tab" aria-expanded="true" onclick="change(0)">我的模版</a>
+						                                    </li>
+						                                    <li class="">
+						                                        <a data-toggle="tab" aria-expanded="false" onclick="change(1)">系统模版</a>
+						                                    </li>
+						                                </ul>
+                                                	</div>
+                                                	<div class="tab-content">
+                                    					<div id="tab_0">
+		                                                    <div class="todo-tasklist scroller" style="height:500px;">
+		                                                    	<#if (smsTemplates?size > 0) >
+		                                                    	<#list smsTemplates as smstemplate>
+		                                                        <div class="todo-tasklist-item todo-tasklist-item-border-${["blue", "red"][smstemplate_index%2]}">
+		                                                            <!-- <img class="todo-userpic pull-left" src="../assets/pages/media/users/avatar4.jpg" width="27px" height="27px">
+		                                                            <div class="todo-tasklist-item-title"> Slider Redesign </div> -->
+		                                                            <div class="todo-tasklist-item-text" onclick="changeContent(${smstemplate.id})" id="content${smstemplate.id}">${smstemplate.content}</div>
+		                                                            <!-- <div class="todo-tasklist-controls pull-left">
+		                                                                <span class="todo-tasklist-date">
+		                                                                    <i class="fa fa-calendar"></i> 21 Sep 2014 </span>
+		                                                                <span class="todo-tasklist-badge badge badge-roundless">Urgent</span>
+		                                                            </div> -->
+		                                                        </div>
+		                                                        </#list>
+		                                                        <#else>
+		                                                        	<div>暂无模版，请先添加模版</div>
+		                                                        </#if>
+		                                                    </div>
+	                                                    </div>
+	                                                    <div id="tab_1">
+		                                                    <div class="todo-tasklist scroller" style="height:500px;">
+		                                                    	<#if (smsTemplatesAll?size > 0) >
+		                                                    	<#list smsTemplatesAll as smstemplate>
+		                                                        <div class="todo-tasklist-item todo-tasklist-item-border-${["blue", "red"][smstemplate_index%2]}">
+		                                                            <!-- <img class="todo-userpic pull-left" src="../assets/pages/media/users/avatar4.jpg" width="27px" height="27px">
+		                                                            <div class="todo-tasklist-item-title"> Slider Redesign </div> -->
+		                                                            <div class="todo-tasklist-item-text" onclick="changeContent(${smstemplate.id})" id="content${smstemplate.id}">${smstemplate.content}</div>
+		                                                            <!-- <div class="todo-tasklist-controls pull-left">
+		                                                                <span class="todo-tasklist-date">
+		                                                                    <i class="fa fa-calendar"></i> 21 Sep 2014 </span>
+		                                                                <span class="todo-tasklist-badge badge badge-roundless">Urgent</span>
+		                                                            </div> -->
+		                                                        </div>
+		                                                        </#list>
+		                                                        <#else>
+		                                                        	<div>暂无模版</div>
+		                                                        </#if>
+		                                                    </div>
+	                                                    </div>
+                                                	</div>
+                                                </div>
+                                                <div class="todo-tasklist-devider"></div>
+                                                <div class="col-md-7 col-sm-8">
+                                                    <form class="form-horizontal">
+                                                        <!-- TASK HEAD -->
+                                                        <div class="form">
+                                                            <div class="form-group">
+                                                                <div class="col-md-8 col-sm-8">
+                                                                    <div class="todo-taskbody-user">
+                                                                        <!-- <img class="todo-userpic pull-left" src="../assets/pages/media/users/avatar6.jpg" width="50px" height="50px"> -->
+                                                                        <span class="todo-username pull-left">短信内容</span>
+                                                                        <!-- <button type="button" class="todo-username-btn btn btn-circle btn-default btn-sm">&nbsp;edit&nbsp;</button> -->
+                                                                    </div>
+                                                                </div>
+                                                                <!-- <div class="col-md-4 col-sm-4">
+                                                                    <div class="todo-taskbody-date pull-right">
+                                                                        <button type="button" class="todo-username-btn btn btn-circle btn-default btn-sm">&nbsp; Complete &nbsp;</button>
+                                                                    </div>
+                                                                </div> -->
+                                                            </div>
+                                                            <!-- END TASK HEAD -->
+                                                            <!-- TASK TITLE -->
+                                                            <div class="form-group">
+                                                                <div class="col-md-9">
+                                                                    <!-- <input type="text" id="tel" class="form-control todo-taskbody-tasktitle" placeholder="请输入手机号"> --> 
+                                                                    <input id="tel" name="tel"/>
+                                                                </div>
+                                                            </div>
+                                                            <!-- TASK DESC -->
+                                                            <div class="form-group">
+                                                                <div class="col-md-9">
+                                                                    <textarea id="templateContent" class="form-control todo-taskbody-taskdesc" rows="8" placeholder="请输入短信内容" onkeyup="enter()"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">
+                                                                <div class="col-md-9">
+                                                                	<label><input type="radio" name="sendOption" value="1" checked="checked" onclick="changeOption(1)">立即发送</label>
+                                                                	<label><input type="radio" name="sendOption" value="0" onclick="changeOption(0)">定时发送</label>
+                                                                	<span id="datetimebox" style="display: none;"><input class="easyui-datetimebox" id="send_time" name="send_time" style="width:150px;" value=""></span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">
+                                                                <div class="col-md-9">
+                                                                	<span id="total">0</span>/61(超过61字将按两条发送)
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-actions left todo-form-actions">
+                                                                <!-- <button class="btn btn-circle btn-sm green" style="width: 100px;" onclick="send()">发送</button> -->
+                                                                <input type="button" class="btn btn-circle btn-sm green" style="width: 100px;" onclick="send()" value="发送">
+                                                                <!-- <button class="btn btn-circle btn-sm btn-default">Cancel</button> -->
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END TODO CONTENT -->
+                            </div>
+                        </div>
+                        <!-- END PAGE CONTENT-->
+                    </div>
+<style type="text/css">
+.tagsinput input{
+	min-width:150px;
+}
+</style>
+<script type="text/javascript">
+	$(function(){
+		$('#tab_0').show();
+		$('#tab_1').hide();
+	});
+
+	function change(value){
+		if(value==0){
+			$('#tab_0').show();
+			$('#tab_1').hide();
+		}
+		else{
+			$('#tab_1').show();
+			$('#tab_0').hide();
+		}
+	}
+	
+	function changeOption(value) {
+		//console.log(value);
+		$('#send_time').datetimebox('setValue','${now}');
+		if(value==0){
+			$('#datetimebox').show();
+		}
+		else {
+			$('#datetimebox').hide();
+		}
+	}
+
+ 	function enter() {
+ 		count();
+    }
+	 
+	function count(){
+		 var total;
+		 var content=$('#templateContent').val();
+		 if(content.length==''){
+			 total=0;
+		 }
+		 else{
+			 total=content.length;
+		 }
+		 $('#total').html(total);
+	}
+	 
+	 $('#tel').tagsInput({
+		'width':'685px',//设置宽度
+		'height':'70px',//设置高度
+		//defaultText:"",
+		'defaultText':"添加手机号", //默认文字
+		'interactive':true, //是否允许添加标签，false为阻止
+		'autoSize':false,
+		'onAddTag':function(tag){//添加tag的回调函数
+			//console.log(tag);
+			var pattern = /^1[3578]\d{9}$/;
+			if(!pattern.test(tag)){
+				layer.tips('手机号码有误，请重试.', '#tel_tagsinput',{
+					tips:[2,'#f7ca18']
+				});
+				$('#tel').removeTag(tag);
+				return;
+			}
+		}
+	});
+
+	function changeContent(id){
+		var content=$('#content'+id).text();
+		//console.log(content);
+		$('#templateContent').val(content);
+		count();
+	}
+	
+	function send() {
+		var mobile=$('#tel').val();
+		var content=$('#templateContent').val();
+		var pattern = /^1[3578]\d{9}$/;
+		var sendOption=$('input[name="sendOption"]:checked').val();
+		var send_time;
+		//console.log(sendOption);
+		//console.log(mobile);
+		//console.log(content);
+		if(!mobile){
+			layer.tips('请输入手机号', '#tel_tagsinput',{
+				tips:[2,'#f7ca18']
+			});
+			return;
+		}
+		
+		/* if(!pattern.test(mobile)){
+			layer.tips('请输入正确的手机号码', '#tel',{
+				tips:[2,'#f7ca18']
+			});
+			return;
+		} */
+		
+		if(!content){
+			layer.tips('短信内容不能为空', '#templateContent',{
+				tips:[2,'#f7ca18']
+			});
+			return;
+		}
+		
+		if(sendOption==1){//立即发送
+			send_time="send_now";
+		}
+		else{
+			send_time=$('#send_time').datetimebox('getValue');
+			console.log(send_time);
+			if(!send_time){
+				layer.tips('请选择发送时间', '#datetimebox',{
+					tips:[2,'#f7ca18']
+				});
+				return;
+			}
+		}
+		
+		$.ajax({
+			type:'POST',
+			url:'/sms/short_message_send',
+			data:{
+				mobile:mobile,
+				content:content,
+				send_time:send_time
+			},
+			dataType:'json',
+			success:function(data){
+				if(data.status=='SUCCESS'){
+					layer.alert(data.message, {icon: 1});
+					
+					//清空tags input 和textarea的值
+					$('#tel').importTags('');
+					$('#templateContent').val("");
+				}
+				else {
+					layer.alert(data.message, {icon: 2});
+				}
+			}
+		})
+	}
+	
+	function querySmsLog() {
+		//window.location.href='send/sms_log';
+		window.open('/sms/sms_log');
+	}
+</script>
+                    <#include "../../inc/layout/page-default-bottom.html" />

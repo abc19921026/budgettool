@@ -1,0 +1,249 @@
+<#include "../../inc/layout/page-default-top.html" />
+
+<link href="${BASE_PATH}assets/global/plugins/fullcalendar-3.3.0/fullcalendar.css" rel="stylesheet" type="text/css">
+<link href="${BASE_PATH}assets/global/plugins/fullcalendar-3.3.0/fullcalendar.print.css" rel="stylesheet" type="text/css" media='print' >
+<script src="${BASE_PATH}assets/global/plugins/fullcalendar-3.3.0/lib/moment.min.js"></script>
+<script src="${BASE_PATH}assets/global/plugins/fullcalendar-3.3.0/fullcalendar.min.js"></script>
+<script src="${BASE_PATH}assets/global/plugins/layer/layer.js"></script>
+<style>
+	#fullcalendar,#condition{
+		width: 900px;
+		margin: 0 auto;
+	}
+	#fullcalendar{
+		margin-top: 80px;
+	}
+</style>
+<div class="page-bar">
+      <ul class="page-breadcrumb">
+          <li>
+              <span>企业管理</span>
+              <i class="fa fa-circle"></i>
+          </li>
+          <li>
+              <span>员工考勤</span>
+          </li>
+      </ul>
+      <div class="page-toolbar">
+          <div class="btn-group pull-right">
+              <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 操作
+                  <i class="fa fa-angle-down"></i>
+              </button>
+              <ul class="dropdown-menu pull-right" role="menu">
+                  <li>
+                      <a href="javascript:new_window('/crm/attendance/upload')">导入考勤excel</a>
+                  </li>
+                  <li>
+                      <a href="javascript:;">获取员工考勤数据</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+</div>
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-body">
+				 <div class="row margin-bottom-10">
+					 <div class="col-md-12">
+					 	<div id="condition">
+							 <form id="filter_form" action="" method="get">
+							 	<div class="col-md-2">
+									<label>员工：
+										<select id="staffSelect2" class="form-control input-small select2">
+															 				
+										</select>
+									</label>
+								</div>
+								<div class="col-md-2">
+									<br>
+									<a class="btn btn-sm btn-success" id="filter"><i class="fa fa-search"></i>&nbsp;查询</a>
+								</div>
+							 </form>
+						 </div>
+					 </div>
+					 
+					 <div id="fullcalendar">
+					 </div>
+				 </div>
+			 </div><!-- .portlet-body -->
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div>
+<script type="text/javascript">
+	/* function achieveAttendance() {
+		$.ajax({
+			type:'POST',
+			url:'https://oapi.dingtalk.com/attendance/list?access_token=ACCESS_TOKEN',
+			data:{
+				"workDateFrom": "2016-12-01 00:00:00",
+			    "workDateTo": "2016-12-01 00:00:00",
+			},
+			dataType:"json",
+			success:function(data){
+				
+			}
+		});
+	} */
+
+	$(document).ready(function() {
+		
+		$('#staffSelect2').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择员工",
+            ajax:{
+            	url:"/common/get_department_staff_select2",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.name);
+            		return data.text;
+			  }  
+        });
+		
+		$('#fullcalendar').fullCalendar({
+			header:{//设置日历头部信息
+				left:'today prev,next',//设置今天 上一个月 下一个月
+				center:'title',
+				right: 'month'//月、周、日
+			},
+			firstDay:0,//设置一周中的第一天
+			weekends:true,//设置是否显示周末，默认是显示的
+			//weekNumbers:true,//设置一年中的周次，默认是false
+			buttonText:{
+				today:'今天',
+				month:'月视图',
+				prev:'上一月',
+				next:'下一月'
+			},//头部按钮信息格式化
+			monthNames:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],//月份名称格式化
+			dayNamesShort:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],//星期名称简写
+			/* dayClick: function(date,jsEvent, view) {//单机日历
+				new_window("schedule/engineerinfo_schedule_edit?engineering_info_id=${(engineering_info_id)!}",'',800,500);
+			}, */
+			/* eventClick:function(event){
+				console.log(event);
+				layer.open({
+					type:'2',
+					content:'开始日期:'+event.start.format()+"<br/>"+"结束日期:"+event.end.format(),
+					area:['350px','200px'],//设置宽和高
+					title:[event.title,'font-size: 16px;color:'+event.color],
+					btn:['编辑活动','删除'],
+					btnAlign:'l',
+					btn1:function(index,layero){
+						new_window("schedule/engineerinfo_schedule_edit?engineering_info_id=${(engineering_info_id)!}&id="+event.id,'',800,500);
+			        	layer.close(index);
+					},
+					btn2:function(index,layero){
+						layer.confirm('确定要删除?', {title:'提示'}, function(index){
+			        		layer.close(index);
+			        		$.ajax({
+			        			type:'POST',
+			        			url:'schedule/delete_engineer_schedule',
+			        			data:{
+			        				id:event.id,
+			        			},
+			        			dataType:'json',
+			        			success:function(data){
+			        				if(data.status=='SUCCESS'){
+			        					$.messager.alert('提示信息',data.message,'info');
+			        				}
+			        				else{
+			        					$.messager.alert('提示信息',data.message,'error');
+			        				}
+			        				$('#fullcalendar').fullCalendar( 'refetchEvents');//重新抓取日程上的事件重新渲染他们
+			        			}
+			        		})
+			        	})
+					}
+				})
+			}, */
+			//editable: true,
+			eventLimit: true,
+			events: function(start,end,timezone,callback){//加载数据源
+		         //var view = $('#fullcalendar').fullCalendar('getView');
+		         //var viewName = view.name;
+		         /* var staff_id=$('#staffSelect2').select2('val');
+		         console.log(staff_id);
+		         if(!staff_id){
+		        	 staff_id=0;
+		         } */
+		         $.ajax({
+		            url:'/crm/attendance/json_attendance_signin',
+		            dataType: 'json',
+		            data: {
+		              //start: start.format(),
+		              //end: end.format(),
+		              //name:
+		           	  staff_id:'${staff_id}'
+		           	  /* staff_id:$('#staffSelect2').select2('val') */
+		            },
+		           success:function(data){
+		             var eventServer =[];
+		             $(data).each(function(){
+		                 eventServer.push({
+		                   title:$(this).attr('sign'),
+		                   start:$(this).attr('date'),
+		                   end:$(this).attr('date'),
+		                   //color:$(this).attr('color'),
+		                   //id:$(this).attr('id'),
+		                 });
+		             });
+		             callback(eventServer);
+		           }
+		         });
+			},
+		});
+		$('#filter').click(function(){
+			  /* $('#fullcalendar').fullCalendar( 'removeEventSource'); */
+			  /* var events = {
+		            url:'/crm/attendance/json_attendance_signin',
+		            dataType: 'json',
+		            data: {
+		              //start: start.format(),
+		              //end: end.format(),
+		              //name:
+		           	  staff_id:$('#staffSelect2').select2('val')
+		            },
+		           success:function(data){
+		             var eventServer =[];
+		             $(data).each(function(){
+		                 eventServer.push({
+		                   title:$(this).attr('sign'),
+		                   start:$(this).attr('date'),
+		                   end:$(this).attr('date'),
+		                   //color:$(this).attr('color'),
+		                   //id:$(this).attr('id'),
+		                 });
+		             });
+		             callback(eventServer);
+		           }
+			   }
+			 $('#fullcalendar').fullCalendar('addEventSource', events); */ 
+			 /*  $('#fullcalendar').fullCalendar( 'refetchEvents',events); */
+		});
+	});
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />

@@ -1,0 +1,41 @@
+@media print{
+
+	#budget_cover{
+		border:none;
+		margin-bottom:0px;
+	
+	}
+
+	.row_boder{
+		width:960px;
+	}
+	
+	.bottom_text{
+		margin-top:64px;
+		margin-bottom: 0px;
+	}
+
+	.img_style{
+		width:170px;
+		height:110px;
+	}
+
+	.prompt{
+		display:none;
+	}
+
+	.attachment{
+	    display:block;
+	   
+	}
+
+	.title{
+		margin-top:60px;
+	}
+
+	#budget_cover .container h1{
+	font-weight:normal;
+
+	}
+
+}

@@ -1,0 +1,189 @@
+<#include "../../inc/layout/page-default-top.html" />
+<!-- BEGIN PAGE BAR -->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+     	<li>
+            <a href="/">系统首页</a>
+            <i class="fa fa-circle"></i>
+         </li>       
+         <li>
+            <span> 我的周报</span>
+        </li>
+    </ul>
+</div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden"> 我的周报管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改.查询我的周报。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<a class="btn btn-sm btn-success" href='/crm/weekly/report/weekly_report_edit'><i class="fa fa-plus"></i> &nbsp;新建</a>
+				<!-- <button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button> -->
+				<!-- <button class="btn btn-sm blue" id="confirm"><i class="icon-paper-clip"></i> &nbsp;提交周报</button>  -->
+			</div>
+			 <div class="portlet-body">
+			 
+			  <div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+					 <div class="col-md-3">
+					 		<label>标题：<br /><input type="text" name="title" class="form-control input-medium input-inline" placeholder="请输入标题" /></label></div>
+			 		<div class="col-md-2">&nbsp;<br /><a class="btn btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					 </form>
+				 </div>
+			 
+			      <table  class="easyui-datagrid" id="list" style="width:98%;height:450px"
+			            data-options="
+			                url: '/crm/weekly/report/json_weekly_report_list?staff_id=${(staff.id)!}',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                <#-- fitColumns:true, -->
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'title', title:'标题', width:'250px',formatter:titleFormatter"></th>
+			            	<th data-options="field:'staff_name', title:'姓名', width:'5%'"></th>
+			            	<th data-options="field:'department_names', title:'部门', width:'8%'"></th>
+			            	<th data-options="field:'status', title:'状态', width:'80',formatter:statusFortmatter"></th>
+			            	<th data-options="field:'feedback', title:'是否回复', width:'80',formatter:feedbackFortmatter"></th>
+			            	<th data-options="field:'create_time', title:'创建时间', width:'150'"></th>
+			            	<!-- <th data-options="field:'content', title:'内容', width:'15%',formatter:formatCellTooltip"></th> -->
+			            	<th data-options="field:'id', title:'', width:'4%',align:'center',formatter:idformatter"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+
+<script type="text/javascript">
+function titleFormatter(value,data){
+	return "<a href='/crm/weekly/report/weekly_report_edit/"+data.id+"'>"+value+"</a>";
+ }
+ 
+function statusFortmatter(value,data){
+	 if(value == 0){
+		 return "未提交";
+	 }else{
+		 return "已提交";
+	 }
+ }
+ 
+function feedbackFortmatter(value,data){
+	 if(value != null){
+		 return "已回复";
+	 }else{
+		 return "未回复";
+	 }
+ }
+ 
+//格式化单元格提示信息  
+function formatCellTooltip(value){  
+ 	if(value != null){
+     	return "<span title='" + value + "'>" + value + "</span>";  
+     }
+ }
+ 
+function idformatter(value,data){
+	 //console.log(data);
+	 if(data.status == 0){
+	 	 return "<a href='javascript:deleteReport("+value+");'> 删除 </a>";
+	 }else{
+		 return "不可删除";
+	 }
+ }
+ 
+function deleteReport(value){
+	 //console.log(value);
+	 //return;
+	  $.messager.confirm("确认删除", "您确认要删除吗？", function(re){
+			if(re){
+			$.ajax({
+				type:"POST",
+				url:"/crm/weekly/report/delete",
+				data:{
+					id:value
+				},
+				dataType:"json",
+				success:function(data){
+						if(data.status=="SUCCESS"){
+						$.messager.alert('',data.message,'info',function(){
+							window.location.reload();
+						});
+					}else{
+						$.messager.alert('',data.message,'error');
+					}
+				}
+			});
+		}
+	});
+ }
+
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#list').datagrid('load', search_data);
+  	});
+	
+	$("#delete").click(function(){
+		var post_url = "/crm/weekly/report/weekly_report_delete";
+		handle_datagrid_delete(post_url, "list");
+	});
+	
+	 $("#confirm").click(function(){
+			var rows = $('#list').datagrid('getChecked');  			
+			if(rows.length <= 0){
+				//alert("请选择要提交的数据!");
+				$.messager.alert("系统提示", "请选择您要提交的周报。", "warning");
+				return;
+			}
+			var temp = "";
+			for(var i = 0; i < rows.length; i++){
+				temp += rows[i]["id"] + ",";	
+			}
+			temp = temp.substring(0, temp.length-1);//将1,2,转成1,2
+			$.messager.confirm("确认提交", "您确认要提交所选周报吗？", function(re){
+				if(re){
+				$.ajax({
+					type:"POST",
+					url:"/crm/weekly/report/confirm",
+					data:{
+						ids:temp
+					},
+					dataType:"json",
+					success:function(data){
+							if(data.status=="SUCCESS"){
+							$.messager.alert('',data.message,'info',function(){
+								window.location.reload();
+							});
+						}else{
+							$.messager.alert('',data.message,'error');
+						}
+					}
+				});
+			}
+		});
+		});
+	
+});
+
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

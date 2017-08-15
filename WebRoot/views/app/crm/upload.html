@@ -1,0 +1,49 @@
+<div style="padding:10px 40px 20px 40px" id="">
+    <form id="ff" method="post">	
+    	
+	    <table class="form-table" style="width:100%">
+	    	<tr>
+	    		<td>文件上传：</td>
+	    		<td>
+	    			上传材料Excel：<input id="attendance" type="file" accept=".xls,.xlsx" name="file" /> 			
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td></td>
+	    		<td></td>
+	    	</tr>
+	    </table>
+
+    </form>
+
+</div>
+ <script type="text/javascript">
+  $("#attendance").change(function(){
+        	var filename = $(this).val();
+        	if(filename != ""){
+        		var typeIndex = filename.lastIndexOf(".");
+        		var fileType = filename.substring(typeIndex).toUpperCase();
+        		if(fileType != ".XLS" && fileType != ".XLSX"){
+        			alert("请选择excel文档！");
+        			//将name属性的值清除以避免提交时重复文件复制操作
+			        $(this).val("");
+        			return;
+        		}
+               $("#ff").attr("enctype", "multipart/form-data"); 
+            	$.messager.progress({msg:"文件解析中..."});
+				$('#ff').form('submit', {
+					url : "/crm/attendance/excelParse",
+					success : function(data){
+						    $.messager.progress("close");
+						    $.messager.alert("提示",data,"",function(){
+						     //关闭当前窗口
+						      //window.close();
+						      //刷新父级页面
+						    window.location.reload();
+						    });
+						},
+				});
+        	}
+        });
+ </script>
+

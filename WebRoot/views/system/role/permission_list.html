@@ -1,0 +1,122 @@
+    <#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">系统设置</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>权限管理</span>
+            </li>
+        </ul>
+
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden">权限管理信息
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改.查询.权限管理信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('/admin/permission/persission_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<!-- <button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button> -->
+			</div>
+			 <div class="portlet-body">
+			 
+			  <div class="row margin-bottom-10">
+					 <div class="col-md-12 col-sm-12">
+					 <form id="filter_form" action="" method="get">
+					 		<label>权限名称：<input type="text" name="title" class="form-control input-sm input-small input-inline" placeholder="请输入权限名称" /></label>
+					 		&nbsp;<a class="btn btn-sm btn-success" id="filter"><i class="fa fa-search"></i> 查询</a>
+					 </form>
+					 </div>
+				 </div>
+			 
+			      <table  class="easyui-treegrid" id="treegrid" style="width:98%;height:450px"
+			            data-options="
+			                url: '/admin/permission/json_permission_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:false,
+			                idField:'id',
+			                treeField:'name',
+			                toolbar: [{
+			                text:'展开',
+		                    iconCls: 'glyphicon glyphicon-indent-left',
+		                    handler: function(){tg_expand_all();}
+	                         },'-',{
+	                        text:'收起',
+		                    iconCls: 'glyphicon glyphicon-indent-right',
+		                     handler: function(){tg_collapse_all();}
+	                        }]
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'name', title:'perm_name', width:'20%'"></th>
+			            	<th data-options="field:'title', title:'权限名称', width:'20%',formatter:formatCellTooltip"></th>
+			            	<th data-options="field:'description', title:'权限描述', width:'20%',formatter:formatCellTooltip"></th>
+			            	<th data-options="field:'module', title:'分组', width:'10%'"></th>
+			            	<th data-options="field:'weight', title:'排序', width:'5%'"></th>
+							<th data-options="field:'id', title:'', width:'5%',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<script type="text/javascript">
+
+//格式化单元格提示信息  
+ function formatCellTooltip(value){  
+ 	if(value != null){
+     	return "<span title='" + value + "'>" + value + "</span>";  
+     }
+ } 
+
+ function idformatter(value,data){
+	 if(value > 0)
+ 	 	return "<a href='javascript:new_window(\"/admin/permission/persission_edit/"+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+ 	else
+ 		return "";
+ }
+
+                    
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#treegrid').treegrid('load', search_data);
+  	});
+	
+	$("#delete").click(function(){
+		var post_url = "/admin/permission/permission_delete";
+		handle_datagrid_delete(post_url, "treegrid");
+	});
+	
+});
+
+function tg_collapse_all(){
+	$("#treegrid").treegrid("collapseAll");
+}
+function tg_expand_all(){
+	$("#treegrid").treegrid("expandAll");
+}
+
+</script>
+       <#include "../../inc/layout/page-default-bottom.html" />

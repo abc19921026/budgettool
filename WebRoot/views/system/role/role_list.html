@@ -1,0 +1,238 @@
+<#include "../../inc/layout/page-default-top.html" />
+
+<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">系统管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>角色管理</span>
+            </li>
+        </ul>
+</div>
+<h3 class="page-title hidden">
+	角色管理 <small>管理系统角色</small>
+</h3>
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以对角色菜单进行查看和编辑。 </p>
+	     </div>
+	     <div class="portlet light portlet-fit portlet-datatable bordered">
+	     		
+	     		<div class="portlet-title" id="uid">
+					<!-- <button class="btn btn-sm btn-success" onclick="new_window('role/details','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button> -->
+					<button class="btn btn-sm btn-success" onclick="new_window('role/group_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建分组</button>
+					<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>				
+				</div>
+	     		
+	     	<div class="portlet-body">
+				<!-- <table class="easyui-datagrid" style="width:98%;height:600px" id="list"
+					data-options="
+					url : 'role/listAll',
+					method : 'POST',
+					checkOnSelect : false,
+					pagination : true,
+					pageSize :50
+					">
+					<thead>
+						<tr>
+							<th data-options="field:'',checkbox:true"></th>
+							<th data-options="field:'name', title:'角色名称', width : '20%'"></th>
+							<th data-options="field:'description', title:'角色描述', width : '25%'"></th>
+							<th data-options="field : 'rid',title:'操作',width : '8%', formatter : editFormatter,align:'center'"></th>
+						</tr>
+					</thead>
+				</table> -->
+				<table class="easyui-treegrid" style="width:98%;min-height:700px;height:100%;'" id="treegrid"
+					data-options="
+						url : 'role/listGroup',
+						method : 'POST',
+			                checkbox:true,
+						checkOnSelect : false,
+						pagination : false,
+						idField : 'id',
+						treeField : 'name',
+						onCheckNode : duplicate_prevent,
+						toolbar : [{
+			                 text:'展开',
+		                     iconCls: 'glyphicon glyphicon-indent-left',
+		                     handler: function(){tg_expand_all();}
+	                         },'-',{
+	                          text:'收起',
+		                      iconCls: 'glyphicon glyphicon-indent-right',
+		                     handler: function(){tg_collapse_all();}
+	                        }]
+	                        ">
+					<thead>
+						<tr>
+							<!-- <th data-options="field : '', checkbox : true"></th> -->
+							<th data-options="field : 'name', title : '名称', width : '25%'"></th>
+							<th data-options="field : 'id', title : '操作', width : '15%', align : 'center', formatter : editFormatter" ></th>
+						</tr>
+					</thead>
+				</table>
+	     	</div>
+	     </div>
+	</div>
+</div>
+
+<div id="group_mm" class="easyui-menu" style="width:120px;">
+   <div onclick="append()">新建角色</div>
+</div> 
+
+<div id="role_mm" class="easyui-menu" style="width:120px;">
+  <div onclick="update()">修改角色</div>
+</div> 
+
+<!-- <div id="w"></div> -->
+
+<script type="text/javascript">
+
+	function editFormatter(value, data){
+		if(!value)
+			return "";
+		
+		var id = "";
+		var a = "";
+		
+		if(value.indexOf("role_") > -1){
+			id = value.replace("role_", "");
+			a = "<a href='javascript:new_window(\"role/details?rid="+id+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+		}else if(value.indexOf("group_") > -1){
+			id = value.replace("group_", "");
+			a = "<a href='javascript:new_window(\"role/group_edit?id="+id+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+			a += "&nbsp;&nbsp;";
+			a += "<a href='role_menu/group_menu?gid="+id+"' target='_blank'><i class='fa fa-pencil-square'></i> 分组菜单</a>";
+			a += "&nbsp;&nbsp;";
+			a += "<a href='role_permission/group_permission?gid="+id+"' target='_blank'><i class='fa fa-pencil-square'></i> 分组权限</a>";
+		}else{
+			//a = "<a href='javascript:new_window(\"role/details?rid="+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+			id = 0;
+			a = "<a href='role_menu/group_menu?gid="+id+"' target='_blank'><i class='fa fa-pencil-square'></i> 分组菜单</a>";
+			a += "&nbsp;&nbsp;";
+			a += "<a href='role_permission/group_permission?gid="+id+"' target='_blank'><i class='fa fa-pencil-square'></i> 分组权限</a>";
+		}
+		return a;//"<a href='javascript:new_window(\"role/details?rid="+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+	}
+	
+	$(function(){
+		$("#delete").click(function(){
+			var post_url = "";
+			var node = $("#treegrid").treegrid("getCheckedNodes")[0];
+			//console.log(node);
+			var id = node.id;
+			if(id.indexOf("group_") > -1)
+				post_url = "role/group_delete";
+			else if(id.indexOf("role_") > -1)
+				post_url = "role/delete";
+			else
+				return;
+			handle_datagrid_delete(post_url, "treegrid","id","treegrid");
+		});
+		
+		//如果不是超级管理员就隐藏新建，删除按钮
+		var uid = ${(uid)!};
+		//console.log(uid);
+		if(uid != 1){
+			$("#uid").hide();
+		}
+		
+		$("#treegrid").treegrid({
+			   cascadeCheck:false,
+			   //给treegrid添加右键点击事件
+			   onContextMenu:function(e,row){
+					if( row == null){
+						return;
+					}
+					//禁止浏览器的菜单打开
+					e.preventDefault();
+					//设置当前节点为选中状态
+				    $(this).treegrid('select', row.id);
+					//右键分组弹出新建，右键角色弹出修改
+					//console.log(row.id);
+					var id = row.id;
+					if(id.indexOf("role_") > -1){
+						//点击右键我们弹出一个div，并且设置div的位置
+						$("#role_mm").menu('show',{
+							left: e.pageX,
+							top: e.pageY
+						});
+					}else{
+						$("#group_mm").menu('show',{
+							left: e.pageX,
+							top: e.pageY
+						});
+					}
+		   		}	
+			});
+	});
+	 //上面的是当我们点击时候触发的事件，下面是调用的函数
+  	function append(){
+	  	var node = $("#treegrid").treegrid("getSelected");
+	  	var id = node.id;
+	  	if(id.indexOf("group_") > -1)
+	  		id = id.replace("group_", "")
+	  	else
+	  		id = 0;
+	    	
+	  	new_window('role/details?gid='+ id);//获取当前节点的id,在后台如果能获取该id则代表是父级的新建，要作为父id保存
+	}
+	 
+	function update(){
+		var node = $("#treegrid").treegrid("getSelected");
+		var id = node.id;
+		if(id.indexOf("role_") > -1)
+			id = id.replace("role_", "");
+		else
+			id = 0;
+			
+		new_window("role/details?rid="+id);
+	}
+	
+	//删除时无法同时处理分组和角色，在check分组时uncheck角色，反之亦然。
+	function duplicate_prevent(row, checked){//checked为true表示选中，false表示反选
+		if(!checked)//反选时返回
+			return;
+		
+		var checkedNodes = $("#treegrid").treegrid("getCheckedNodes");
+		if(checkedNodes.length == 1)//只选了一条数据时返回
+			return;
+		
+		var id = row.id;
+		
+		//当前选中了角色数据
+		if(id.indexOf("role_") > -1){
+			for(var i = 0; i < checkedNodes.length; i++){
+				var node = checkedNodes[i];
+				var nid = node.id;
+				//反选分组数据
+				if(nid.indexOf("role_") == -1)
+					$("#treegrid").treegrid("uncheckNode", nid);
+			}
+		//当前选中了分组数据
+		}else if(id.indexOf("group_") > -1){
+			for(var i = 0; i < checkedNodes.length; i++){
+				var node = checkedNodes[i];
+				var nid = node.id;
+				//反选角色数据
+				if(nid.indexOf("group_") == -1)
+					$("#treegrid").treegrid("uncheckNode", nid);
+			}
+		//未分组直接反选
+		}else{
+			$("#treegrid").treegrid("uncheckNode", id);
+		}
+		
+	}
+		
+	
+	function tg_collapse_all(){
+		$("#treegrid").treegrid("collapseAll");
+	}
+	function tg_expand_all(){
+		$("#treegrid").treegrid("expandAll");
+	}
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

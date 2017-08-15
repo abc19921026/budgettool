@@ -1,0 +1,173 @@
+    <#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">客服中心</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>短信模版</span>
+            </li>
+        </ul>
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title">短信模版管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改短信模版信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('template/sms_template_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>				
+			</div>
+			 <div class="portlet-body">
+			 
+				 <div class="row margin-bottom-10">
+					 <div class="col-md-12 col-sm-12">
+					 <form id="filter_form" action="" method="get">
+					  		<div class="col-md-2">
+					 			<label>模版内容：<br /><input type="text" name="content" class="form-control input-medium input-inline" placeholder="请输入模版内容" /></label>
+					 		</div>
+					 		
+					 		<div class="col-md-2">
+					 			<label>创建人:
+					 				<select id="staff_id"  name="staff_id" class="form-control input-small select2">
+					 				
+           		    				</select>
+					 			</label>
+					 		</div>
+					 		<div class="col-md-2">
+					 			<label>类型:
+					 				<select  name="type" class="form-control input-small">
+					 					<option value="-1">--请选择--</option>
+					 					<option value="1">动态模板</option>
+					 					<option value="2">静态模板</option>
+           		    				</select>
+					 			</label>
+					 		</div>
+					 		<div class="col-md-2"><br />&nbsp;<a class="btn  btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					 </form>
+					 </div>
+				 </div>
+			
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:450px"
+			            data-options="
+			                url: 'template/json_template_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                rownumbers: true,
+			                fitColumns:true,
+			                nowrap:false
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<!-- <th data-options="field:'name', title:'用户名', width:'10%'"></th>
+			            	<th data-options="field:'rids', title:'角色id', width:'10%'"></th> -->
+			            	<th data-options="field:'content',title:'模版内容',width:'70%'"></th>
+			            	<th data-options="field:'type', title:'类型',width:'70px',formatter:typeformatter,align:'center'"></th>
+			            	<th data-options="field:'name', title:'创建人', width:'100px',align:'center'"></th>
+			                <th data-options="field:'create_time', title:'创建时间', width:'130px',align:'center'"></th>
+							<th data-options="field:'id', title:'操作', width:'100px',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			    
+			 </div><!-- .portlet-body -->
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<style type="text/css">
+	a:HOVER,a:VISITED,a:LINK,a:ACTIVE{
+		text-decoration: none;
+	}	
+</style>
+<script type="text/javascript">
+	function idformatter(value,data){
+		return "<a onclick='new_window(\"template/sms_template_edit/"+value+"\",\"\",800,500);'><i class='fa fa-pencil-square'></i> 编辑</a>";
+	}
+	
+	function typeformatter(value,data) {
+		if(value==1){
+			return "动态模版";
+		}
+		else{
+			return "静态模版";
+		}
+	}
+	
+	/* function contentformatter(value,data){
+		//console.log(value.length);
+		if (value.length>50){
+			return "<a title='"+value+"' href='javascript:void(0)'>"+value.substring(0,50)+"..."+"</a>";
+		}
+		return "<a href='javascript:void(0)' title='"+value+"'>"+value+"</a>";
+	} */
+	
+	/* function snformatter(value,data){
+		console.log(data.id);
+		return "<a href='info/detail?id="+data.id+"' target='_blank'>"+value+"</a>";
+	} */
+
+	$(function(){
+		$('#staff_id').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择创建人",
+            ajax:{
+            	url:"/common/get_department_staff_select2",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.name);
+            		return data.text;
+			  }  
+        });
+		
+		//查询
+		$('#filter').click(function(){
+			var search_data=$('#filter_form').serializeObject();
+			//console.log(search_data);
+			$('#list').datagrid('load',search_data);
+		})
+		
+		//删除
+		$('#delete').click(function(){
+			var post_url = "template/sms_template_delete";
+		    handle_datagrid_delete(post_url, "list");
+		})
+	})
+</script>
+                    <#include "../../inc/layout/page-default-bottom.html" />

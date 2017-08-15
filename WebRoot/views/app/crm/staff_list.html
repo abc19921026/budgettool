@@ -1,0 +1,286 @@
+    <#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <span>企业管理</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>员工管理</span>
+            </li>
+        </ul>
+
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden"> 员工信息管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改员工信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				 <#if TF.has_perm("view_staff_all_info")>
+				 <a class="btn btn-sm btn-success" <#if department_id!=""> href='/crm/staff/staff_list_edit?department_id=${department_id}' <#else> href='/crm/staff/staff_list_edit' </#if> ><i class="fa fa-plus"></i> &nbsp;新建</a>
+				 <a class="btn btn-sm btn-danger" id="deleted"><i class="fa fa-remove"></i> &nbsp;删除</a>
+				 </#if>
+				<!-- <button class="btn btn-sm btn-success" onclick="new_window('staff/staff_list_edit','', 1000, 700);"><i class="fa fa-plus"></i> &nbsp;新建</button> -->
+				<!-- <button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>	 -->
+				<div class="btn-group pull-right">
+	                <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">工具
+	                    <i class="fa fa-angle-down"></i>
+	                </button>
+	                <ul class="dropdown-menu pull-right">
+	                    <li>
+	                    	<a href="javascript:new_window('/crm/staff/staff_upload')"><i class="fa fa-upload"></i>上传Excel</a>
+	                    </li>
+	                </ul>
+	            </div>			
+			</div>
+			<div class="portlet-body">
+			 
+				 <div class="row margin-bottom-10">
+					 <div class="col-md-12 col-sm-12">
+					 <form id="filter_form" action="" method="get">
+					 		<#if department_id=="">
+					 		<div class="col-md-2">部门：<select id="select2_department" name="department" class="form-control select2"></select> </div>
+					  		</#if>
+					  		
+					  		<div class="col-md-2">
+					 		<label>姓名：<br /><input type="text" name="name" class="form-control input-small input-inline" placeholder="请输入姓名" /></label></div>
+					 		
+					 		<div class="col-md-2">
+					 		<label>手机号：<br /><input type="text" name="mobile" class="form-control input-small input-inline" placeholder="请输入手机号" /></label></div>
+					 		
+					 		<div class="col-md-2">
+					 		<label>编号：<br /><input type="text" name="sn" class="form-control input-small input-inline" placeholder="请输入员工编号" /></label></div>
+					 		
+					 		<div class="col-md-2">
+						 		<label>在职情况：
+						 			<span>
+							 			<select name="status" class="form-control input-small">
+							 				<option value="1">------请选择------</option>
+							 				<option value="0">在职</option>
+							 				<option value="-1">离职</option>
+							 			</select>
+						 			</span>
+						 		</label>
+					 		</div>
+					 		
+					 		<div class="col-md-2">
+						 		<label>员工类型：
+						 			<span>
+							 			<select name="type" class="form-control input-small">
+							 				<option value="-1">------请选择------</option>
+							 				<option value="0">临时员工</option>
+							 				<option value="1">正式员工</option>
+							 			</select>
+						 			</span>
+						 		</label>
+					 		</div>
+					 		
+					 		<div class="col-md-2"><br />&nbsp;<a class="btn  btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					 </form>
+					 </div>
+				 </div>
+			
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:450px"
+			            data-options="
+			                url: '/crm/staff/json_staff_list?department_id=${(department_id)!}&job_title_id=${(job_title_id)!}&location=${location}',
+			                method:'POST',
+			                fitColumns:true,
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                rownumbers: true,
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'sn', title:'员工编号', width:'90',align:'center'"></th>
+			            	<th data-options="field:'name', title:'姓名', width:'90',formatter:staff_name_formatter,align:'left'"></th>
+			            	<th data-options="field:'system_username', title:'系统用户名', width:'10%',formatter:user_name_formatter,align:'left'"></th>
+			            	<th data-options="field:'system_user_status',align:'center', title:'账号状态', width:'80',formatter:user_status_formatter"></th>
+			            	<!-- <th data-options="field:'gender', title:'性别', width:'50',formatter :sexformatter"></th> -->
+			              	<th data-options="field:'entry_time', title:'入职时间', width:'100px',align:'center'"></th>
+			                <th data-options="field:'department_names', title:'部门', width:'10%',align:'center'"></th>
+			              	<th data-options="field:'title', title:'职位', width:'80px',align:'center'"></th>
+			              	<#if department_id!="">
+			              		<th data-options="field:'staff_work_type', title:'工种', width:'80px',align:'center'"></th>
+			              	</#if>
+			                <th data-options="field:'mobile', title:'手机', width:'100px',align:'center'"></th>
+			              	<!-- <th data-options="field:'tel', title:'电话', width:'10%'"></th> -->
+			              	<th data-options="field:'status', title:'在职', width:'60px',formatter:staff_status_formatter,align:'center'"></th>
+			              	<th data-options="field:'type', title:'类型', width:'60px',formatter:type_formatter,align:'center'"></th>
+							<th data-options="field:'id', title:'操作', width:'15%',formatter :idformatter,align:'center'"></th>
+							<#if (user.uid) == 1><!-- root用户 -->
+				            	<th data-options="field:'switch',title:'SWITCH',width:'80',align:'center',formatter:switchFormatter"></th>
+				            </#if>
+			            </tr>
+			        </thead>
+			    </table>
+			    
+			 </div><!-- .portlet-body -->
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+
+<script type="text/javascript">
+function type_formatter(value,data){
+	if(value==0){
+		return "临时员工";
+	}
+	else if(value==1){
+		return "正式员工";
+	}
+	else{
+		return "/";
+	}
+}
+
+
+function staff_name_formatter(v, data){
+	<#if department_id!="">
+	return "<a href='/crm/staff/staff_list_edit?id="+data.id+"&department_id=${department_id}'>" + v +"</a>";
+	<#else>
+	return "<a href='/crm/staff/staff_list_edit?id="+data.id+"'>" + v +"</a>";
+	</#if>
+}
+ function idformatter(value,data){
+  	/* return "<a href='javascript:new_window(\"staff/staff_list_edit/"+value+"\",\"\",1000,700)'>编辑</a>"+" | " */
+  	<#if location=="staff">//企业管理、员工管理
+  		var work_type_config = "";
+  		if(data.worker_group){
+  			work_type_config = "<a href='javascript:;' onclick='worktypeConfig("+value+")'><i class='fa fa-cog'></i>工种配置</a>&nbsp;&nbsp;";
+  		}
+  		
+  		return "<a href='/crm/staff/staff_list_edit?id="+value+"'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;"
+  			+ work_type_config
+		  	+"<a href='/crm/attendance?staff_id="+value+"'><i class='fa fa-vcard-o'></i> 考勤</a>&nbsp;&nbsp;"
+		  	+"<a href='/crm/wage/config?staff_id="+value+"' target='_blank'><i class='fa fa-cog'></i> 工资配置</a>";
+  	<#else>//工班人员维护
+  		return "<a href='javascript:;' onclick='worktypeConfig("+value+")'><i class='fa fa-cog'></i>工种配置</a>&nbsp;&nbsp;"
+ 	</#if>
+ }
+ 
+ function worktypeConfig(staff_id){
+	 new_window('/crm/staff/work_type_config?staff_id='+staff_id,'',600,350);
+ }
+ 
+ function sexformatter(value){
+		if(value==0){
+		 	return "女";
+		}else{
+		 	return "男";
+		}
+ }
+ 
+ function staff_status_formatter(value){
+ 	if(value == 0){
+ 		return "在职";
+ 	}else{
+ 		return "离职";
+ 	}
+ }
+ 
+ function user_name_formatter(value, row){
+	 var re = "/";
+
+	 if(row.uid){
+		<#if TF.has_perm("system_admin_user")>
+	 	re = "<a target='_blank' href='/profile/view/"+ row.uid + "'>" + value +"</a>";
+	 	<#else>
+		 re = value;
+	 	</#if>	 	
+	 	
+	 }
+	return re;
+ }
+ 
+ function user_status_formatter(value, row){
+	 //return value;
+	 	var re = "";
+	 	if(!row.uid){
+	 		return re;
+	 	}
+	 	if(row.system_user_status >= 0){
+	 		re += "<span class=\"badge badge-default badge-roundless\">启用</span>";
+	 	}else{
+	 		re += "<span class=\"badge badge-danger badge-roundless\">禁用</span>";
+	 	}
+	 	
+	 	return re;
+ }
+ 
+ function switchFormatter(value, data){
+		var re = "";
+		if(!data.uid){
+			return re;
+		}
+		<#if (user.uid) == 1>
+		re += "<a href='/devel/switch_user/" + data.uid +" '>SWITCH</a>";
+		</#if>
+		return re;
+	} 
+                    
+$(function(){
+ 	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#list').datagrid('load', search_data);
+  	});
+
+	$("#deleted").click(function(){
+		var post_url = "/crm/staff/staff_list_delete";
+		handle_datagrid_delete(post_url, "list");
+	});
+});
+
+	//select2方法
+$(function(){
+		$('#select2_department').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择部门",
+            ajax:{
+            	url:"/common/get_department_select2",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			        id: ${id!"0"}
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.name);
+            		return data.text;
+			  }  
+        });
+	});
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

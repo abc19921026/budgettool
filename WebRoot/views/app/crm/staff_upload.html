@@ -1,0 +1,59 @@
+<div style="padding:10px 40px 20px 40px" id="">
+    <form id="ff" method="post">	
+    	
+	    <table class="form-table" style="width:100%">
+	    	<tr>
+	    		<td>文件上传：</td>
+	    		<td>
+	    			上传员工Excel：<input id="staff" type="file" accept=".xls,.xlsx" name="file" /> 			
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td></td>
+	    		<td></td>
+	    	</tr>
+	    </table>
+
+    </form>
+
+</div>
+ <script type="text/javascript">
+  $("#staff").change(function(){
+        	var filename = $(this).val();
+        	if(filename != ""){
+        		var typeIndex = filename.lastIndexOf(".");
+        		var fileType = filename.substring(typeIndex).toUpperCase();
+        		if(fileType != ".XLS" && fileType != ".XLSX"){
+        			alert("请选择excel文档！");
+        			//将name属性的值清除以避免提交时重复文件复制操作
+			        $(this).val("");
+        			return;
+        		}
+               $("#ff").attr("enctype", "multipart/form-data"); 
+            	$.messager.progress({msg:"文件解析中..."});
+				$('#ff').form('submit', {
+					url : "/crm/staff/excelParse",
+					success : function(data){
+						    console.log(data);
+						    $.messager.progress("close");
+						    /* layer.open({
+						      title:'提示',
+						      closeBtn: 0,
+							  content: data,
+							  yes: function(index, layero){
+							    //do something
+							    layer.close(index); //如果设定了yes回调，需进行手工关闭
+							    window.parent.$('#tmp-open-window').window('close'); 
+							    window.parent.$('#list').datagrid('reload');
+							   }
+							  }); */
+						    $.messager.alert("提示",data,"", function(){
+						       window.parent.$('#tmp-open-window').window('close'); 
+							   window.parent.$('#list').datagrid('reload');
+						    }); 	
+						},
+				});
+        	}
+        });
+ </script>
+

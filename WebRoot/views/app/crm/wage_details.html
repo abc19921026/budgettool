@@ -1,0 +1,121 @@
+  <#include "../../inc/layout/page-default-top.html" />
+     <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>薪资管理</span>
+                <i class="fa fa-circle"></i>
+            </li>
+             <li>
+                <span>工资明细</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                 <span>${(crmStaff.sn)!} | ${(crmStaff.name)!}</span>
+            </li>  
+        </ul>
+    </div>
+    <!-- END PAGE BAR -->
+<form method="post" action=""  data-options="novalidate:false"  id="ff"><!--开始-->
+	<div class="row">
+                 <div class="col-md-6">
+                     <div class="portlet light portlet-fit portlet-form bordered"><!-- BEGIN VALIDATION STATES-->
+                         <div class="portlet-title">
+                             <div class="caption">
+                                 <i class=" icon-layers font-green"></i>
+                                 <span class="caption-subject font-green sbold uppercase">工资明细</span>
+                             </div>
+                         </div>
+					       <div class="portlet-body">
+					           	<div class="form-horizontal"><!--form开始-->
+					                 	<div class="form-body">
+											<#if (details ?size>0) >
+                                            <#list details as detail>					
+													<div class="form-group">
+							                           <label class="col-md-3 control-label">${(detail.wage_type_title)!}</label>
+							                           <div class="col-md-6">
+															<input class="form-control input-small " type="number" name="amount" data-id="${(detail.id)!}" data-wage_id="${(detail.wage_id)!}" value="${(detail.amount?string('0.00'))!}" />
+							                           </div>
+							                       </div>
+					                        </#list>
+                                           </#if> 
+					           	    </div>
+								</div><!--form结束-->
+                         </div> 
+                     </div><!-- END VALIDATION STATES-->
+                 </div>
+
+  </div>
+  
+      <div class="row">
+    	 <div class="col-md-12">
+    	 	 <div class="portlet light portlet-fit portlet-form bordered">
+    	 	 <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-5 col-md-7">
+                             	 <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                             	 <button type="button" id="" onclick="history.go(-1);" class="btn yellow"><i class="fa fa-reply"></i> 返回</button>
+                           </div>
+                       </div>
+                   </div>
+				   </div>
+    	 </div>
+    </div>
+  
+</form><!--结束-->
+<script type="text/javascript">
+function save_data(){
+	
+	var datas = [];
+	$("input[name='amount']").each(function(i,n){
+		    var o = new Object();
+			o['id'] = $(n).data('id');
+			o['wage_id'] = $(n).data('wage_id');
+			o['amount'] = $(n).val();
+			datas.push(o);
+	});
+	
+	var post_data = JSON.stringify(datas);//将json数组转成字符串
+	//console.log(post_data);
+	//return;
+
+	$.ajax({
+		type:"POST",
+		url:'/crm/staff/wage/wage_details_update',
+		data:{"data":post_data},
+		beforeSend:function(){
+			$("#save").text("提交中...");
+			$("#save").attr("disabled",true);
+		},
+		dataType:"json",
+		success:function(data){
+			if(data.status=="SUCCESS"){
+				$.messager.alert('',data.message,"info",function(r){
+					//window.close();//关闭当前页
+					self.location=document.referrer;//返回上一页并刷新
+					//window.location.reload();
+				});
+			}else{
+				$.messager.alert('',data.message,"error",function(r){
+					//window.location.reload();
+					$("#save").text("提交");
+					$("#save").attr("disabled",false);
+				});
+			}
+			
+		}
+	});
+}
+
+//点击选中事件
+$(function(){
+	$("input.form-control").focus(function(){$(this).select();});
+});
+
+</script>
+	
+	<#include "../../inc/layout/page-default-bottom.html" />

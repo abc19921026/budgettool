@@ -1,0 +1,149 @@
+ <#include "../../inc/layout/page-default-top.html" />
+ <style type="text/css">
+ .mt-element-list .list-default.mt-list-container ul > .mt-list-item > .list-icon-container{
+ 	width:125px;
+ }
+ .mt-element-list .list-default.group .list-toggle-container .list-toggle{
+ 	background:#ACB5C3;
+ 	font-weight:normal;
+ }
+ .mt-element-list .list-default.ext-1.mt-list-container ul > .mt-list-item{
+ 	border-color:#ACB5C3;
+ 	padding:5px 15px;
+ 	font-size:12px;
+ }
+ .mt-element-list .list-default.mt-list-container ul > .mt-list-item > .list-datetime {
+ 	width:150px;
+ }
+ .mt-element-list .list-default.mt-list-container ul > .mt-list-item > .list-item-content > h3{
+ 	font-size:14px;
+ }
+
+ </style>
+  <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <span>企业管理</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>员工提成</span>
+            </li>
+
+        </ul>
+    </div>
+<!-- END PAGE BAR -->
+
+<div class="container-fluid">
+  <div class="row">
+     <div class="col-md-12">
+     <div class="tabbable-line boxless tabbable-reversed">
+     		<ul class="nav nav-tabs">
+                <li <#if tab=="staffinfo"> class="active" </#if> >
+                    <a href="/crm/staff/staff_list_edit?id=${staff_id}">员工信息</a>
+                </li>
+                <li <#if tab=="costfee" > class="active" </#if> >
+                    <a href="/crm/staff/commission?staff_id=${staff_id}&tab=costfee">员工提成</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                                        <div class="portlet light bordered">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-money"></i>提成信息</div>
+                                            </div>
+                                            <div class="row">
+                                            <div class="col-md-offset-1 col-md-10">
+                                            <div class="portlet-body form">
+                                                <!-- BEGIN FORM -->
+                                                <form action="#" class="form-horizontal form-row-seperated">
+                                                    <div class="form-body">
+						                               <div class="portlet-body">
+						                                    <div class="mt-element-list">
+						                                        <div class="mt-list-head list-default green-seagreen">
+						                                            <div class="list-head-title-container">
+						                                                <h3 class="list-title uppercase sbold">${crmStaff.name}</h3>
+						                                                
+						                                                <!-- <div class="list-date">Nov 8, 2015</div> -->
+						                                            </div>
+						                                        </div>
+						                                        <div class="mt-list-container list-default ext-1 group">
+						                                            <div class="mt-list-title uppercase">提成总计:${(totalamount?string.currency)!'￥0.00'}
+						                                                <!-- <span class="badge badge-default pull-right bg-hover-green-jungle">
+						                                                    <a class="font-white" href="javascript:;">
+						                                                        <i class="fa fa-plus"></i>
+						                                                    </a>
+						                                                </span> -->
+						                                            </div>
+						                                            <#if (orders ? size >0) >
+						                                            <#list orders as order>
+							                                            <div class="list-toggle-container">
+							                                                <div class="list-toggle" <#-- data-toggle="collapse" --> href="#completed${order.order_id}" aria-expanded="true"> 
+							                                                	<a target="_blank" href="/order/details?id=${(order.order_id)!}">${(order.order_sn)!}</a> [ ${(order.contract_sn)!} | ${order.order_name}]
+							                                                    <span class="badge badge-roundless badge-default pull-right bg-white font-green"><#--${order.order_fees_num}-->合同时间：${order.sign_date}</span>
+							                                                </div>
+							                                            </div>
+						                                            <div class="panel-collapse collapse in" id="completed${order.order_id}" aria-expanded="true">
+						                                                <ul>
+						                                                	<#list order.order_fees as fee >
+						                                                    <li class="mt-list-item">
+						                                                        <div class="list-icon-container">
+						                                                        	<#if (fee.status)?? && fee.status == 2>
+							                                                            <i class="fa fa-check"></i>审核通过						                                                           
+						                                                            
+						                                                            <#elseif (fee.status)?? && fee.status == 1>
+							                                                            <i class="fa fa-circle-o"></i>待审核							                                                           
+						                                                            <#else>
+						                                                            	<!-- <a href="javascript:void(${fee.id});" title="立即确认"> -->
+						                                                                <#-- <i class="fa fa-circle-o"></i> - 已确认，不确认不会显示 -->
+						                                                           	 	<!-- </a> -->
+						                                                            </#if>
+						                                                        </div>
+						                                                      
+						                                                      <#if (fee.payday)?? && (fee.payday != "")>
+						                                                        <div class="list-datetime">
+						                                                       		发放：${(fee.payday)!'-'} 
+						                                                        	<br />
+						                                                        	<#--<#if (fee.payment_status)?? && fee.payment_status == 1>
+						                                                        		已确认
+						                                                        	<#else>
+						                                                        		待确认
+						                                                        	</#if>-->
+						                                                        </div>
+						                                                        </#if>
+						                                                        
+						                                                         <#if (fee.commission_stage_confirmed)?? && (fee.commission_stage_confirmed != "")>
+						                                                         <div class="list-datetime">确认时间：${(fee.commission_stage_confirmed)!'-'},</div>
+						                                                         </#if>
+						                                                        <div class="list-item-content">
+						                                                            <h3>${(fee.title)!}</h3>
+						                                                            <p><span <#if (fee.amount > 0) >class="font-red bold"</#if>>${(fee.amount?string.currency)!}</span> 
+						                                                            <span class="help-inline">${(fee.description)!}</span></p>
+						                                                        </div>
+						                                                    </li>
+						                                                    </#list>
+						                                                </ul>
+						                                            </div>
+						                                            </#list>
+						                                            <#else>
+						                                            	<p class="well">暂无数据</p>
+						                                            </#if>
+						                                        </div>
+						                                    </div>
+						                                </div>
+                                                    </div>
+                                                </form>
+                                                <!-- END FORM -->
+                                            </div>
+                                        </div>
+                                     </div>
+                      </div>
+			   </div>
+			 </div>  
+   			</div><!-- end of col-->
+	</div><!-- end of row-->
+</div><!-- end of container-->
+<script type="text/javascript">
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

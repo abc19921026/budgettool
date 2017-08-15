@@ -1,0 +1,151 @@
+    <#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>部门管理</span>
+            </li>
+        </ul>
+
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden"> 部门信息管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改部门信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('department/department_list_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>
+				<div class="btn-group pull-right">
+	                <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">工具
+	                    <i class="fa fa-angle-down"></i>
+	                </button>
+	                <ul class="dropdown-menu pull-right">
+	                    <li>
+	                    	<a href="javascript:new_window('/crm/department/department_upload')"><i class="fa fa-upload"></i>上传Excel</a>
+	                    </li>
+	                    <li>
+	                    	<a id="download"><i class="fa fa-download"></i>下载Excel</a>
+	                    </li>
+	                   
+	                </ul>
+	            </div>
+			</div>
+			 <div class="portlet-body">
+			     <table  class="easyui-treegrid" id="treegrid" style="width:98%;height:450px"
+			            data-options="
+			                url: 'department/json_department_list',
+			                method: 'get',
+			                checkbox: true,
+			                rownumbers: true,
+			                idField: 'id',
+			                treeField: 'name',
+			                cascadeCheck:false,
+			                loadFilter:loadFilter,
+			                toolbar: [{
+			                 text:'展开',
+		                     iconCls: 'glyphicon glyphicon-indent-left',
+		                     handler: function(){tg_expand_all();}
+	                         },'-',{
+	                          text:'收起',
+		                      iconCls: 'glyphicon glyphicon-indent-right',
+		                     handler: function(){tg_collapse_all();}
+	                        }]
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'name', title:'部门名称', width:'200px'"></th>
+			              	<!-- <th data-options="field:'pid', title:'上级部门Pid', width:'20%'"></th> -->
+			              	<th data-options="field:'tel', title:'电话', width:'150px',align:'center'"></th>
+			              	<!-- <th data-options="field:'query_token', title:'部门索引', width:'20%'"></th> -->
+							<th data-options="field:'id', title:'操作', width:'10%',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<style type="text/css">
+.tree-icon{
+	display:none;
+}
+/* .select2-container .select2-search--inline .select2-search__field {
+	margin-top: 2px !important;
+	min-width: 80px !important;
+}
+ */
+/* .select2-dropdown {
+	z-index: 10051 !important;
+} */
+</style>
+<script type="text/javascript">
+function loadFilter(data, parentId){
+	//console.log(data);console.log(parentId);
+	 $.each(data, function(k, v){
+		//console.log(v);
+		//v.iconCls = "icon-save";
+		//console.log(v);
+	});
+	
+	return data;
+}
+
+ function idformatter(value,data){
+ 	 var re = "<a href='javascript:new_window(\"department/department_list_edit/"+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp";
+	 re += "<a href='/crm/staff/"+value+"' ><i class='fa fa-eye'></i> 查看员工</a>";
+   	 return re;
+ }
+
+                    
+$(function(){
+	
+	$("#delete").click(function(){
+		var post_url = "department/department_list_delete";
+		handle_datagrid_delete(post_url, "treegrid", "id", "treegrid");
+	});
+	
+	//导出数据
+	 $("#download").click(function(){
+	  /*  var rows = $("#treegrid").treegrid("getRoots");
+	     if(rows.length > 0){
+	      var temp = "";
+			for(var i = 0; i < rows.length; i++){
+				temp += rows[i]["id"] + ",";	
+			}
+			temp = temp.substring(0, temp.length-1);//调整字符串格式,然后发送给后端
+			var param = {"checkedIds" : temp};
+			 window.open("department/department_download?checkedIds="+temp);
+	     }else{
+	      window.open("department/department_download");
+	     } */
+	     window.open("department/department_download");
+	 });
+	
+});
+
+function tg_collapse_all(){
+	$("#treegrid").treegrid("collapseAll");
+}
+function tg_expand_all(){
+	$("#treegrid").treegrid("expandAll");
+}
+
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

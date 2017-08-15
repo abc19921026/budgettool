@@ -1,0 +1,82 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">修改密码</span>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+           	
+           		<input type="hidden" name="uid" value="${(uid)!}" />
+           		
+				<!-- <div class="form-group">
+					<label class="col-md-3 control-label">原密码</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control input-medium easyui-validatebox" data-options="missingMessage:'请输入旧密码',required:true" name="pass" value="" />
+					</div>
+				</div> -->
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label">输入新密码</label>
+					<div class="col-md-6">
+						<input type="password" class="form-control input-medium easyui-validatebox" data-options="missingMessage:'请输入新密码',required:true" name="passNew" value="" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label">重复密码</label>
+					<div class="col-md-6">
+						<input type="password" class="form-control input-medium easyui-validatebox" data-options="missingMessage:'请重复新密码',required:true" name="passRepeat" value="" />
+					</div>
+				</div>
+			</div>
+                  
+			<div class="form-actions">
+			     <div class="row">
+			         <div class="col-md-offset-3 col-md-9">
+			             <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+			    	</div>
+				</div>
+			</div>
+			</form>
+			</div>
+			</div><!-- end portlet -->
+		</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+
+function save_data(){
+	form_data_save("#ff", "user/pass_update", 
+			function(data){
+				//$("#list").datagrid("reload");
+				if(typeof data.status != "undefined"){
+					if("SUCCESS" == data.status){
+						$.messager.alert("提示", data.message, "info");
+						//刷新列表
+						$("#list").datagrid("reload");					
+					}else if("ERROR" == data.status){
+						$.messager.alert("系统错误", data.message, "info");
+					}
+				}else{
+					$.messager.progress('close');
+			    	$.messager.alert("系统错误", data);
+				}
+			}, 
+			{window_close:true});
+}
+
+</script>

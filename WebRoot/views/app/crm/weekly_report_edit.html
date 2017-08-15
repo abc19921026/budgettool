@@ -1,0 +1,173 @@
+<#include "../../inc/layout/page-default-top.html" />
+<!-- BEGIN PAGE TITLE-->
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="/">系统首页</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>我的周报</span>
+            </li>
+        </ul>
+    </div>
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light bg-inverse">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="fa fa-file-word-o font-dark"></i>
+                   <#if (report.id ?? && report.status == 1) || (report.id ?? && report.status == 2)>
+                   		<span class="caption-subject font-dark">${(report.title)!}</span>
+                   		<span class="caption-helper">${(report.staff_name)!} | ${(report.create_time)!}</span>
+                   <#else>
+                   		<span class="caption-subject font-dark">周报详情</span>
+                   </#if>
+               </div>
+               <#if report.id ?? && report.status == 0 >
+               <div class="actions">
+	                 <div class="btn-group">
+	                     <a class="btn btn-sm green dropdown-toggle" href="javascript:;" data-toggle="dropdown" aria-expanded="false"> 操作
+	                         <i class="fa fa-angle-down"></i>
+	                     </a>
+	                     <ul class="dropdown-menu pull-right"> 
+	                          <li>
+	                          	<a href="javascript:submit(${(report.id)!});"> <i class="fa fa-pencil"></i> &nbsp;提交</a>
+	                          </li>
+	                     </ul>
+	               	</div>
+           	  </div>
+           	  </#if>
+           	  </div>
+           <div class="portlet-body form">
+           	<form class="form" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+           	   			<input type="hidden" name="report.id" value="${(report.id)!}" />
+           	   			<input type="hidden" name="report.staff_id" value="${(staff.id)!}" />
+           	   			<input type="hidden" name="report.staff_name" value="${(staff.name)!}" />
+	   				
+	   				<#if (report.id ?? && report.status == 1) || (report.id ?? && report.status == 2)>
+	                     <div class="form-group">
+							 <p>${(report.content)!}</p>
+	                     </div>
+	   				<#else>
+			   			<div class="row">
+			   			<div class="col-md-12">
+	           	   			<div class="form-group">
+	                           <label class="control-label">标题</label>
+								<input id="title" class="form-control input-xlarge easyui-validatebox" data-options="missingMessage:'请输入标题',required:true" type="text" name="report.title"  value="${(report.title)!}" />
+	                    	</div>
+	                    </div>
+	                    </div>
+	           	   				
+	                     <div class="form-group">
+	                         <label class="control-label">内容</label>                       
+								<!-- <textarea rows="3" class="form-control input-medium" name="report.content">${(report.content)!}</textarea> -->
+								<script id="content" class="form-control" type="text/plain" style="height:500px;" name="report.content">${(report.content)!}</script> 
+	                     </div>
+                     </#if> 
+                     
+                     <#if (report.feedback)??>
+                     <div class="form-group">
+                     	<hr />
+                         <h4>回复意见：</h4>
+                         	<pre style="background:#fff;">${(report.feedback)!}</pre>
+                     </div>
+                     </#if>
+                       
+                  </div><!-- form-body -->
+                  
+                   <div class="form-actions left">
+                   	   <#if !(report.id ??) || report.status == 0>
+                       <button type="button" id="save" onclick="save_data();" class="btn btn-sm blue"><i class="fa fa-check"></i> 保存</button>
+                       </#if>
+                       <a href="/crm/weekly/report/my" class="btn btn-sm green"><i class="fa fa-reply"></i> 返回</a>
+                       <#if report.id ?? >
+                       <span class="help-inline"><#if report.status == 0>上次保存时间：<#else>更新时间：</#if>${(report.update_time)!}</span>
+                       </#if>
+                   </div>
+           </form>
+           </div><!-- portle-body -->
+           
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+<link href="${BASE_PATH}umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" src="${BASE_PATH}umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="${BASE_PATH}umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}umeditor/lang/zh-cn/zh-cn.js"></script>
+
+<script type="text/javascript">
+//实例化编辑器
+//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例//editor为容器的id
+var um = UM.getEditor('content');
+
+/* function save_data(){
+	form_data_save("#ff", "/crm/weekly/report/weekly_report_update", function(data){
+		$("#list").datagrid("reload");
+	}, {window_close:true,window_reload:true});
+} */
+
+function save_data() {
+	var isValid = $("#ff").form('validate');
+	if (!isValid){
+		return isValid;
+	}
+	
+	$.ajax({
+		type:"POST",
+		url:'/crm/weekly/report/weekly_report_update',
+		data:$('#ff').serialize(),
+		dataType:"json",
+		success:function(data){
+			if(data.status=="SUCCESS"){
+				$.messager.alert('',data.message,"info",function(r){
+					window.location.href="/crm/weekly/report/weekly_report_edit/"+data.id;//获取后台传来的(新建或更新)id重定向
+				});
+			}else{
+				$.messager.alert('',data.message,"error",function(r){
+					window.location.reload();
+				});
+			}
+			
+		}
+	});
+}
+
+function submit(value){
+	//console.log(value);
+	//return;
+	$.messager.confirm("确认提交", "您确认要提交该周报吗？", function(re){
+		if(re){
+		$.ajax({
+			type:"POST",
+			url:"/crm/weekly/report/weekly_report_submit",
+			data:{
+				id:value
+			},
+			dataType:"json",
+			success:function(data){
+					if(data.status=="SUCCESS"){
+					$.messager.alert('',data.message,'info',function(){
+						window.location.reload();
+					});
+				}else{
+					$.messager.alert('',data.message,'error');
+				}
+			}
+		});
+	}
+});
+};
+
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

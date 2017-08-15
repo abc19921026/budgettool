@@ -1,0 +1,18 @@
+<div class="inbox-header inbox-view-header">
+    <h1 class="pull-left">
+        <!-- <a href="/inbox" style="font-size:20px;">返回</a> -->
+    </h1>
+</div>
+<div class="inbox-view-info">
+    <div class="row">
+        <div class="col-md-10">
+            <img src="../../../public/img/avatar1.jpg" class="inbox-author">
+            <span class="sbold">管理员</span> to
+            <span class="sbold"> me </span></div>
+        <div class="col-md-2" style="line-height:45px;">发送时间:${(message.create_time)!""}</div>
+    </div>
+</div>
+<div class="inbox-view">
+        <h1 style="text-align:center;">${(message.title)!""}</h1>
+        <p style="margin-left:60px;">${(message.content)!""}</p>
+</div>

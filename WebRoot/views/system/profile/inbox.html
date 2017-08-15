@@ -1,0 +1,159 @@
+<#include "../../inc/layout/page-default-top.html" />
+<link
+	href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all"
+	rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="../../../public/inbox_css/bootstrap-switch.min.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/jquery.fancybox.css" type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/bootstrap-wysihtml5.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/blueimp-gallery.min.css"
+	type="text/css"></link>
+<link rel="stylesheet"
+	href="../../../public/inbox_css/jquery.fileupload.css" type="text/css"></link>
+<link rel="stylesheet" href="../../../public/inbox_css/inbox.min.css"
+	type="text/css"></link>
+<h3 class="page-title">
+	收件箱 <small>用户收件箱</small>
+</h3>
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="inbox">
+	<div class="row">
+		<div class="col-md-2">
+			<div class="inbox-sidebar">
+				<a href="javascript:;" data-title="Compose"
+					class="btn red compose-btn btn-block"> <i class="fa fa-edit"></i>
+					创建 </a>
+				<ul class="inbox-nav">
+					<li class="active"><a href="javascript:;" data-type="inbox"
+						data-title="收件箱"> 收件箱 <span class="badge badge-success">3</span>
+					</a>
+					</li>
+					<li><a href="javascript:;" data-type="important"
+						data-title="收件箱"> 重要 </a>
+					</li>
+					<li><a href="javascript:;" data-type="sent" data-title="发送">
+							发送 </a>
+					</li>
+					<li><a href="javascript:;" data-type="draft" data-title="草案">
+							草案 <span class="badge badge-danger">8</span> </a>
+					</li>
+					<li class="divider"></li>
+					<li><a href="javascript:;" class="sbold uppercase"
+						data-title="垃圾"> 垃圾 <span class="badge badge-info">23</span> </a>
+					</li>
+					<li><a href="javascript:;" data-type="inbox" data-title="促销活动">
+							促销活动 <span class="badge badge-warning">2</span> </a>
+					</li>
+					<li><a href="javascript:;" data-type="inbox" data-title="消息">
+							消息 </a>
+					</li>
+				</ul>
+				<ul class="inbox-contacts">
+					<li class="divider margin-bottom-30"></li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar4.jpg"> <span
+							class="contact-name">张三</span> <span
+							class="contact-status bg-green"></span> </a>
+					</li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar2.jpg"> <span
+							class="contact-name">李四</span> <span
+							class="contact-status bg-red"></span> </a>
+					</li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar5.jpg"> <span
+							class="contact-name">王五</span> <span
+							class="contact-status bg-green"></span> </a>
+					</li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar6.jpg"> <span
+							class="contact-name">赵六</span> <span
+							class="contact-status bg-yellow"></span> </a>
+					</li>
+					<li><a href="javascript:;"> <img class="contact-pic"
+							src="../../../public/img/avatar7.jpg"> <span
+							class="contact-name">小七</span> <span
+							class="contact-status bg-green"></span> </a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-10">
+			<div class="inbox-body">
+				<div class="inbox-header">
+					<h1 class="pull-left">收件箱</h1>
+					<form class="form-inline pull-right" action="index.html">
+						<div class="input-group input-medium">
+							<input type="text" class="form-control" placeholder="Password">
+							<span class="input-group-btn">
+								<button type="submit" class="btn green">
+									<i class="fa fa-search"></i>
+								</button> </span>
+						</div>
+					</form>
+				</div>
+				<div class="inbox-content"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"
+	src="../../../public/inbox_js/js.cookie.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.blockui.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/bootstrap-switch.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fancybox.pack.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/wysihtml5-0.3.0.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/bootstrap-wysihtml5.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.ui.widget.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/tmpl.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/load-image.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/canvas-to-blob.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.blueimp-gallery.min.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-process.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-image.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-audio.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-video.js"></script>
+
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-validate.js"></script>
+<script type="text/javascript"
+	src="../../../public/inbox_js/jquery.fileupload-ui.js"></script>
+<script type="text/javascript" src="../../../public/inbox_js/inbox.js"></script>
+<#include "../../inc/layout/page-default-bottom.html" />

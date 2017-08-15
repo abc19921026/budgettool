@@ -1,0 +1,118 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- <h3 class="page-title"> 预算编号：#20160702-47</h3> -->
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">用户信息</span>
+               </div>
+               <div class="actions" style="display:none;">
+                   <div class="btn-group btn-group-devided" data-toggle="buttons">
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm active">
+                           <input type="radio" name="options" class="toggle" id="option1">Actions</label>
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm">
+                           <input type="radio" name="options" class="toggle" id="option2">Settings</label>
+                   </div>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+           	   				
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">姓名</label>
+                           <div class="col-md-6">
+                           		<input type="hidden" name="customer.id" value="${(customer.id)!}" />
+                               <input type="text" class="form-control input-small easyui-validatebox" data-options="missingMessage:'请输入用户姓名',required:true" name="customer.name" value="${(customer.name)!}" />
+                           </div>
+                       </div>
+                       
+                                            
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">手机号</label>
+                           <div class="col-md-6">
+								<input class="form-control input-medium easyui-validatebox easyui-numberbox" style="height:32px;" type="text" name="customer.mobile" data-options="missingMessage:'请输入用户手机号',required:true" value="${(customer.mobile)!}" />
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">邮箱</label>
+                           <div class="col-md-6">
+								<input class="form-control input-medium easyui-validatebox" validType="email" type="text" name="customer.email" data-options="missingMessage:'请输入邮箱'" value="${(customer.email)!}" />
+                           </div>
+                       </div> 
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">电话</label>
+                           <div class="col-md-6">
+								<input class="form-control  input-medium easyui-validatebox" type="text" name="customer.tel" data-options="missingMessage:'请输入电话号码'" value="${(customer.tel)!}" />
+                           </div>
+                       </div>  
+                       
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">QQ</label>
+                           <div class="col-md-6">
+								<input class="form-control input-medium easyui-validatebox" type="text" name="customer.qq"data-options="missingMessage:'请输入QQ号'" value="${(customer.qq)!}" />
+                           </div>
+                       </div> 
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">性别</label>
+                           <div class="col-md-6">
+                                    <#if (customer.gender)??>
+                                             <label class="radio-inline">
+								         	  <input class="" type="radio"  <#if customer.gender==1> checked="checked"  </#if>  name="customer.gender" value="1" />男
+								        	</label>
+								        	<label class="radio-inline">
+								        	  <input class="" type="radio"  <#if customer.gender==0> checked="checked"  </#if>  name="customer.gender" value="0" />女
+								            </label>
+								    <#else>
+								        	 <label class="radio-inline">
+								        	 <input class="" type="radio"  checked="checked"   name="customer.gender" value="1" />男
+								         	</label>
+								         	 <label class="radio-inline">
+								         	 <input class="" type="radio"  name="customer.gender" value="0" />女
+								            </label>
+								    </#if>
+                           </div>
+                       </div> 
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">备注</label>
+                           <div class="col-md-6">
+								<textarea  rows="4"  class="form-control" name="customer.desc">${(customer.desc)!}</textarea>
+                           </div>
+                       </div> 
+                       
+                  </div>
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+
+function save_data(){
+	form_data_save("#ff", "customer/customer_list_update", function(data){
+		$("#list").datagrid("reload");
+	}, {window_close:true,window_reload:true});
+}
+	
+
+</script>

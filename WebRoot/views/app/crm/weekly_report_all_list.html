@@ -1,0 +1,120 @@
+<#include "../../inc/layout/page-default-top.html" />
+<!-- BEGIN PAGE BAR -->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+         <li>
+            <span>企业管理</span>
+            <i class="fa fa-circle"></i>
+        </li>        
+         <li>
+            <span>周报管理</span>
+        </li>
+    </ul>
+</div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden">周报管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以查看员工周报并回复。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+				<div class="portlet-title">
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>
+				</div>
+			 <div class="portlet-body">
+			 
+			  <div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+					<div class="col-md-3">
+					 		<label>标题：<br /><input type="text" name="title" class="form-control input-medium input-inline" placeholder="请输入标题" /></label></div>
+					<div class="col-md-3">
+					 		<label>姓名：<br /><input type="text" name="staff_name" class="form-control input-medium input-inline" placeholder="请输入姓名" /></label></div> 		
+			 		<div class="col-md-2">&nbsp;<br /><a class="btn btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					</form>
+				 </div>
+			 
+			      <table  class="easyui-datagrid" id="dg" style="width:98%;height:450px"
+			            data-options="
+			                url: '/crm/weekly/report/json_weekly_report_all_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                <#-- fitColumns:true, -->
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'title', title:'标题', width:'250px',formatter:titleFormatter"></th>
+			            	<th data-options="field:'staff_name', title:'姓名', width:'5%'"></th>
+			            	<th data-options="field:'department_names', title:'部门', width:'8%'"></th>
+			            	<#if TF.has_perm("view_department_weekly_report")>
+			            	<th data-options="field:'status', title:'状态', width:'80',formatter:statusFortmatter"></th>
+			            	</#if>
+			            	<th data-options="field:'feedback', title:'是否回复', width:'80',formatter:feedbackFortmatter"></th>
+			            	<th data-options="field:'update_time', title:'提交时间', width:'150'"></th>
+			            	<!-- <th data-options="field:'content', title:'内容', width:'15%',formatter:formatCellTooltip"></th> -->
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+
+<script type="text/javascript">
+function titleFormatter(value,data){
+	return "<a href='/crm/weekly/report/view/"+data.id+"'>"+value+"</a>";
+ }
+ 
+function statusFortmatter(value,data){
+	 if(value == 1){
+		 return "未提交";
+	 }else if(value == 2){
+		 return "已提交";
+	 }
+}
+ 
+function feedbackFortmatter(value,data){
+	 if(value != null){
+		 return "已回复";
+	 }else{
+		 return "未回复";
+	 }
+ }
+ 
+//格式化单元格提示信息  
+function formatCellTooltip(value){  
+ 	if(value != null){
+     	return "<span title='" + value + "'>" + value + "</span>";  
+     }
+ }
+
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#dg').datagrid('load', search_data);
+  	});
+	
+	$("#delete").click(function(){
+		var post_url = "/crm/weekly/report/weekly_report_logically_deleted";
+		handle_datagrid_delete(post_url, "dg");
+	});
+	
+});
+
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

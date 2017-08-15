@@ -1,0 +1,354 @@
+<#include "../../inc/layout/page-default-top.html" />
+ <!-- BEGIN PAGE BAR -->
+	<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>薪资管理</span>
+            </li>
+        </ul>
+      </div>
+  <!-- END PAGE BAR -->
+  
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title"> 员工薪资
+</h3>
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+
+<!--     	<div class="btn-group">
+                <button id="" class="btn btn-success" onclick="append();"> 新建<i class="fa fa-plus"></i></button>
+                <button id="" onclick="data_delete();" class="btn btn-danger"> 删除<i class="fa fa-trash"></i></button>
+                <button id="" onclick="accept();" class="btn btn-default"> 保存<i class="fa fa-save"></i></button>
+                <button id="" onclick="reject();" class="btn btn-default"> 取消<i class="fa fa-undo"></i></button>
+          </div> -->
+
+<div class="portlet light portlet-fit portlet-datatable bordered">
+<div class="portlet-title">
+    <button id="" onclick="accept();" class="btn btn-sm btn-success">保存 <i class="fa fa-save"></i></button>
+	<!-- <button id="" onclick="data_delete();" class="btn btn-sm btn-danger">删除 <i class="fa fa-trash"></i></button> -->
+    <button id="" onclick="reject();" class="btn btn-sm btn-default">取消 <i class="fa fa-undo"></i></button>
+    <button onclick="createPaystub();" class="btn btn-sm blue">生成上月工资单 <i class="fa fa-money"></i></button>
+</div>
+<div class="portlet-body">      
+
+	<div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+			  		
+			  		<div class="col-md-2">部门：<select id="select2_department" name="department" class="form-control select2"></select></div>
+			  		
+			 		<div class="col-md-2">
+					 	<label>月份：<br /><input type="text" name="month" id="month" style="height:32px;width:220px;" /></label></div>
+					 
+					<div class="col-md-2">
+					 		<label>姓名：<br /><input type="text" name="name" class="form-control input-inline" placeholder="请输入姓名" /></label></div>
+					 	
+			 		<div class="col-md-4">&nbsp;<br /><a class="btn btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					 </form>
+				 </div>
+    
+    <table id="dg" class="easyui-datagrid"  style="width:98%;height:550px"
+            data-options="
+                iconCls: 'icon-edit',
+                singleSelect: false,
+                toolbar: '#tb',
+                url: '/crm/staff/wage/json_staff_wage_list',
+                method: 'get',
+                //fitColumns:true,
+                nowrap:false,
+                rownumbers:true,
+                queryParams:{'month':'${(month)!}'},
+                onClickCell: onClickCell,
+                onEndEdit: onEndEdit,
+                checkOnSelect:false,
+                pagination:true,
+			    pageSize:50,
+            ">
+        <thead>
+            	<!-- <th data-options="field:'',checkbox:true"></th> -->
+                <th data-options="field:'name',title:'姓名', width:150,align:'left'"></th>
+                <th data-options="field:'department_names',title:'所在部门', width:150,align:'left'"></th>
+            	<th data-options="field:'wage_amount',width:150,align:'center',formatter:function(v){
+						return accounting.formatMoney(v);
+					}">应发工资</th>
+				<th data-options="field:'wage_month',title:'月份', width:80,align:'center'"></th>
+				<th data-options="field:'wage_comment',title:'备注', width:300,align:'left',editor:{type:'textbox'}"></th>
+				<th data-options="field:'id',title:'', width:80,align:'center',formatter:idFormatter">操作</th>	
+            
+        </thead>
+    </table>
+ </div>
+ </div>
+    <script type="text/javascript" src="${BASE_PATH}public/js/accounting.min.js"></script>
+    <script type="text/javascript">
+     function idFormatter(value,data){
+    	 //console.log(data);
+  		return "<a href='/crm/staff/wage/details?staff_id="+value+"&wage_id="+data.real_id+"'><i class='fa fa-edit'> 工资明细</a>";
+ 	}
+     
+     //生成工资单
+     function createPaystub(){
+    	 $.messager.confirm("确认生成", "您确认要生成上月工资单吗？", function(re){
+ 			if(re){
+		    	 $.messager.progress({msg:"正在处理，请稍候...",text:""});
+		    	 $.ajax({
+		     		url: "/crm/staff/wage/create_paystub",
+		     		data: {"month":"${(month)!}"},
+		     		method: "post",
+		     		success: function(data){
+		     			$.messager.progress("close");
+		     			if(data.status=="SUCCESS"){
+							$.messager.alert('',data.message,'info',function(){
+								window.location.reload();
+							});
+						}else{
+							$.messager.alert('',data.message,'error');
+						}
+		     		}
+		     	}); 
+ 			}
+    	});
+     }
+ 	
+ 	$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#dg').datagrid('load', search_data);
+  		});
+	
+	});
+ 	
+ 	//日历只显示年月
+ 	$(function(){
+     $('#month').datebox({
+         onShowPanel: function () {//显示日趋选择对象后再触发弹出月份层的事件，初始化时没有生成月份层
+             span.trigger('click'); //触发click事件弹出月份层
+             if (!tds) setTimeout(function () {//延时触发获取月份对象，因为上面的事件触发和对象生成有时间间隔
+                 tds = p.find('div.calendar-menu-month-inner td');
+                 tds.click(function (e) {
+                     e.stopPropagation(); //禁止冒泡执行easyui给月份绑定的事件
+                     var year = /\d{4}/.exec(span.html())[0]//得到年份
+                     , month = parseInt($(this).attr('abbr'), 10); //月份，这里不需要+1
+                     $('#month').datebox('hidePanel')//隐藏日期对象
+                     .datebox('setValue', year + '-' + month); //设置日期的值
+                 });
+             }, 0);
+             yearIpt.unbind();//解绑年份输入框中任何事件
+         },
+         parser: function (s) {
+             if (!s) return new Date();
+             var arr = s.split('-');
+             return new Date(parseInt(arr[0], 10), parseInt(arr[1], 10) - 1, 1);
+         },
+         formatter: function (d) {
+         var a = parseInt(d.getMonth())<parseInt('9')?'0'+parseInt(d.getMonth()+ 1):d.getMonth() + 1;
+         return d.getFullYear() + '-' +a; }
+     });
+     var p = $('#month').datebox('panel'), //日期选择对象
+         tds = false, //日期选择对象中月份
+         yearIpt = p.find('input.calendar-menu-year'),//年份输入框
+         span = p.find('span.calendar-text'); //显示月份层的触发控件
+	});
+ 	/* $(function(){
+          var currTime = new Date();
+          var strDate = currTime.getFullYear()+"-"+(currTime.getMonth()+1)+"-01";
+          $('#month').datebox({formatter:function(date){
+              var y = date.getFullYear();
+              var m = date.getMonth() + 1;
+              m = m < 10 ? '0' + m : m;
+              return y.toString() + '-' + m.toString();
+          },parser:function(date){
+              //console.log(date);
+              if (date) {
+                  return new Date(String(date).substring(0, 4) + '-' + String(date).substring(5,7));
+              } else {
+                  return new Date();
+              }
+            }
+          });
+          //$('#month').datebox('setValue',strDate);//默认加载当前月份
+      }); */
+ 	
+ 	
+    accounting.settings.currency.symbol = "";        //人民币
+    
+        var editIndex = undefined;//全局变量
+        //校验编辑，结束编辑并释放编辑字段方法
+        function endEditing(){
+            if (editIndex == undefined){return true}
+            if ($('#dg').datagrid('validateRow', editIndex)){
+                $('#dg').datagrid('endEdit', editIndex);
+                editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        //点击一个单元格方法
+        function onClickCell(index, field){
+            if (editIndex != index){
+                if (endEditing()){
+                    $('#dg').datagrid('selectRow', index).datagrid('beginEdit', index);
+                    var ed = $('#dg').datagrid('getEditor', {index:index,field:field});
+                    if (ed){
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                    }
+                    editIndex = index;
+                } else {
+                    setTimeout(function(){
+                        $('#dg').datagrid('selectRow', editIndex);
+                    },0);
+                }
+            }
+        }
+        //结束编辑时的方法
+        function onEndEdit(index, row){
+            var ed = $(this).datagrid('getEditor', {
+                index: index,
+                field: 'id'
+            });
+            //$('#dg').datagrid('highlightRow', index);
+            editIndex = undefined;
+        }        
+        //新增方法
+        function append(){
+            if (endEditing()){
+            	//追加一行
+                $('#dg').datagrid('appendRow',{});
+                //获取行号
+                editIndex = $('#dg').datagrid('getRows').length-1;
+                //开启编辑状态
+                $('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+            }
+        }
+        //前台删除方法(这个页面没用到)
+        function removeit(){
+            if (editIndex == undefined){return}
+            $('#dg').datagrid('cancelEdit', editIndex)
+                    .datagrid('deleteRow', editIndex);
+            editIndex = undefined;
+        }
+        //前台保存方法
+        function accept(){
+            
+           if(editIndex >= 0){
+            	$('#dg').datagrid('endEdit', editIndex);
+            }
+           getChanges();//调用getChanges方法
+            
+            if (endEditing()){
+                //$('#dg').datagrid('acceptChanges');
+            }
+        }
+        
+        function getChanges(){
+            var rows = $('#dg').datagrid('getChanges');
+            //console.log(rows);
+            if(rows.length > 0){
+            	//console.log(rows);
+            	update_data(rows);//调用后台保存方法
+            }else{
+            	return true;
+            	//$.messager.alert("", "没有任何修改");
+            }
+        } 
+        
+        //取消方法
+        function reject(){
+            $('#dg').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+        //后台保存方法
+        function update_data(rows){
+        	//console.log(rows);
+        	//return;
+        	$.messager.progress({msg:"正在处理，请稍候...",text:""});
+        	
+        	var post_data = [];
+        	$.each(rows, function(k, v){
+        		//console.log(v);
+        		var o = new Object();
+        		o['id'] = v.real_id;
+        		o['staff_id'] = v.id;
+        		o['staff_name'] = v.name;
+        		o['amount'] = v.wage_amount;
+        		o['month'] = v.wage_month;
+        		o['comment'] = v.wage_comment;
+        		post_data.push(o);
+        	});
+        	try{
+	        	post_data = JSON.stringify(post_data);//将json数组转成字符串
+	        	//console.log(post_data);
+	        	//return;
+	         	$.ajax({
+	        		url: "/crm/staff/wage/staff_wage_update",
+	        		data: {"data":post_data},
+	        		method: "post",
+	        		success: function(){
+	        			$.messager.progress("close");
+	        			$.messager.alert("","保存成功.");
+	        			$('#dg').datagrid('acceptChanges');
+	        			$('#dg').datagrid("reload");
+	        		},
+	        		error:function(){
+	        		   $.messager.progress("close");
+	        			$.messager.alert("","保存失败，请重试.");
+	        		}
+	        	}); 
+        	}catch(e){
+        		alert("客户端错误，请更换浏览器重试.");
+        	}
+        }
+     
+     //后台删除方法
+     /* function data_delete(){
+    		var post_url = "";
+		handle_datagrid_delete(post_url, "dg");
+     } */
+        
+//select2方法
+$(function(){
+		$('#select2_department').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            width:"auto",//important!否则页面resize时select2宽度不会变
+            minimumInputLength: 0,//2
+            placeholder:"请选择部门",
+            ajax:{
+            	url:"/common/get_department_select2",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			        id: ${id!"0"}
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.name);
+            		return data.text;
+			  }
+        });
+	});
+        
+        
+    </script>
+<#include "../../inc/layout/page-default-bottom.html" />

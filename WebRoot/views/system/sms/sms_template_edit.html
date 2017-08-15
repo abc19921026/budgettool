@@ -1,0 +1,69 @@
+<!-- BEGIN PAGE TITLE-->
+
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">开工物资</span>
+               </div>
+               <div class="actions" style="display:none;">
+                   <div class="btn-group btn-group-devided" data-toggle="buttons">
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm active">
+                           <input type="radio" name="options" class="toggle" id="option1">Actions</label>
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm">
+                           <input type="radio" name="options" class="toggle" id="option2">Settings</label>
+                   </div>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+           	   		   <input type="hidden" name="st.id" value="${(st.id)!}" />
+                       
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">模版内容</label>
+                           <div class="col-md-6">
+                               <textarea rows="8" cols="50" class="easyui-validatebox" data-options="missingMessage:'请输入模版内容',required:true" name="st.content">${(st.content)!}</textarea>
+                           </div>
+                       </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">类型</label>
+                           <div class="col-md-6">
+                           		<#if st ?? >
+                           		<label><input type="radio" name="st.type" value="2" checked="checked">静态模版</label>
+                           		<label><input type="radio" name="st.type" value="1" <#if st.type==1 > checked="checked" </#if> >动态模版</label>
+                           		<#else>
+                           			<label><input type="radio" name="st.type" value="2" checked="checked">静态模版</label>
+                           			<label><input type="radio" name="st.type" value="1" >动态模版</label>
+                           		</#if>
+                           </div>
+                       </div>
+                  </div>
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+<script type="text/javascript">
+function save_data(){
+	form_data_save("#ff", "template/sms_template_update", function(data){
+		$("#list").datagrid("reload");
+	}, {window_close:true,window_reload:true});
+}
+</script>

@@ -1,0 +1,68 @@
+
+.tree-icon{
+	display:none;/*隐藏tree grid前的图标*/
+}
+
+.datagrid-body .datagrid-cell{
+	padding:8px 4px;
+}
+
+/*td.cell-editable .datagrid-cell{
+	padding:0;
+	margin:0;
+}
+
+.datagrid-view .datagrid-editable{
+	padding: 0 4px;
+}
+ */
+.datagrid-row-selected{
+	 background:#3fc9d5;
+	 background:#abe7ed;
+/* 	background:#fff;
+	color:#333; */
+	/*background: #f5f5f5;/*点击为灰色*/
+	color:#333;
+}
+
+.datagrid-row-checked{
+	background:#3fc9d5;/*checkbox选中为蓝色*/
+	background:#abe7ed;/*改为浅蓝*/
+
+}
+/*修改过的行，高亮显示*/
+.datagrid-row-changed{
+	background:#ffe48d;
+}
+
+.datagrid-row-selected a{
+	/* color:#333; */
+}
+
+.datagrid-wrap.panel-body{
+	border-color: #e7ecf1;
+}
+
+.easyui-textbox{
+	/* padding:6px 12px; */
+	/* height: 34px; */
+}
+
+/* .form-control.easyui-textbox{
+	height:32px;
+} */
+
+.tooltip {
+  background-color: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+/*右键菜单 hover样式*/
+.menu-active {
+  background: #3fc9d5;
+}
+
+.combobox-item{
+	cursor:default;
+}

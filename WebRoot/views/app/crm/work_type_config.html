@@ -1,0 +1,95 @@
+<!-- BEGIN PAGE TITLE-->
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">工种配置: ${(crmStaff.department_name)!} | ${(crmStaff.name)!}</span>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           		   <form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           		   <div class="form-body">
+           	   		   <input type="hidden" name="staff_id" value="${crmStaff.id}"/>
+					   <div class="form-group">
+					   		<label class="col-md-3 control-label">工种</label>
+					   		<div class="col-md-6">
+					   			<select id="work_type" name="worktypes" multiple="multiple" class="form-control input-medium select2">
+					   				<#list workTypes as worktype>
+					   					<option value="${worktype.work_type_id}" selected="selected">${worktype.work_type_name}</option>
+					   				</#list>
+					   			</select>
+					   		</div>
+					   </div>
+                   </div>
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+<script type="text/javascript">
+
+function save_data(){
+	$.post('/crm/staff/work_type_save',$('#ff').serialize(),function(data){
+		if(data.status='SUCCESS'){
+			$.messager.alert('提示信息',data.message,'info',function(){
+				window.location.reload();
+			});
+		}
+		else{
+			$.messager.alert('提示信息',data.message,'error',function(){
+				window.location.reload();
+			});
+		}
+	},"json");
+}
+
+//select2方法
+$(function(){
+		$('#work_type').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择工种",
+            ajax:{
+            	url:"/common/get_work_types",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+	            return data.text ;
+			}  
+        });	
+});
+</script>

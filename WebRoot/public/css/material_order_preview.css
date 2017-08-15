@@ -1,0 +1,120 @@
+
+body{
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+p{
+    font-size: 12px;
+    margin-bottom:7px;
+}
+
+#materialOrder{
+   
+    margin-bottom:40px;
+    border:1px dashed #000;
+    width:750px;
+    margin:10px auto;
+}
+
+#materialOrder .container{
+	width:730px;
+}
+
+#materialOrder .container .material{
+	width:730px;
+}
+
+.imgCenter{
+    margin-top:40px;
+    width:100px;
+    height:65px;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.listOrder p:nth-child(1){
+    margin-top:15px;
+    margin-bottom:15px;
+}
+
+.engineerOrder p{
+    margin-top:80px;
+}
+.borderLine{
+    border-top:1px solid #000;
+    margin-top:10px;
+    padding-top:15px;
+    margin-bottom:20px;
+    font-size:13px;
+}
+
+.borderLine .col-md-4 p span{
+    padding-left:40px;
+}
+
+.tabMar{
+    margin-top:0px;
+}
+.borderTable tr th{
+    text-align: center;
+}
+
+.borderTable tr td{
+    text-align: center;
+}
+.borderTable .textLeft tbody tr td:nth-child(2){
+    text-align: left;
+}
+.remark{
+    min-height:100px;
+    border:1px dashed #000;
+    padding:10px;
+}
+
+table tr th,td{
+    font-size: 12px;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+    border: 1px solid #666;
+}
+
+
+.table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+    border: 1px solid #666;
+}
+
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+    border: 1px solid #666;
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
+    padding:4px;
+}
+
+
+.landscape #materialOrder{
+	width:1050px;
+}
+
+.landscape #materialOrder .container{
+	width:1030px;
+}
+
+.landscape #materialOrder .container .turnInline p{
+	
+	display:inline-block;
+}
+
+.landscape #materialOrder .container .turnInline p:nth-child(2){
+	padding-left:12px;
+}
+
+.landscape #materialOrder .container .material{
+	width:1030px;
+}
+
+

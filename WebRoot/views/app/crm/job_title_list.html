@@ -1,0 +1,163 @@
+    <#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">企业管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+              <li>
+                <span>职位管理</span>
+            </li>
+        </ul>
+
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden"> 职位信息管理
+</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以添加.删除.修改职位信息。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('job/job_title_list_edit','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>				
+			</div>
+			 <div class="portlet-body">
+			 
+				 <div class="row margin-bottom-10">
+					 <div class="col-md-12 col-sm-12">
+					 <form id="filter_form" action="" method="get">
+					 		<div class="col-md-2">部门：<select id="select2_department" name="department" class="form-control select2"></select> </div>
+					  		
+					  		<div class="col-md-2">
+					 		<label>姓名：<br /><input type="text" name="name" class="form-control input-medium input-inline" placeholder="请输入职位名称" /></label></div>
+					 		
+					 		<div class="col-md-2"><br />&nbsp;<a class="btn  btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+					 </form>
+					 </div>
+				 </div>
+			
+			     <table  class="easyui-treegrid" id="treegrid" style="width:98%;height:450px"
+			            data-options="
+			                url: 'job/json_job_title_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                rownumbers: true,
+			                striped:true,
+			                checkbox: true,
+			                cascadeCheck:false,
+			                idField: 'id',
+			                treeField: 'name',
+			                toolbar: [{
+			                 text:'展开',
+		                     iconCls: 'glyphicon glyphicon-indent-left',
+		                     handler: function(){tg_expand_all();}
+	                         },'-',{
+	                          text:'收起',
+		                      iconCls: 'glyphicon glyphicon-indent-right',
+		                     handler: function(){tg_collapse_all();}
+	                        }]
+			            ">
+			        <thead>
+			            <tr>
+			            	<!-- <th data-options="field:'',checkbox:true"></th> -->
+			            	<th data-options="field:'name', title:'职位名称', width:'200px'"></th>
+			            	<!-- <th data-options="field:'name', title:'所属部门', width:'10%'"></th> -->
+							<th data-options="field:'id', title:'操作', width:'10%',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			    
+			 </div><!-- .portlet-body -->
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<!-- 图标样式 -->
+<style type="text/css">
+.tree-icon{
+	display:none;
+}
+</style>
+
+<script type="text/javascript">
+
+
+ function idformatter(value,data){
+ 	if(data.type != 'catalog'){
+ 		var re = "<a href='javascript:new_window(\"job/job_title_list_edit/"+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
+	 	re += "<a href='/crm/staff/-"+value+"' ><i class='fa fa-eye'></i> 查看员工</a>";
+   		return re;
+  	}
+ }
+                    
+$(function(){
+ 	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#treegrid').treegrid('load', search_data);
+  	});
+
+	$("#delete").click(function(){
+		var post_url = "job/job_title_delete";
+		handle_datagrid_delete(post_url, "treegrid", "id", "treegrid");
+	});
+});
+
+	//select2方法
+$(function(){
+		$('#select2_department').select2({
+            allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择部门",
+            ajax:{
+            	url:"job/json_job_title_select2",
+			    data: function (params) {
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			        id: ${id!"0"}
+			      };
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	delay: 500,
+            	//dataType: 'json',
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },     
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.name);
+            		return data.text;
+			  }  
+        });
+	});
+	
+function tg_collapse_all(){
+	$("#treegrid").treegrid("collapseAll");
+}
+function tg_expand_all(){
+	$("#treegrid").treegrid("expandAll");
+}
+
+
+</script>
+                    <#include "../../inc/layout/page-default-bottom.html" />

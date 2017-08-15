@@ -1,0 +1,144 @@
+<style type="text/css">
+.form-table-wrapper{
+	padding:10px;
+}
+.form-table{
+	width:100%;
+}
+.form-table tr td{
+	padding: 3px;
+}
+</style>
+
+	<div class="form-table-wrapper" id="">
+	    <form id="ff" method="post">
+	    <input type="hidden" name="systemMenuLinks.id" value="${(systemMenuLinks.id)!}">
+	    <table class="form-table" style="width:95%;">
+	    	<!-- <tr>
+	    		<td style="text-align:right;">菜单名称</td>
+	    		<td><input class="easyui-textbox" type="text" name="systemMenuLinks.menu_name" value="${(systemMenuLinks.menuName)!}"></input></td>
+	    	</tr> -->
+		    <!-- <tr>
+			    <td style="text-align:right;">链接ID</td>
+			    <td><input class="easyui-textbox" type="text" name="systemMenuLinks.mlid" value="${(systemMenuLinks.mlid)!}"></input> </td>
+		    </tr> -->
+		    
+	    	<tr>
+	    		<td style="text-align:right;">菜单名称</td>
+	    		<td><input class="form-control input-medium easyui-validatebox" type="text" data-options="required:true" name="systemMenuLinks.link_title" value="${(systemMenuLinks.linkTitle)!}"></input></td>
+	    	</tr>		    
+	    	<tr>
+	    		<td style="text-align:right;">上级菜单</td>
+	    		<td><!-- <input class="easyui-textbox" type="text" name="systemMenuLinks.plid" value="${systemMenuLinks.plid!}"></input> -->
+	    			<#--<select class="easyui-combobox" name="systemMenuLinks.plid" id="pid" data-options="panelHeight:'160'">
+	    				<option value="0">无</option>
+	    				<#list list_p as parent>
+	    					<#if (list_p?size>0)>
+	    						<option value=${(parent.id)!} 
+	    						<#if (systemMenuLinks.plid)?? && (systemMenuLinks.plid)==(parent.id) >
+	    							selected="selected"
+	    						</#if> >${(parent.linkTitle)!}
+	    						</option>
+	    					</#if>
+	    				</#list>
+	    			</select>
+	    			-->
+					<input class="easyui-combotree form-control input-medium" style="height:32px;padding-left:12px;" data-options="url:'menu/json_load_all',panelHeight:286" value="${(systemMenuLinks.plid)!0}" name="systemMenuLinks.plid" />
+	    			
+	    		</td>
+	    	</tr>
+	    	
+	    	<tr>
+	    		<td style="text-align:right;">链接地址<br/></td>
+	    		<td>
+	    		<input class="form-control input-inline input-large" type="text" name="systemMenuLinks.link_path" value="${(systemMenuLinks.linkPath)!}"></input>
+	    		<span class="help-block">仅限系统内部地址，不要以"/"开头或结尾，系统菜单不要在尾部添加queryString，如?param=value！</span></td>
+	    	</tr>
+
+	    	<tr>
+	    		<td style="text-align:right;">是否隐藏</td>
+	    		<td><!-- <input class="easyui-textbox" type="text" name="systemMenuLinks.hidden" value="${systemMenuLinks.hidden!}"></input> -->
+	    			<!-- <select class="easyui-combobox" name="systemMenuLinks.hidden" id="pid" data-options="panelHeight:'50'">
+	    				<option value="1" <#if (systemMenuLinks.hidden)?? && (systemMenuLinks.hidden)==1>selected="selected"</#if> >是</option>
+	    				<option value="0" <#if (systemMenuLinks.hidden)?? && (systemMenuLinks.hidden)==0>selected="selected"</#if> >否</option>
+	    			</select> -->
+	    			<input type="radio" value="1" name="systemMenuLinks.hidden" id="hidden_1" 
+	    				<#if (systemMenuLinks.hidden)?? && (systemMenuLinks.hidden)==1>checked="checked"</#if>><label for="hidden_1">是</label>
+	    			<input type="radio" value="0" name="systemMenuLinks.hidden" id="hidden_0" 
+	    				<#if !(systemMenuLinks.hidden)?? || ((systemMenuLinks.hidden)?? && (systemMenuLinks.hidden)==0)>checked="checked"</#if>><label for="hidden_0">否</label>
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td style="text-align:right;">是否外部链接</td>
+	    		<td><!-- <input class="easyui-textbox" type="text" name="systemMenuLinks.external" value="${systemMenuLinks.external!}"></input> -->
+	    			<!-- <select class="easyui-combobox" name="systemMenuLinks.external" id="pid" data-options="panelHeight:'50'">
+	    				<option value="1" <#if (systemMenuLinks.external)?? && (systemMenuLinks.external)==1>selected="selected"</#if> >是</option>
+	    				<option value="0" <#if (systemMenuLinks.external)?? && (systemMenuLinks.external)==0>selected="selected"</#if> >否</option>
+	    			</select> -->
+	    			<input type="radio" value="1" name="systemMenuLinks.external" id="external_1" 
+	    				<#if (systemMenuLinks.external)?? && (systemMenuLinks.external)==1>checked="checked"</#if>><label for="external_1">是</label>
+	    			<input type="radio" value="0" name="systemMenuLinks.external" id="external_0" 
+	    				<#if !(systemMenuLinks.external)?? || ((systemMenuLinks.external)?? && (systemMenuLinks.external)==0)>checked="checked"</#if>><label for="external_0">否</label>
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td style="text-align:right;">是否包含下级</td>
+	    		<td><!-- <input class="easyui-textbox" type="text" name="systemMenuLinks.has_children" value="${systemMenuLinks.hasChildren!}"></input> -->
+	    			<!-- <select class="easyui-combobox" name="systemMenuLinks.has_children" id="pid" data-options="panelHeight:'50'">
+	    				<option value="1" <#if (systemMenuLinks.hasChildren)?? && (systemMenuLinks.hasChildren)==1>selected="selected"</#if> >是</option>
+	    				<option value="0" <#if (systemMenuLinks.hasChildren)?? && (systemMenuLinks.hasChildren)==0>selected="selected"</#if> >否</option>
+	    			</select> -->
+	    			<input type="radio" value="1" name="systemMenuLinks.has_children" id="has_children_1" 
+	    				<#if (systemMenuLinks.has_children)?? && (systemMenuLinks.has_children)==1>checked="checked"</#if>><label for="has_children_1">是</label>
+	    			<input type="radio" value="0" name="systemMenuLinks.has_children" id="has_children_0" 
+	    				<#if !(systemMenuLinks.has_children)?? || ((systemMenuLinks.has_children)?? && (systemMenuLinks.has_children)==0)>checked="checked"</#if>><label for="has_children_0">否</label>
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td style="text-align:right;">是否展开</td>
+	    		<td><!-- <input class="easyui-textbox" type="text" name="systemMenuLinks.expanded" value="${systemMenuLinks.expanded!}"></input> -->
+	    			<!-- <select class="easyui-combobox" name="systemMenuLinks.expanded" id="pid" data-options="panelHeight:'50'">
+	    				<option value="1" <#if (systemMenuLinks.expanded)?? && (systemMenuLinks.expanded)==1>selected="selected"</#if> >是</option>
+	    				<option value="0" <#if (systemMenuLinks.expanded)?? && (systemMenuLinks.expanded)==0>selected="selected"</#if> >否</option>
+	    			</select> -->
+	    			<input type="radio" value="1" name="systemMenuLinks.expanded" id="expanded_1" 
+	    				<#if (systemMenuLinks.expanded)?? && (systemMenuLinks.expanded)==1>checked="checked"</#if>><label for="expanded_1">是</label>
+	    			<input type="radio" value="0" name="systemMenuLinks.expanded" id="expanded_0" 
+	    				<#if !(systemMenuLinks.expanded)?? || ((systemMenuLinks.expanded)?? && (systemMenuLinks.expanded)==0)>checked="checked"</#if>><label for="expanded_0">否</label>
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td style="text-align:right;">排序</td>
+	    		<td><input class="form-control input-xsmall easyui-numberbox" style="height:32px;" type="text" name="systemMenuLinks.weight" value="${(systemMenuLinks.weight)!0}"></input></td>
+	    	</tr>
+	    	<!-- <tr>
+	    		<td style="text-align:right;">层级</td>
+	    		<td><input class="form-control input-xsmall easyui-numberbox" style="height:32px;" type="text" name="systemMenuLinks.depth" value="${(systemMenuLinks.depth)!}"></input></td>
+	    	</tr> -->
+	    	<tr>
+	    		<td style="text-align:right;">图标</td>
+	    		<td><input class="form-control input-medium easyui-validatebox" type="text" name="systemMenuLinks.icon" value="${(systemMenuLinks.icon)!}"></input></td>
+	    	</tr>
+	    	<tr>
+	    		<td style="text-align:right;">target</td>
+	    		<td><input class="form-control input-medium easyui-validatebox" type="text" name="systemMenuLinks.target" value="${(systemMenuLinks.target)!}"></input></td>
+	    	</tr>
+	    </table>
+	   	</form>
+	   	<div style="text-align:center;padding:5px">
+	    	<button id="save" class="btn btn-success">保存</button>
+	    </div>
+	</div>
+	<script type="text/javascript">
+	function onLoadSuccess(node, data){
+		console.log(data);
+	}
+	$(function(){
+		//保存数据
+  		$("#save").click(function(){
+  			form_data_save("#ff", "menu/update", function(){
+  				$("#list").treegrid("reload");
+  				});
+  		});
+	});
+	</script>

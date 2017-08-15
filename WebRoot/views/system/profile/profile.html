@@ -1,0 +1,353 @@
+<#include "../../inc/layout/page-default-top.html" />
+<link href="/assets/pages/css/profile.css" rel="stylesheet" type="text/css"/>
+ <link rel="stylesheet" href="${BASE_PATH}public/css/cropper/cropper.min.css">
+<link rel="stylesheet" href="../../../public/css/cropper/main.css" type="text/css"></link>
+ 
+ <!-- <link rel="stylesheet" href="${BASE_PATH}public/css/cropper/main.css"> -->
+
+<div class="row margin-top-20">
+	<div class="col-md-12">
+	<!-- BEGIN PROFILE SIDEBAR -->
+		<div class="profile-sidebar">
+			<!-- PORTLET MAIN -->
+			<div class="portlet light profile-sidebar-portlet">
+				<!-- SIDEBAR USERPIC -->
+				<div class="profile-userpic">
+					<img src="<#if account.picture??>/image/preview?s=${account.picture}<#else>${BASE_PATH}public/img/th.jpg</#if>" class="img-responsive avatar-change" alt="无法显示">
+				</div>
+				<!-- END SIDEBAR USERPIC -->
+				<!-- SIDEBAR USER TITLE -->
+				<div class="profile-usertitle">
+					<div class="profile-usertitle-name">
+						 ${account.name!} ${(account_staff.name)!}
+					</div>
+					<div class="profile-usertitle-job">
+						 ${account.role_name!}
+						 <#list list_account_roles as account_role>${account_role.description}<#if account_role_has_next>, </#if></#list>
+					</div>
+				</div>
+				<!-- END SIDEBAR USER TITLE -->
+				
+				<!-- SIDEBAR MENU -->
+				<div class="profile-usermenu">
+					<ul class="nav">
+												
+						<li class="active">
+							<a href="/profile">
+							<i class="icon-user"></i>
+							账号管理 </a>
+						</li>
+						
+						<li>
+							<a href="javascript:;" target="">
+							<i class="icon-check"></i>
+							待办事宜 </a>
+						</li>
+						
+						<li>
+							<a href="<#if (staff.id)??>/crm/staff/commission?staff_id=${(staff.id)!}&tab=costfee<#else>javascript:;</#if>">
+							<i class="fa fa-money"></i>
+							订单提成 </a>
+						</li>		
+						
+						<li>
+							<a href="<#if (staff.id)??>/crm/staff/staff_list_edit?id=${(staff.id)!}<#else>javascript:;</#if>">
+							<i class="fa fa-user"></i>
+							个人信息 </a>
+						</li>										
+						<!-- <li>
+							<a href="extra_profile_help.html">
+							<i class="icon-info"></i>
+							Help </a>
+						</li> -->
+					</ul>
+				</div>
+				<!-- END MENU -->
+			</div>
+			<!-- END PORTLET MAIN -->
+		</div>
+		<!-- END BEGIN PROFILE SIDEBAR -->
+		<!-- BEGIN PROFILE CONTENT -->
+		<div class="profile-content">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="portlet light">
+						<div class="portlet-title tabbable-line">
+						<!-- <p>${flashdata!}</p> -->
+							<div class="caption caption-md">
+								<i class="icon-globe theme-font hide"></i>
+								<span class="caption-subject font-blue-madison bold uppercase">我的账户</span>
+							</div>
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a href="#tab_1_1" data-toggle="tab">基本信息</a>
+								</li>
+								<li>
+									<a href="#tab_1_2" data-toggle="tab">个人头像</a>
+								</li>
+								<li>
+									<a href="#tab_1_3" data-toggle="tab">修改密码</a>
+								</li>
+							</ul>
+						</div>
+						<div class="portlet-body">
+							<div class="tab-content">
+							
+								<!-- PERSONAL INFO TAB -->
+								<div class="tab-pane active row" id="tab_1_1">
+									<form  id="ff" method="post">
+										<div class="col-md-6">
+											<input type="hidden" name="user.uid" value="${(account.uid)!}" />
+											
+											<div class="form-group">
+												<label class="control-label">登录名</label>
+												<input type="text" placeholder="" id="name" readonly="readonly" value="${account.name!}" class="form-control"/>
+											</div>
+											
+											<div class="form-group">
+												<label class="control-label">邮箱</label>
+												<input type="text" placeholder=""  id="mail"  value="${account.mail!}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label class="control-label">账户状态</label>
+												<#if TF.has_perm("system_admin_user")>
+												<div class="mt-radio-inline">
+                                                    <label class="mt-radio mt-radio-outline">
+                                                        <input type="radio" name="account_status"  value="0" <#if (account.status)?? && (account.status >= 0 ) >checked="checked"</#if>> 启用
+                                                        <span></span>
+                                                    </label>
+                                                    <label class="mt-radio">
+                                                        <input type="radio" name="account_status" value="-1" <#if (account.status)?? && (account.status == -1)>checked="checked"</#if>> 禁用
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                                <#else>
+                                                	<div class="form-control-static">
+                                                	<#if (account.status)?? && (account.status >= 0 )>
+                                                		<span class="label label-success">正常</span>
+                                                		<#else>
+                                                		<span class="label label-default">禁用</span>
+                                                	</#if>
+                                                	</div>
+                                                </#if>
+											</div>										
+										</div>
+										
+										<div  class=" col-md-12 margin-top-10">
+												<a id="save" class="btn green-haze">保存 </a>
+												<a href="javascript:;" class="btn default">取消 </a>
+										</div>
+										
+									</form>
+								</div>
+								<!-- END PERSONAL INFO TAB -->
+								
+								<!-- CHANGE AVATAR TAB -->
+								<div class="tab-pane" id="tab_1_2">
+									<div  id="crop-avatar">
+
+											    <!-- Current avatar -->
+											    <div class="avatar-view" title="上传图片">
+											      <img alt="" src="<#if account.picture??>/image/preview?s=${account.picture}<#else>${BASE_PATH}public/img/th.jpg</#if>">
+											    </div>
+											
+											    <!-- Cropping modal -->
+											    <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+											      <div class="modal-dialog modal-lg">
+											        <div class="modal-content">
+											          <form class="avatar-form" action="profile/changeAvatar" enctype="multipart/form-data" method="post">
+											            <div class="modal-header">
+											              <button type="button" class="close" data-dismiss="modal">&times;</button>
+											              <h4 class="modal-title" id="avatar-modal-label">更换头像</h4>
+											            </div>
+											            <div class="modal-body">
+											              <div class="avatar-body">
+											
+											                <!-- Upload image and data -->
+											                <div class="avatar-upload">
+											                  <input type="hidden" class="avatar-src" name="avatar_src">
+											                  <input type="hidden" class="avatar-data" name="avatar_data">
+											                  <label for="avatarInput">本地上传</label>
+											                  <input type="file" class="avatar-input" id="avatarInput" name="avatar_file">
+											                </div>
+											
+											                <!-- Crop and preview -->
+											                <div class="row">
+											                  <div class="col-md-9">
+											                    <div class="avatar-wrapper"></div>
+											                  </div>
+											                  <div class="col-md-3">
+											                    <div class="avatar-preview preview-lg"></div>
+											                    <div class="avatar-preview preview-md"></div>
+											                    <div class="avatar-preview preview-sm"></div>
+											                  </div>
+											                </div>
+											
+											                <div class="row avatar-btns">
+											                  <div class="col-md-9 invisible">
+											                    <div class="btn-group">
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="-90" title="Rotate -90 degrees">向左旋转</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="-15">-15度</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="-30">-30度</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="-45">-45度</button>
+											                    </div>
+											                    <div class="btn-group">
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="90" title="Rotate 90 degrees">向右旋转</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="15">15度</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="30">30度</button>
+											                      <button type="button" class="btn btn-primary" data-method="rotate" data-option="45">45度</button>
+											                    </div>
+											                  </div>
+											                  <div class="col-md-3">
+											                    <button type="submit" class="btn btn-primary btn-block avatar-save">保存</button>
+											                  </div>
+											                </div>
+											              </div>
+											            </div>
+											            <!-- <div class="modal-footer">
+											              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											            </div> -->
+											          </form>
+											        </div>
+											      </div>
+											    </div><!-- /.modal -->
+											
+											    <!-- Loading state -->
+											  </div>
+								</div>
+								<!-- END CHANGE AVATAR TAB -->
+								
+								<!-- CHANGE PASSWORD TAB -->
+								<div class="tab-pane" id="tab_1_3">
+									<form id="passwordForm" method="post">
+									
+										<div class="form-group">
+											<label class="control-label">请输入当前密码：</label>
+											<!-- <input type="password" name="currentPassword" class="form-control" required="required"/> -->
+											<input id="currentPassword" name="currentPassword"  type="password" 
+												placeholder="请输入当前密码" class="input-xlarge form-control"
+                               					required="required" 
+                              					title="请输入当前密码"><!-- pattern="(?=.*[a-zA-Z])(?=.*[\d])[\w\W]{2,15}" -->
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label">请输入新密码：</label>
+											<!-- <input type="password" name="newPassword" class="form-control" required="required"/> -->
+											<input id="newPassword" name="newPassword" type="password"  
+												placeholder="密码由6－15个字符组成" class="input-xlarge form-control"
+                               					required="required" onchange="checkPasswords()"  pattern="(?=.*[a-zA-Z])(?=.*[\d])[\w\W]{6,15}"
+                              					title="密码由6－15个字符组成，请使用英文字母加数字或符号的组合密码">
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label">请确认新密码：</label>
+											<!-- <input type="password" name="repeatPassword" class="form-control" required="required"/> -->
+											<input id="repeatPassword" name="repeatPassword" type="password" 
+												placeholder="请再次输入新密码" class="input-xlarge form-control"
+                               					required="required" onchange="checkPasswords()">
+										</div>
+										
+										<div class="margin-top-10">
+											<!-- <a href="javascript:;" class="btn green-haze" id="changePassword">修改密码</a> -->
+											<a  class="btn green-haze" id="changePassword">修改密码</a>
+											<a href="javascript:;" class="btn default">取消 </a>
+										</div>
+									</form>
+								</div>
+								<!-- END CHANGE PASSWORD TAB -->
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END PROFILE CONTENT -->
+	</div>
+</div><!-- end .row -->
+<script src="${BASE_PATH}public/js/cropper/cropper.min.js"></script>
+<script src="${BASE_PATH}public/js/cropper/main.js"></script>
+<script type="text/javascript">
+	//修改用户数据
+    $("#save").click(function() {
+    		//form_data_save("ff", "/profile/update");
+    		var mail=$('#mail').val();
+    		var name =$("#name").val();
+    		
+    		var status = $("input[name='account_status']:checked").val();
+    		//console.log(status);
+    		if(!status){
+    			status = 0;
+    		}
+    		var post_data = {
+    				uid:${(account.uid)!},
+    				mail:mail,
+    				name:name,
+    				status:status
+    		};
+    		//console.log(post_data);
+    		//return;
+    		
+			$.ajax({
+			url:"/profile/update" ,
+			data:post_data,
+			type:"POST",
+			dataType:'json',
+			success:function(data){
+					if(data != null && data.status == "SUCCESS"){
+						$.messager.alert("提示", data.message, "info");
+					}else if(data != null && data.status == "ERROR"){
+						$.messager.alert("提示", data.message, "warning");
+					}
+			}
+		});
+	});
+	//****************************************************************************
+	
+
+$(function(){
+
+	//校验密码
+	function checkPasswords() {
+	    var newPass = $("#newPassword").val();
+	    var repeatPass = $("#repeatPassword").val();
+	    //console.log($("#newPassword"));
+	    if(newPass != null && newPass != "" && repeatPass != null && repeatPass != ""){
+	    	
+	    	if(newPass != repeatPass){
+	    		document.getElementById("newPassword").setCustomValidity("两次密码不一致");
+	    	}else{
+	    		document.getElementById("newPassword").setCustomValidity("");
+	    	}
+	    	
+	    }
+	}
+		//修改密码
+	    $("#changePassword").click(function() {
+    		var currentPassword = $('#currentPassword').val();
+    		var newPassword =$("#newPassword").val();
+    		var repeatPassword =$("#repeatPassword").val();
+			$.ajax({
+			url:"profile/changePassword" ,
+			data:{
+				uid:${(account.uid)!},
+				currentPassword:currentPassword,
+				newPassword:newPassword,
+				repeatPassword:repeatPassword
+			},
+			type:"POST",
+			dataType:'json',
+			success:function(data){
+					if(data != null && data.status == "SUCCESS"){
+						$.messager.alert("提示", data.message, "info");
+					}else if(data != null && data.status == "ERROR"){
+						$.messager.alert("提示", data.message, "warning");
+					}
+			}
+		});
+	});
+	
+	
+});
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />			

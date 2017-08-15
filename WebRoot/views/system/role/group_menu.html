@@ -1,0 +1,245 @@
+<#include "../../inc/layout/page-default-top.html" />
+
+<style type="text/css">
+.tree-icon{display:none;}
+</style>
+
+<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">系统管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>分组菜单</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+            	<span> 分组名称:${(roleGroup.name)!} </span>
+            </li>
+        </ul>
+</div>
+<h3 class="page-title hidden">
+	<!-- 分组菜单 <small>管理分组菜单 --> ${(roleGroup.name)!}<!-- </small> -->
+</h3>
+<div class="row">
+	<div class="col-md-12" style="">
+		<input id="group_roles" type="hidden" name="group_roles" value="${(group_roles)!}">
+	
+		<table class="easyui-treegrid" style="height:100%;min-height:700px;" id="list"
+			data-options="
+			url : 'listGroup?gid=${(roleGroup.id)!0}',
+			method : 'POST',
+			checkOnSelect : false,
+			pagination : false,
+			idField : 'id', 
+			treeField : 'link_title',
+			<#-- fitColumns:true, -->
+			toolbar:tb
+			">
+			<thead>
+				<tr>
+					<th data-options="field : 'link_title', title : '菜单名称', width : '20%', formatter : linkTitleFormatter"></th>
+					<!-- <th data-options="field : 'group_id', align : 'center', width : '20%'">						
+						<a href="colCheckAll()" title="全选" class="btn btn-success btn-xs" style="margin:10px 0">${(roleGroup.name)!}</a>
+					</th> -->
+					
+					<#if list_role??>
+					<#list list_role as role>
+					<th data-options="field : '${role.name}',width:100, align : 'center', formatter : roleFormatter">
+						 <a href="javascript:colCheckAll(${role.rid})" title="全选" class="btn btn-success btn-xs" style="margin:10px 0;" >${role.description}</a>
+					</th>
+					</#list>
+					</#if>
+					<th data-options="field : 'id', title : '操作', width : '5%', align : 'center', formatter : checkFormatter"></th>
+				</tr>
+				
+			</thead>
+		</table>	     	
+	  
+	</div>
+</div>
+
+
+<script type="text/javascript">
+var tb = [{
+    text:'保存',
+    iconCls:'glyphicon glyphicon-saved',
+    handler:function(){saveRoleMenu();}
+},'-',{
+    text:'展开',
+    iconCls:'glyphicon glyphicon-indent-left',
+    handler:function(){
+    	$("#list").treegrid("expandAll");
+    }
+},'-',{
+    text:'收起',
+    iconCls:'glyphicon glyphicon-indent-right',
+    handler:function(){$("#list").treegrid("collapseAll");}
+}];
+
+
+function linkTitleFormatter(value, data){
+	var hidden = data.hidden;
+	if(hidden == 1){
+		value = "<span style='color:#9f9f9f'>" + value + "</span>";
+	}
+	return value;
+}
+
+function roleFormatter(value, data){
+	var checkbox = "";
+	//循环角色列表生成选择框
+	//for(var i = 0; i < roles.length; i++){
+		//根据菜单ID、角色ID分别生成标签的name、value、id
+		checkbox += "<input type='checkbox' name='"+data.id+"_role' value='"+value+"' ";
+		//根据role_menu表判断是否选中该选择框
+		/* var checked = false;
+		for(var j = 0; j < value.length; j++){
+			checked = roles[i].rid == value[j].rid;
+			if(checked)
+				break;
+		} */
+		var checked_roles = data.checkedRoles;
+		//console.log(checked_roles[value]);
+		if(typeof checked_roles[value] != "undefined" && checked_roles[value] == 1){
+			checkbox += "checked='checked' />";
+		}else{
+			checkbox +=" />";			
+		}
+		//根据角色描述生成label
+		//checkbox +="<label for='"+data.id+"_"+roles[i].name+"'>"+roles[i].desc+"</label>&nbsp;&nbsp;";
+	//}
+	return checkbox;
+}
+
+function checkFormatter(value, data){
+	var checkAll = "<a href='javascript:rowCheckAll("+value+")' class='btn btn-default btn-xs' id='"+value+"_rowcheckbtn' >全选</a>";
+	return checkAll;
+}
+
+function rowCheckAll(id){
+	var total = 0;
+	var checked = 0;
+	$("input[name='"+id+"_role']").each(function(){
+		var check = this.checked;
+		if(check || check == "checked"){
+			checked++;
+		}
+		total++;
+	});
+	if(total == checked){
+		$("input[name='"+id+"_role']").each(function(){
+			this.checked = false;
+		});
+	}else{
+		$("input[name='"+id+"_role']").each(function(){
+			this.checked = true;
+		});
+	}
+}
+
+function colCheckAll(rid){
+	var total = 0;
+	var checked = 0;
+	$("input[value='"+rid+"']").each(function(){
+		var check = this.checked;
+		if(check || check == "checked"){
+			checked++;
+		}
+		total++;
+	});
+	if(total == checked){
+		$("input[value='"+rid+"']").each(function(){
+			this.checked = false;
+		});
+	}else{
+		$("input[value='"+rid+"']").each(function(){
+			this.checked = true;
+		});
+	}
+}
+
+
+/**
+ * 保存数据
+ */
+function saveRoleMenu(){
+	//提示正在处理
+	$.messager.progress({msg:"正在处理，请稍候...",text:""});
+	//获取所有菜单ID
+	var ids = new Array();
+	var rows = $("#list").treegrid("getData");
+	for(var i = 0; i < rows.length; i++){
+		var id = rows[i].id;
+		//加入列表
+		ids.push(id);
+		//获取子菜单的ID
+		ids = getChildren(id, ids);
+	}
+	//console.log(ids);
+	//循环生成数据列表
+	var roleMenu = new Array();
+	for(var i = 0; i < ids.length; i++){
+		var id = ids[i];
+		//根据菜单ID和是否选中循环
+		$("input[name='"+id+"_role']:checked").each(function(){
+			var rid = new Number($(this).val());
+			//生成数据
+			roleMenu.push({"id" : id, "rid" : rid});
+		});
+	}
+	//console.log(roleMenu);
+	
+	var param = {
+			"roleMenu" : JSON.stringify(roleMenu),
+			"group_roles" : $("#group_roles").val()
+			};
+	//console.log(param);
+	//发送ajax请求保存数据
+	$.ajax({
+		url : "update",
+		method : "POST",
+		data : param,
+		dataType : "json",
+		success : function(data) {
+			//关闭提示
+			$.messager.progress("close");
+			if(typeof data.status != "undefined"){
+				if("SUCCESS" == data.status){
+					$.messager.alert("提示", data.message, "info");
+					//刷新列表
+					$("#list").treegrid("reload");					
+				}else if("ERROR" == data.status){
+					$.messager.alert("系统错误", data.message, "info");
+				}
+			}else{
+				$.messager.progress('close');
+		    	$.messager.alert("系统错误", data);
+			}		
+		}
+	});
+}
+
+/**
+ * 获取子菜单信息
+ */
+function getChildren(id, ids){
+	//根据菜单ID获取所有子菜单，包括孙级菜单
+	var children_rows = $("#list").treegrid("getChildren", id);
+	if(children_rows.length == 0){
+		return ids;
+	}
+	//循环子菜单加入列表
+	for(var i = 0; i < children_rows.length; i++){
+		var children_id = children_rows[i].id;
+		ids.push(children_id);
+	}
+	//返回列表
+	return ids;
+}
+
+$(function(){
+});
+</script>
+<#include "../../inc/layout/page-default-bottom.html" />

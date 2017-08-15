@@ -1,0 +1,253 @@
+Table: system_cache
+---------+------------------+------+-----+---------+---------
+ Field   | Type             | Null | Key | Default | Remarks 
+---------+------------------+------+-----+---------+---------
+ id      | INT UNSIGNED(10) | NO   | PRI |         |         
+ key     | CHAR(50)         | YES  |     |         |         
+ value   | VARCHAR(1000)    | YES  |     |         |         
+ expired | INT(10)          | YES  |     |         |         
+---------+------------------+------+-----+---------+---------
+
+Table: system_file
+---------------+--------------+------+-----+---------+---------
+ Field         | Type         | Null | Key | Default | Remarks 
+---------------+--------------+------+-----+---------+---------
+ fid           | INT(10)      | NO   | PRI |         | 文件ID    
+ file_name     | VARCHAR(128) | YES  |     |         | 文件名     
+ file_path     | VARCHAR(256) | YES  |     |         | The URI to access the file (either local or remote).
+ file_mime     | VARCHAR(256) | YES  |     |         | The file’s MIME type.
+ file_src_name | VARCHAR(256) | YES  |     |         | 源文件名    
+ file_size     | INT(10)      | YES  |     |         | The size of the file in bytes.
+ uid           | INT(10)      | YES  |     | 0       | The users.uid of the user who is associated with the file.
+ status        | INT(10)      | YES  |     | 0       | A field indicating the status of the file. Two status are defined in core: temporary (0) and permanent (1). 
+ create_time   | VARCHAR(50)  | YES  |     |         | 上传时间    
+ created       | INT(10)      | YES  |     |         | UNIX timestamp for when the file was added.
+---------------+--------------+------+-----+---------+---------
+
+Table: system_menu_link
+--------------+---------------------+------+-----+---------+---------
+ Field        | Type                | Null | Key | Default | Remarks 
+--------------+---------------------+------+-----+---------+---------
+ id           | INT(10)             | NO   | PRI |         | menu link ID
+ plid         | INT(10)             | YES  |     |         | parent link ID
+ menu_id      | INT(10)             | YES  |     | 1       | Menu ID 
+ link_path    | CHAR(255)           | YES  |     |         | 链接地址    
+ link_title   | CHAR(255)           | YES  |     |         | 菜单名称    
+ hidden       | TINYINT(3)          | YES  |     | 0       | 是否隐藏    
+ external     | TINYINT UNSIGNED(3) | YES  |     | 0       | 是否是外部链接 
+ has_children | TINYINT(3)          | NO   |     | 0       | 是否有子项   
+ expanded     | TINYINT UNSIGNED(3) | YES  |     | 0       | 是否展开    
+ weight       | INT(10)             | YES  |     | 0       | 排序      
+ depth        | TINYINT UNSIGNED(3) | YES  |     | 0       | 层级      
+ icon         | CHAR(50)            | YES  |     |         | 图标样式    
+ target       | CHAR(50)            | YES  |     |         | <a> target
+--------------+---------------------+------+-----+---------+---------
+
+Table: system_message
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ id          | INT(10)      | NO   | PRI |         |         
+ title       | VARCHAR(255) | YES  |     |         | 标题      
+ content     | VARCHAR(500) | YES  |     |         | 内容      
+ type        | TINYINT(3)   | YES  |     |         | 0，1     
+ status      | TINYINT(3)   | YES  |     | 0       | 状态0未读，1已读
+ uid         | INT(10)      | YES  |     | 0       | 接收人的uid 
+ created     | INT(10)      | YES  |     |         | 时间戳     
+ create_uid  | INT(10)      | YES  |     | 0       | 创建人uid  
+ create_time | CHAR(50)     | YES  |     |         | 时间      
+-------------+--------------+------+-----+---------+---------
+
+Table: system_permission
+-------------+----------+------+-----+---------+---------
+ Field       | Type     | Null | Key | Default | Remarks 
+-------------+----------+------+-----+---------+---------
+ id          | INT(10)  | NO   | PRI |         |         
+ name        | CHAR(50) | NO   |     |         | perm_name
+ title       | CHAR(50) | NO   |     |         | 权限名称    
+ description | CHAR(50) | YES  |     |         | 权限描述    
+ module      | CHAR(50) | YES  |     |         | 分组      
+ weight      | INT(10)  | YES  |     | 0       |         
+-------------+----------+------+-----+---------+---------
+
+Table: system_role
+-------------+-------------+------+-----+---------+---------
+ Field       | Type        | Null | Key | Default | Remarks 
+-------------+-------------+------+-----+---------+---------
+ rid         | INT(10)     | NO   | PRI |         |         
+ name        | CHAR(50)    | YES  |     |         | 角色名称    
+ group       | INT(10)     | YES  |     |         | 角色组id   
+ description | VARCHAR(50) | YES  |     |         | 描述      
+ weight      | INT(10)     | YES  |     |         | 排序      
+ module      | VARCHAR(50) | YES  |     |         | 模块      
+-------------+-------------+------+-----+---------+---------
+
+Table: system_role_group
+--------+-------------+------+-----+---------+---------
+ Field  | Type        | Null | Key | Default | Remarks 
+--------+-------------+------+-----+---------+---------
+ id     | INT(10)     | NO   | PRI |         |         
+ name   | VARCHAR(50) | YES  |     |         |         
+ weight | INT(10)     | YES  |     |         |         
+--------+-------------+------+-----+---------+---------
+
+Table: system_role_menu_link
+-------+---------+------+-----+---------+---------
+ Field | Type    | Null | Key | Default | Remarks 
+-------+---------+------+-----+---------+---------
+ rid   | INT(10) | NO   | PRI |         | role id 
+ mlid  | INT(10) | NO   | PRI |         | menu link id
+-------+---------+------+-----+---------+---------
+
+Table: system_role_permission
+-------+---------+------+-----+---------+---------
+ Field | Type    | Null | Key | Default | Remarks 
+-------+---------+------+-----+---------+---------
+ rid   | INT(10) | NO   | PRI |         | 角色id    
+ pid   | INT(10) | NO   | PRI |         | 权限id    
+-------+---------+------+-----+---------+---------
+
+Table: system_session
+-------------+----------+------+-----+---------+---------
+ Field       | Type     | Null | Key | Default | Remarks 
+-------------+----------+------+-----+---------+---------
+ id          | INT(10)  | NO   | PRI |         |         
+ uid         | INT(10)  | YES  |     |         |         
+ sid         | CHAR(50) | YES  |     |         |         
+ token       | CHAR(64) | YES  |     |         |         
+ hostname    | CHAR(32) | YES  |     |         |         
+ created     | INT(10)  | YES  |     |         |         
+ create_time | CHAR(32) | YES  |     |         |         
+-------------+----------+------+-----+---------+---------
+
+Table: system_sms_api
+-----------+--------------+------+-----+---------+---------
+ Field     | Type         | Null | Key | Default | Remarks 
+-----------+--------------+------+-----+---------+---------
+ id        | INT(10)      | NO   | PRI |         |         
+ api_name  | VARCHAR(255) | YES  |     |         |         
+ api_title | VARCHAR(255) | YES  |     |         |         
+ api_desc  | VARCHAR(255) | YES  |     |         |         
+ api_user  | VARCHAR(255) | YES  |     |         | API USER
+ api_key   | VARCHAR(255) | YES  |     |         | API KEY 
+ api_docs  | VARCHAR(255) | YES  |     |         | 文档地址    
+-----------+--------------+------+-----+---------+---------
+
+Table: system_sms_log
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ mobile      | VARCHAR(2048) | YES  |     |         | 手机号     
+ content     | VARCHAR(255)  | YES  |     |         | message+signature
+ api         | CHAR(50)      | YES  |     |         |         
+ token       | CHAR(50)      | YES  |     |         | batch_id，短信标识
+ status      | INT(10)       | YES  |     |         |         
+ response    | VARCHAR(4096) | YES  |     |         |         
+ create_uid  | INT(10)       | YES  |     |         |         
+ created     | INT(10)       | YES  |     |         |         
+ create_time | CHAR(20)      | YES  |     |         |         
+ send_time   | CHAR(20)      | YES  |     |         | 发送时间    
+-------------+---------------+------+-----+---------+---------
+
+Table: system_sms_template
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ uid         | INT(10)       | YES  |     |         | 用户id    
+ rids        | VARCHAR(255)  | YES  |     |         | 角色id，逗号分开
+ content     | VARCHAR(1024) | YES  |     |         | 模板内容    
+ type        | TINYINT(3)    | YES  |     |         | 类型（1、动态模版、2静态模版）
+ create_uid  | INT(10)       | YES  |     |         |         
+ created     | INT(10)       | YES  |     |         |         
+ create_time | CHAR(50)      | YES  |     |         |         
+-------------+---------------+------+-----+---------+---------
+
+Table: system_task
+----------+-------------+------+-----+---------+---------
+ Field    | Type        | Null | Key | Default | Remarks 
+----------+-------------+------+-----+---------+---------
+ id       | INT(10)     | NO   | PRI |         | 主键      
+ cron     | VARCHAR(50) | YES  |     |         | 表达式（* * * * *）
+ taskname | VARCHAR(50) | YES  |     |         | 定时任务名   
+ daemon   | TINYINT(3)  | YES  |     |         | 守护线程，(1 true, 0 false)
+ enable   | TINYINT(3)  | YES  |     |         | 任务是否有效（1 true 0 false）
+----------+-------------+------+-----+---------+---------
+
+Table: system_todo
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ id          | INT(10)      | NO   | PRI |         |         
+ title       | VARCHAR(200) | YES  |     |         | 标题      
+ description | VARCHAR(500) | YES  |     |         | 描述      
+ url         | VARCHAR(200) | YES  |     |         | 链接      
+ type_name   | VARCHAR(50)  | YES  |     |         | 类型名称    
+ token       | CHAR(64)     | YES  |     |         | token   
+ type        | TINYINT(3)   | YES  |     |         | 类型      
+ status      | TINYINT(3)   | YES  |     |         | 0待办1已办-1删除
+ uid         | INT(10)      | YES  |     |         | 查看人uid  
+ created     | INT(10)      | YES  |     |         |         
+ create_uid  | INT(10)      | YES  |     |         |         
+ create_time | CHAR(20)     | YES  |     |         |         
+ updated     | INT(10)      | YES  |     |         |         
+ update_uid  | INT(10)      | YES  |     |         |         
+ update_time | CHAR(20)     | YES  |     |         |         
+-------------+--------------+------+-----+---------+---------
+
+Table: system_user
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ uid         | INT(10)      | NO   | PRI |         |         
+ name        | CHAR(64)     | YES  |     |         | 用户名     
+ pass        | CHAR(128)    | YES  |     |         |         
+ mail        | CHAR(254)    | YES  |     |         |         
+ theme       | CHAR(255)    | YES  |     |         |         
+ created     | CHAR(255)    | YES  |     |         |         
+ access      | INT(10)      | YES  |     |         |         
+ login       | INT(10)      | YES  |     |         |         
+ status      | TINYINT(3)   | YES  |     | 0       |         
+ picture     | CHAR(255)    | YES  |     |         |         
+ data        | VARCHAR(255) | YES  |     |         |         
+ update_time | CHAR(50)     | YES  |     |         | 更新时间    
+-------------+--------------+------+-----+---------+---------
+
+Table: system_user_role
+-------+---------+------+-----+---------+---------
+ Field | Type    | Null | Key | Default | Remarks 
+-------+---------+------+-----+---------+---------
+ uid   | INT(10) | NO   | PRI |         |         
+ rid   | INT(10) | NO   | PRI |         |         
+-------+---------+------+-----+---------+---------
+
+Table: system_variable
+-------+--------------+------+-----+---------+---------
+ Field | Type         | Null | Key | Default | Remarks 
+-------+--------------+------+-----+---------+---------
+ name  | VARCHAR(128) | NO   | PRI |         |         
+ value | TEXT(65535)  | YES  |     |         |         
+-------+--------------+------+-----+---------+---------
+
+Table: system_vocabulary
+-------------+-------------+------+-----+---------+---------
+ Field       | Type        | Null | Key | Default | Remarks 
+-------------+-------------+------+-----+---------+---------
+ vid         | INT(10)     | NO   | PRI |         | 词汇ID    
+ description | VARCHAR(50) | NO   |     |         | 词汇描述    
+ name        | VARCHAR(50) | NO   |     |         | 词汇名称    
+-------------+-------------+------+-----+---------+---------
+
+Table: system_vocabulary_term
+--------+-------------+------+-----+---------+---------
+ Field  | Type        | Null | Key | Default | Remarks 
+--------+-------------+------+-----+---------+---------
+ tid    | INT(10)     | NO   | PRI |         | 术语ID    
+ vid    | INT(10)     | NO   |     |         | 术语所属词汇的ID
+ pid    | INT(10)     | NO   |     | 0       | 上级术语的ID 
+ name   | VARCHAR(20) | NO   |     |         | 术语名称    
+ weight | INT(10)     | NO   |     | 1       | 排序      
+ depth  | TINYINT(3)  | NO   |     | 1       | 层级深度    
+--------+-------------+------+-----+---------+---------
+

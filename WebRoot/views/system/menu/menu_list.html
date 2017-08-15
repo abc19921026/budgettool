@@ -1,0 +1,177 @@
+<#include "../../inc/layout/page-default-top.html" />
+<style type="text/css">
+.tree-icon{display:none;}
+</style>
+
+<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">系统管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>菜单管理</span>
+            </li>
+        </ul>
+</div>
+<h3 class="page-title hidden">
+	菜单管理 <small>管理系统菜单</small>
+</h3>
+
+<div class="row">
+	<div class="col-md-12" style="">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以对菜单进行添加、编辑和删除。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('menu/details');"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>
+			</div>
+			<div class="portlet-body">
+			<table class="easyui-treegrid" title="菜单列表" style="height:100%;min-height:600px;" id="list"
+				data-options="
+				url : 'menu/listAll',
+				method : 'POST',
+				checkOnSelect : false,
+				pagination : false,
+				idField : 'id',
+			    treeField : 'link_title',
+			    checkbox: true,
+			    toolbar: [{
+	                 text:'展开',
+                     iconCls: 'glyphicon glyphicon-indent-left',
+                     handler: function(){tg_expand_all();}
+                        },'-',{
+                         text:'收起',
+                      iconCls: 'glyphicon glyphicon-indent-right',
+                     handler: function(){tg_collapse_all();}
+	            	}]
+	            " >
+				<thead>
+					<tr>
+						<!-- <th data-options="field : '', checkbox : true"></th>
+						<th data-options="field : 'menu_name', title:'菜单名称', width : '8%'"></th>
+						<th data-options="field : 'p_title', title:'上级菜单', width : '8%', formatter : parentFormatter"></th> -->
+						<th data-options="field : 'link_title', title:'名称', width : '15%'"></th>
+						<th data-options="field : 'link_path', title:'href', width : '20%'"></th>
+						<th data-options="field : 'hidden', title:'是否隐藏', width : '6%', formatter : booleanFormatter,align:'center'"></th>
+						<th data-options="field : 'external', title:'是否外部链接', width : '8%', formatter : booleanFormatter,align:'center'"></th>
+						<th data-options="field : 'has_children', title:'是否包含下级', width : '8%', formatter : booleanFormatter,align:'center'"></th>
+						<th data-options="field : 'expanded', title:'是否展开', width : '5%', formatter : booleanFormatter,align:'center'"></th>
+						<th data-options="field : 'weight', title:'排序', width : '5%',align:'center'"></th>
+						<th data-options="field : 'depth', title:'层级', width : '5%',align:'center'"></th>
+						<th data-options="field : 'icon', title:'图标', width : '10%',align:'center'"></th>
+						<th data-options="field : 'target', title:'target', width : '5%',align:'center'"></th>
+						<th data-options="field : 'id', width : '10%', formatter : editFormatter,align:'center'"></th>
+					</tr>
+				</thead>
+			</table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+
+
+<script type="text/javascript">
+	function parentFormatter(value, data) {
+		if(data.plid == 0 || value == null){
+			return "无";
+		}else{
+			return value;
+		}
+	}
+	
+	function booleanFormatter(value) {
+		if (value == 0) {
+			return "否";
+		} else if (value == 1) {
+			return "是";
+		}
+	}
+
+	function editFormatter(value) {
+		return "<a href='javascript:new_window(\"menu/details?mlid="+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>";
+	}
+
+	$(function() {
+		$("#delete").click(function(){
+			var post_url = "menu/delete";
+			handle_datagrid_delete(post_url, "list","id","treegrid");
+		});
+		//return;
+		//return;
+		//datagrid载入数据
+		/* $('#list').datagrid({
+			url : 'menu/listAll',
+			method : 'POST',
+			checkOnSelect : false,
+			pagination : true,
+			pageSize :50,
+			toolbar : '#tb',
+			columns : [[
+				{field : '', title : '', checkbox : true},	
+				{field : 'menu_name', title : '菜单名称', width : '8%'},
+				{field : 'link_path', title : '链接地址', width : '8%'},
+				{field : 'link_title', title : '链接名称', width : '8%'},
+				{field : 'hidden', title : '是否隐藏', width : '8%'},
+				{field : 'external', title : '是否外部链接', width : '8%'},
+				{field : 'has_children', title : '是否包含下级', width : '8%'},
+				{field : 'expanded', title : '是否展开', width : '8%'},
+				{field : 'weight', title : '垂直位置', width : '8%'},
+				{field : 'depth', title : '层级深度', width : '8%'},
+				{field : 'icon', title : '图标', width : '8%'},
+				{field : 'target', title : '跳转目标', width : '8%'},
+				{field : 'mlid', title : '', width : '8%', formatter : function(value,data){
+					return '<a href="javascript:$(\'#w\').window(\'open\').window(\'refresh\', \'menu/details?mlid='+value+'\')">编辑</a>';
+				}}
+			]]
+		});
+
+		$("#delete").click(function() {
+			var rows = $('#list').datagrid('getChecked');
+			if(rows.length == 0){
+				console.log(rows.length);
+				alert("请选择数据！");
+				return;
+			}
+			var confirmed = confirm("请确认删除！");
+			if(confirmed){
+				var temp = "";
+				for (var i = 0; i < rows.length; i++) {
+					temp += rows[i]["mlid"] + ",";
+				}
+				temp = temp.substring(0, temp.length - 1);
+				var param = {
+					"checkedIds" : temp
+				};
+				$.ajax({
+					url : "menu/delete",
+					method : "POST",
+					data : param,
+					dataType : "text",
+					success : function(data) {
+						//$.messager.alert('', data);
+						alert(data);
+						$('#list').datagrid('load');
+					}
+				});
+			}else{
+				alert("已取消删除操作！");
+			}
+		}); */
+
+	});
+	
+function tg_collapse_all(){
+	$("#list").treegrid("collapseAll");
+}
+function tg_expand_all(){
+	$("#list").treegrid("expandAll");
+}
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />

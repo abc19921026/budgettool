@@ -1,0 +1,279 @@
+<#include "../../inc/layout/page-default-top.html" />
+
+<style type="text/css">
+.tree-icon{display:none;}
+.tree-title{
+	height : 100%;
+}
+</style>
+
+<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="index.html">系统管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>分组权限</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+            	<span>分组名称:${(roleGroup.name)!}</span>
+            </li>
+        </ul>
+</div>
+<h3 class="page-title hidden">
+	${(roleGroup.name)!}<!-- 分组权限 <small>管理分组权限</small> -->
+</h3>
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以对分组权限进行编辑。 </p>
+	     </div>
+	     <div class="portlet light portlet-fit portlet-datatable bordered">
+	     	<!-- <div class="portlet-title">
+	     		<div class="margin-bottom-10">
+					<a href="javascript:saveRolePermission()" class="btn btn-success"><i class="fa fa-check"></i> 保存</a> 
+				</div>
+	     	</div> -->
+	     	<div class="portlet-body">
+	     		<div class="row margin-bottom-10">
+					<div class="col-md-12 col-sm-12">
+						<form id="filter_form" action="" method="get">
+					 		<div class="col-md-2">
+						 		<label>权限名称：<br /><input type="text" name="permissionTitle" class="form-control input-sm input-small input-inline" placeholder="请输入权限名称" /></label>
+						 		<input type="hidden" id="permissionTitle">
+						 	</div>
+						 	<div class="col-md-2"><br />&nbsp;<a class="btn btn-sm btn-success" id="filter"><i class="fa fa-search"></i> 查询</a></div>
+						</form>
+					</div>
+				</div>
+				
+				<input id="group_roles" name="group_roles" type="hidden" value="${(group_roles)!}"/>
+				<table class="easyui-treegrid" style="height:100%;min-height:650px;" id="list"
+					data-options="
+					url : 'listAll?gid=${(roleGroup.id)!}',
+					method : 'POST',
+					checkOnSelect : false,
+					pagination : false,
+					idField : 'id',
+					treeField : 'title',
+					toolbar:tb
+					">
+					
+					<thead frozen="true">
+						<tr>
+							<th data-options="field : 'title', title : '权限名称', width : 200, align : 'left', formatter : field_title_formatter"></th>						
+						</tr>
+					</thead>
+					
+					<thead>
+						<tr>
+						<#if list_role??>
+						<#list list_role as role>
+							<th data-options="field : '${role.name}', width : 100, align : 'center', formatter : roleFormatter" >
+								 <a href="javascript:colCheckAll(${role.rid})" title="全选" class="btn btn-default btn-xs" >${role.description}</a>
+							</th>
+						</#list>
+						</#if>
+							<th data-options="field : 'id', title : '操作', width : '5%', align : 'center', formatter : checkFormatter" ></th>
+						</tr>
+						
+					</thead>
+				</table>	     	
+	     	</div>
+	     </div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+var tb = [{
+    text:'保存',
+    iconCls:'glyphicon glyphicon-saved',
+    handler:function(){saveRolePermission();}
+},'-',{
+    text:'展开',
+    iconCls:'glyphicon glyphicon-indent-left',
+    handler:function(){
+    	$("#list").treegrid("expandAll");
+    }
+},'-',{
+    text:'收起',
+    iconCls:'glyphicon glyphicon-indent-right',
+    handler:function(){$("#list").treegrid("collapseAll");}
+}];
+
+
+function field_title_formatter(v, row){
+	if(v)
+		return v + "<br />" + row.name;
+	else
+		return row.name;	
+}
+function roleFormatter(value, data){
+	if(!value)
+		return "";
+	var checkbox = "";
+	//循环角色列表生成选择框
+	//for(var i = 0; i < roles.length; i++){
+		//根据菜单ID、角色ID分别生成标签的name、value、id
+		checkbox += "<input type='checkbox' name='"+data.id+"_role' value='"+value+"' ";
+		//根据role_menu表判断是否选中该选择框
+		/* var checked = false;
+		for(var j = 0; j < value.length; j++){
+			checked = roles[i].rid == value[j].rid;
+			if(checked)
+				break;
+		} */
+		var checked_roles = data.checkedRoles;
+		//console.log(checked_roles[value]);
+		if(typeof checked_roles[value] != "undefined" && checked_roles[value] == 1){
+			checkbox += "checked='checked' />";
+		}else{
+			checkbox +=" />";			
+		}
+		//根据角色描述生成label
+		//checkbox +="<label for='"+data.id+"_"+roles[i].name+"'>"+roles[i].desc+"</label>&nbsp;&nbsp;";
+	//}
+	return checkbox;
+}
+
+function checkFormatter(value, data){
+	var checkAll = "<a href='javascript:rowCheckAll("+value+")' class='btn btn-default btn-xs' id='"+value+"_rowcheckbtn' >全选</a>";
+	return checkAll;
+}
+
+function rowCheckAll(id){
+	var total = 0;
+	var checked = 0;
+	$("input[name='"+id+"_role']").each(function(){
+		var check = this.checked;
+		if(check || check == "checked"){
+			checked++;
+		}
+		total++;
+	});
+	if(total == checked){
+		$("input[name='"+id+"_role']").each(function(){
+			this.checked = false;
+		});
+	}else{
+		$("input[name='"+id+"_role']").each(function(){
+			this.checked = true;
+		});
+	}
+}
+
+function colCheckAll(rid){
+	var total = 0;
+	var checked = 0;
+	$("input[value='"+rid+"']").each(function(){
+		var check = this.checked;
+		if(check || check == "checked"){
+			checked++;
+		}
+		total++;
+	});
+	if(total == checked){
+		$("input[value='"+rid+"']").each(function(){
+			this.checked = false;
+		});
+	}else{
+		$("input[value='"+rid+"']").each(function(){
+			this.checked = true;
+		});
+	}
+}
+
+/**
+ * 保存数据
+ */
+function saveRolePermission(){
+	//提示正在处理
+	//$.messager.progress({msg:"正在处理，请稍候...",text:""});
+	//获取所有菜单ID
+	var ids = new Array();
+	var rows = $("#list").treegrid("getData");
+	for(var i = 0; i < rows.length; i++){
+		var id = rows[i].id;
+		//加入列表
+		//ids.push(id);
+		//获取子权限的ID
+		ids = getChildren(id, ids);
+	}
+	//console.log(ids);
+	//循环生成数据列表
+	var rolePermission = new Array();
+	for(var i = 0; i < ids.length; i++){
+		var id = ids[i];
+		//根据菜单ID和是否选中循环
+		$("input[name='"+id+"_role']:checked").each(function(){
+			var rid = new Number($(this).val());
+			//生成数据
+			rolePermission.push({"id" : id, "rid" : rid});
+		});
+	}
+	//console.log(rolePermission);
+	//获取查询条件，保存时按照查询条件删除数据
+	var permissionTitle = $("#permissionTitle").val();
+	
+	var param = {
+			"rolePermission" : JSON.stringify(rolePermission), 
+			"permissionTitle" : permissionTitle,
+			"group_roles" : $("#group_roles").val()
+			};
+	//console.log(param);
+	//发送ajax请求保存数据
+	$.ajax({
+		url : "update",
+		method : "POST",
+		data : param,
+		dataType : "json",
+		success : function(data) {
+			//关闭提示
+			$.messager.progress("close");
+			if(typeof data.status != "undefined"){
+				if("SUCCESS" == data.status){
+					$.messager.alert("提示", data.message, "info");
+					//刷新列表
+					$("#list").treegrid("reload");					
+				}else if("ERROR" == data.status){
+					$.messager.alert("系统错误", data.message, "info");
+				}
+			}else{
+				$.messager.progress('close');
+		    	$.messager.alert("系统错误", data);
+			}		
+		}
+	});
+}
+
+/**
+ * 获取子权限信息
+ */
+function getChildren(id, ids){
+	//根据权限ID获取所有子权限
+	var children_rows = $("#list").treegrid("getChildren", id);
+	if(children_rows.length == 0){
+		return ids;
+	}
+	//循环子权限加入列表
+	for(var i = 0; i < children_rows.length; i++){
+		var children_id = children_rows[i].id;
+		ids.push(children_id);
+	}
+	//返回列表
+	return ids;
+}
+
+$(function(){
+	$("#filter").click(function(){
+			var search_data = $("#filter_form").serializeObject();
+			//把查询条件保存到隐藏域，保存时作为参数
+			$("#permissionTitle").val(search_data.permissionTitle);
+			//console.log(search_data);
+			$('#list').treegrid('load', search_data);
+	});
+});
+</script>

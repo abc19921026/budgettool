@@ -1,0 +1,114 @@
+<#include "../../inc/layout/page-default-top.html" />
+
+<div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="#">系统管理</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>用户管理</span>
+            </li>
+        </ul>
+</div>
+<h3 class="page-title hidden">
+	用户管理 <small>管理系统用户</small>
+</h3>
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+		<div class="note note-info hidden">
+	         <p>提示： 在该页面你可以对用户进行添加、编辑和删除。 </p>
+	     </div>
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('/user/details');"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>
+			</div>
+			<div class="portlet-body">
+	     		<div class="row margin-bottom-10">
+					<div class="col-md-12 col-sm-12">
+						<form id="filter_form">
+					 		<div class="col-md-2">
+						 		<label>用户名：<br /><input type="text" name="username" class="form-control input-sm input-small input-inline" placeholder="请输入用户名" /></label>
+						 	</div>
+						 	<div class="col-md-2"><br />&nbsp;
+						 		<a class="btn btn-sm btn-success" id="filter"><i class="fa fa-search"></i> 查询</a>
+						 	</div>
+						</form>
+					</div>
+				</div>
+				<table class="easyui-datagrid" id="list" style="width:98%;height:450px"
+					data-options="
+					url: '/user/listAll',
+					method:'POST',
+					checkOnSelect:false,
+					pagination:true,
+					pageSize:50,
+					fitColumns:true
+					">
+					<thead>
+				            <tr>
+				            	<th data-options="field:'',checkbox:true"></th>
+				            	<th data-options="field:'name',title:'用户名',width:'10%',align:'center'"></th>
+				            	<th data-options="field:'mail',title:'邮箱',width:'250px',align:'left'"></th>
+				            	<th data-options="field:'status',title:'状态',width:'80px',align:'center',formatter:statusFormatter"></th>
+				            	<th data-options="field:'roleName',title:'角色',width:'250px',align:'left'"></th>
+				            	<th data-options="field:'created',title:'创建时间',width:'15%',align:'center',formatter:timeFormatter"></th>
+				            	<th data-options="field:'uid',title:'操作',width:'200px',align:'center',formatter:editFormatter"></th>
+				            	<#if (user.uid) == 1>
+				            		<th data-options="field:'switch',title:'Switch',width:'100',align:'center',formatter:switchFormatter"></th>
+				            	</#if>
+				            </tr>
+				    </thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function timeFormatter(value, data){
+	return value;
+	if(value != null && value.length > 10){
+		value = value.substring(0, 10);
+	}
+	return value;
+}
+
+function statusFormatter(value, data){
+	if(value == -1)
+		return "禁用";
+	else
+		return "正常";
+}
+
+function editFormatter(value, data){
+	var edit = "<a href='javascript:new_window(\"/user/details?uid="+value+"\")'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
+	edit += "<a href='javascript:new_window(\"/user/pass_edit?uid="+value+"\")'><i class='fa fa-pencil-square-o'></i> 修改密码</a>";
+	return edit;
+}
+
+function switchFormatter(value, data){
+	var re = "";
+
+	<#if (user.uid) == 1>
+	re += "<a href='/devel/switch_user/" + data.uid +" '>Switch</a>";
+	</#if>
+	return re;
+}
+
+$(function(){
+	$("#delete").click(function(){
+		var post_url = "/user/delete";
+		handle_datagrid_delete(post_url, "list","uid");
+	});
+
+	$("#filter").click(function(){
+			var search_data = $("#filter_form").serializeObject();
+			//console.log(search_data);
+			$('#list').datagrid('load', search_data);
+	});
+});
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />

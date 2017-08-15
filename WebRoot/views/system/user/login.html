@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="zh-cn">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8"/>
+<title>系统登录 - 河豚科技</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="renderer" content="webkit">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<#include "../../inc/stylesheet-script.inc.html" />
+<link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+<link href="/assets/pages/css/login-5.css" rel="stylesheet" type="text/css" />
+<script src="${BASE_PATH}assets/global/plugins/layer/layer.js"></script>
+<style type="text/css">
+	body{
+		background:#fff;
+	}
+	.user-login-5 .login-container > .login-content{
+		margin-top:20%;
+	}
+	.text{
+		padding-left: 20px;
+	}
+</style>
+<!-- END THEME STYLES -->
+
+<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "https://hm.baidu.com/hm.js?5a3158d1d651d56f4ae4bea1c917ae39";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+</script>
+
+<script type="text/javascript">
+	//判断是否是ie浏览器
+	function isIE() { //ie?  
+	    if (!!window.ActiveXObject || "ActiveXObject" in window)  
+	        return true;  
+	    else  
+	        return false;  
+	}
+
+	//判断是否是ie浏览器
+	$(function(){
+		if(isIE()){
+			layer.open({
+				type: 1,
+				title: '提示',
+				skin: 'layui-layer-molv', //加上边框
+				area: ['420px', '240px'], //宽高
+				content:$('#browsers_tips')
+			});
+		}	});
+</script>
+</head>
+<div id="browsers_tips" style="display: none;">
+	<p class="text">系统检测到您正在使用IE浏览器或浏览器“兼容模式”，<br />为了保障您正常使用系统，建议您：</p>
+	<p class="text">1、切换到浏览器“极速模式”</p>
+	<p class="text">2、使用 <a href="http://chrome.360.cn/" target="_blank">360极速浏览器</a> 或者 <a href="http://pc.qq.com/detail/1/detail_2661.html" target="_blank">谷歌浏览器</a></p>
+</div>
+
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class=" login">
+        <!-- BEGIN : LOGIN PAGE 5-1 -->
+        <div class="user-login-5">
+            <div class="row bs-reset">
+                <div class="col-md-6 bs-reset">
+                    <div class="login-bg" style="">
+                        <!-- <img class="login-logo" src="/assets/pages/img/login/logo.png" /> --> </div>
+                </div>
+                <div class="col-md-6 login-container bs-reset">
+                    <div class="login-content">
+                    	<img src="/public/img/app/logo-image-only.jpg" style="width:200px" />
+                        <h1>杭州河豚销售管理系统 <!-- <small>系统登录</small> --></h1>
+                        <p class="display-none">轻松装修，我为铭鸿代言.</p>
+                        <form action="" class="login-form" method="post">
+                             <#if error?? && error != "">
+								<div class="alert alert-danger">
+									<button class="close" data-close="alert"></button>
+									<span>${error}</span>
+								</div>
+							</#if>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" required/> </div>
+                                <div class="col-xs-6">
+                                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" required/> </div>
+                            </div>
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button>
+                                <span>请输入您的用户名和密码 </span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="rem-password">
+                                        <p>下次自动登录
+                                            <input type="checkbox" name="remember_me" value="1" class="rem-checkbox" />
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8 text-right">
+                                    <div class="forgot-password">
+                                        <a href="javascript:;" id="forget-password" class="forget-password">忘记密码?</a>
+                                    </div>
+                                    <button class="btn blue" type="submit" id="login">登录</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- BEGIN FORGOT PASSWORD FORM -->
+                        <form class="forget-form" action="javascript:;" method="post">
+                            <h3 class="font-green">忘记密码 ?</h3>
+                            <p> 请输入用户名. </p>
+                            <div class="form-group">
+                                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" /> </div>
+                            <div class="form-actions">
+                                <button type="button" id="back-btn" class="btn grey btn-default">返回</button>
+                                <button type="submit" class="btn blue btn-success uppercase pull-right">提交</button>
+                            </div>
+                        </form>
+                        <!-- END FORGOT PASSWORD FORM -->
+                    </div>
+                    <div class="login-footer">
+                        <div class="row bs-reset">
+                            <div class="col-xs-4 bs-reset">
+                                <ul class="login-social">
+                                    <li>
+                                        <a href="javascript:;" title="扫一扫">
+                                            <i class="fa fa-qrcode"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" title="微博关注">
+                                            <i class="fa fa-weibo"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" title="微信公众号">
+                                            <i class="fa fa-wechat"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-8 bs-reset">
+                                <div class="login-copyright text-right">
+                                    <p>Copyright &copy; 杭州河豚科技有限公司 Hzhetun.com 2016</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END : LOGIN PAGE 5-1 -->
+        <!--[if lt IE 9]>
+<script src="/assets/global/plugins/respond.min.js"></script>
+<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+        <!-- BEGIN CORE PLUGINS -->
+<!--         <script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        END CORE PLUGINS
+        BEGIN PAGE LEVEL PLUGINS
+        <script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+        END PAGE LEVEL PLUGINS
+        BEGIN THEME GLOBAL SCRIPTS
+        <script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
+        END THEME GLOBAL SCRIPTS
+        BEGIN PAGE LEVEL SCRIPTS-->         
+        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>    
+        <script src="/assets/global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>    
+        <script src="/assets/pages/scripts/login-5.js" type="text/javascript"></script> 
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <!-- END THEME LAYOUT SCRIPTS -->
+    </body>
+<!-- END BODY -->
+</html>
