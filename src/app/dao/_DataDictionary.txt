@@ -1,3 +1,117 @@
+Table: budget
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ name        | VARCHAR(128)  | YES  |     |         | 名称      
+ sn          | VARCHAR(128)  | YES  |     |         | 预算编号    
+ order_id    | INT(10)       | YES  |     | 0       | 订单id, 0为模板
+ version     | VARCHAR(50)   | YES  |     |         | 版本号     
+ type        | CHAR(20)      | YES  |     |         | 类型      
+ status      | TINYINT(3)    | YES  |     | 0       | 状态0,初始，1主预算
+ primary     | TINYINT(3)    | YES  |     | 0       |         
+ total       | DECIMAL(10,2) | YES  |     | 0.00    | 总计      
+ create_uid  | INT(10)       | YES  |     |         | 用户id    
+ created     | INT(10)       | YES  |     |         | 时间戳     
+ create_time | CHAR(20)      | YES  |     |         | 创建时间    
+ update_uid  | INT(10)       | YES  |     |         |         
+ updated     | INT(10)       | YES  |     |         |         
+ update_time | CHAR(20)      | YES  |     |         |         
+-------------+---------------+------+-----+---------+---------
+
+Table: budget_class
+-------------------------+---------------+------+-----+---------+---------
+ Field                   | Type          | Null | Key | Default | Remarks 
+-------------------------+---------------+------+-----+---------+---------
+ id                      | INT(10)       | NO   | PRI |         |         
+ budget_id               | INT(10)       | YES  |     |         | 预算id    
+ parent_id               | INT(10)       | YES  |     | 0       | 上级id    
+ project_item_catalog_id | INT(10)       | YES  |     | 0       | 原始工程分类id
+ room_id                 | INT(10)       | YES  |     | 0       |         
+ section                 | TINYINT(3)    | YES  |     | 0       | 0基础工程部分，1主材部分
+ name                    | VARCHAR(50)   | YES  |     |         | 大类名称    
+ sn                      | CHAR(32)      | YES  |     |         | 编号      
+ no                      | INT(10)       | YES  |     | 1       | 序号      
+ weight                  | INT(10)       | YES  |     | 0       | 排序号     
+ has_children            | TINYINT(3)    | YES  |     | 0       | 是否有子分类  
+ subtotal                | DECIMAL(10,2) | YES  |     | 0.00    |         
+ comment                 | VARCHAR(512)  | YES  |     |         |         
+ created                 | INT(10)       | YES  |     |         |         
+ create_time             | CHAR(20)      | YES  |     |         |         
+ update_time             | CHAR(20)      | YES  |     |         |         
+ updated                 | INT(10)       | YES  |     |         |         
+-------------------------+---------------+------+-----+---------+---------
+
+Table: budget_item
+-------------------+---------------+------+-----+---------+---------
+ Field             | Type          | Null | Key | Default | Remarks 
+-------------------+---------------+------+-----+---------+---------
+ id                | INT(10)       | NO   | PRI |         |         
+ budget_id         | INT(10)       | YES  |     | 0       | 预算id    
+ budget_class_id   | INT(10)       | YES  |     | 0       | 预算分类id  
+ room_id           | INT(10)       | NO   |     | 0       | 空间id，全屋/主卧/客厅等
+ section           | INT(10)       | NO   |     | 0       | 0基础工程1主材2优惠
+ sn                | CHAR(50)      | NO   |     | 0       | 编号      
+ no                | INT(10)       | NO   |     | 0       | 当前分类的序号 
+ weight            | INT(10)       | NO   |     | 0       | 排序      
+ project_item_id   | INT(10)       | NO   |     | 0       | 工程项id   
+ name              | VARCHAR(50)   | YES  |     |         | 工程项名称   
+ unit              | VARCHAR(50)   | YES  |     |         | 单位      
+ price             | DECIMAL(10,2) | NO   |     | 0.00    | 单价      
+ num               | DECIMAL(10,2) | NO   |     | 0.00    | 数量      
+ amount            | DECIMAL(10,2) | NO   |     | 0.00    | 金额      
+ comment           | VARCHAR(512)  | YES  |     |         | 备注      
+ description       | VARCHAR(512)  | YES  |     |         | 计算方式    
+ material_attached | TINYINT(3)    | YES  |     | 0       | 是否关联主材  
+ material_id       | INT(10)       | YES  |     | 0       | 关联的主料id 
+ material_info     | VARCHAR(512)  | YES  |     |         | 关联的主材信息 
+ printable         | TINYINT(3)    | YES  |     | 0       | 数量为0时导出EXCEL是否显示
+ created           | INT(10)       | YES  |     |         |         
+ create_time       | CHAR(20)      | YES  |     |         |         
+ create_uid        | INT(10)       | YES  |     |         |         
+ updated           | INT(10)       | YES  |     |         |         
+ update_time       | CHAR(20)      | YES  |     |         |         
+ update_uid        | INT(10)       | YES  |     |         |         
+-------------------+---------------+------+-----+---------+---------
+
+Table: budget_item_amount
+------------------+---------------+------+-----+---------+---------
+ Field            | Type          | Null | Key | Default | Remarks 
+------------------+---------------+------+-----+---------+---------
+ id               | INT(10)       | NO   | PRI |         |         
+ amount_material  | DECIMAL(10,2) | YES  |     | 0.00    | 主材金额    
+ amount_assist    | DECIMAL(10,2) | YES  |     | 0.00    |         
+ amount_labor     | DECIMAL(10,2) | YES  |     | 0.00    |         
+ amount_machinery | DECIMAL(10,2) | YES  |     | 0.00    |         
+ amount_loss      | DECIMAL(10,2) | YES  |     | 0.00    |         
+ price_material   | DECIMAL(10,2) | YES  |     | 0.00    | 主材单价    
+ price_assist     | DECIMAL(10,2) | YES  |     | 0.00    |         
+ price_labor      | DECIMAL(10,2) | YES  |     | 0.00    |         
+ price_machinery  | DECIMAL(10,2) | YES  |     | 0.00    |         
+ price_loss       | DECIMAL(10,2) | YES  |     | 0.00    |         
+ updated          | INT(10)       | YES  |     |         | 更新时间戳   
+------------------+---------------+------+-----+---------+---------
+
+Table: budget_item_cost
+---------------------+---------------+------+-----+---------+---------
+ Field               | Type          | Null | Key | Default | Remarks 
+---------------------+---------------+------+-----+---------+---------
+ id                  | INT(10)       | NO   | PRI |         | 预算条目id  
+ budget_id           | INT(10)       | NO   |     |         | 预算id    
+ type                | TINYINT(3)    | YES  |     | 0       | 成本计算类型0自动1手动
+ cost                | DECIMAL(10,2) | YES  |     | 0.00    | 成本, num*(cost_labor+cost_assist+cost_material)
+ cost_num            | DECIMAL(10,2) | YES  |     | 0.00    | 计算成本时使用的数量
+ cost_labor          | DECIMAL(10,2) | YES  |     | 0.00    | 人工成本金额  
+ cost_labor_fee_id   | INT(10)       | YES  |     | 0       | 人工成本计算所在费用分类
+ cost_assist         | DECIMAL(10,2) | YES  |     | 0.00    | 辅材成本    
+ cost_assist_fee_id  | INT(10)       | YES  |     | 0       | 辅材成本计算所在费用分类
+ cost_material       | DECIMAL(10,2) | YES  |     | 0.00    | 主材成本    
+ price_cost_labor    | DECIMAL(10,2) | YES  |     | 0.00    | 人工成本单价  
+ price_cost_assist   | DECIMAL(10,2) | YES  |     | 0.00    | 辅材成本单价  
+ price_cost_material | DECIMAL(10,2) | YES  |     | 0.00    | 主材价格    
+ updated             | INT(10)       | YES  |     |         | 更新时间戳   
+---------------------+---------------+------+-----+---------+---------
+
 Table: crm_department
 -------------+-------------+------+-----+---------+---------
  Field       | Type        | Null | Key | Default | Remarks 

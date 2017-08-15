@@ -16,6 +16,11 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 
 	public static void mapping(ActiveRecordPlugin arp) {
+		arp.addMapping("budget", "id", Budget.class);
+		arp.addMapping("budget_class", "id", BudgetClass.class);
+		arp.addMapping("budget_item", "id", BudgetItem.class);
+		arp.addMapping("budget_item_amount", "id", BudgetItemAmount.class);
+		arp.addMapping("budget_item_cost", "id", BudgetItemCost.class);
 		arp.addMapping("crm_department", "id", CrmDepartment.class);
 		arp.addMapping("crm_job_title", "id", CrmJobTitle.class);
 		arp.addMapping("crm_staff", "id", CrmStaff.class);

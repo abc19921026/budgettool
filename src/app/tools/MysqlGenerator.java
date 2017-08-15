@@ -44,7 +44,12 @@ public class MysqlGenerator {
 		myMetaBuilder.addIncludedTable("crm_staff");
 		myMetaBuilder.addIncludedTable("crm_staff_extra");
 		myMetaBuilder.addIncludedTable("crm_job_title");
-		
+		//预算管理
+		myMetaBuilder.addIncludedTable("budget");
+		myMetaBuilder.addIncludedTable("budget_class");
+		myMetaBuilder.addIncludedTable("budget_item");
+		myMetaBuilder.addIncludedTable("budget_item_amount");
+		myMetaBuilder.addIncludedTable("budget_item_cost");
 		generator.setMetaBuilder(myMetaBuilder);
 		
 		// 设置是否在 Model 中生成 dao 对象
