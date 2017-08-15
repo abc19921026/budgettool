@@ -39,27 +39,12 @@ public class MysqlGenerator {
 		
 		MyMetaBuilder myMetaBuilder = new MyMetaBuilder(getDataSource());
 		
-		//基础信息维护
-		myMetaBuilder.addIncludedTable("b_t_addr_province");
-		myMetaBuilder.addIncludedTable("b_t_addr_city");
-		myMetaBuilder.addIncludedTable("b_t_addr_district");
-		myMetaBuilder.addIncludedTable("marketing_sale_source");
-		myMetaBuilder.addIncludedTable("marketing_sale_source_type");
-		myMetaBuilder.addIncludedTable("b_t_scale");
-		
-		
 		//企业管理
 		myMetaBuilder.addIncludedTable("crm_department");
 		myMetaBuilder.addIncludedTable("crm_staff");
 		myMetaBuilder.addIncludedTable("crm_staff_extra");
 		myMetaBuilder.addIncludedTable("crm_job_title");
 		
-		//营销中心对应表
-		myMetaBuilder.addIncludedTable("marketing_record");
-		myMetaBuilder.addIncludedTable("marketing_record_follow");
-		myMetaBuilder.addIncludedTable("company_info");
-		myMetaBuilder.addIncludedTable("contact_info");
-		myMetaBuilder.addIncludedTable("contact_form");
 		generator.setMetaBuilder(myMetaBuilder);
 		
 		// 设置是否在 Model 中生成 dao 对象
