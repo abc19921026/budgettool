@@ -68,25 +68,25 @@
 			                checkOnSelect:false,
 			                pagination:true,
 			                pageSize:50,
-			                fitColumns:true
+			               
 			            ">
 			        <thead>
 			            <tr>
 			            	<th data-options="field:'',checkbox:true"></th>
-			            	<th data-options="field:'sn', title:'预算编号', width:'120',formatter:field_formatter_sn,align:'center'"></th>
-			            	<th data-options="field:'engineer_sn', title:'合同编号', width:'7%'"></th>
-			            	<th data-options="field:'name', title:'预算名称', width:'10%'"></th>
-			            	<th data-options="field:'order_name', title:'订单', width:'20%',formatter:field_formatter_order_name"></th>
+			            	<th data-options="field:'sn', title:'预算编号', width:'120px',formatter:field_formatter_sn,align:'center'"></th>
+			            	<!--<th data-options="field:'engineer_sn', title:'合同编号', width:'7%'"></th>-->
+			            	<th data-options="field:'name', title:'预算名称', width:'15%'"></th>
+			            	<!--<th data-options="field:'order_name', title:'订单', width:'20%',formatter:field_formatter_order_name"></th>-->
 			            	<!-- <th data-options="field:'order_name', title:'项目名称', width:'14%'"></th> -->
-			            	<th data-options="field:'customer_name', title:'客户姓名', width:'8%',align:'center'"></th>
+			            	<!--<th data-options="field:'customer_name', title:'客户姓名', width:'8%',align:'center'"></th>-->
 			            	<!-- <th data-options="field:'mobile', title:'客户手机号', width:'10%'"></th> -->
 
-			            	<th data-options="field:'designer', title:'设计师', width:'8%',align:'center'"></th>
-			            	<th data-options="field:'version', title:'版本号', width:'5%',align:'center'"></th>
-			            	<th data-options="field:'total', title:'总计', width:'5%',align:'center'"></th>
+			            	<!--<th data-options="field:'designer', title:'设计师', width:'8%',align:'center'"></th>-->
+			            	<!--<th data-options="field:'version', title:'版本号', width:'5%',align:'center'"></th>-->
+			            	<!--<th data-options="field:'total', title:'总计', width:'5%',align:'center'"></th>-->
 			            	<!--<th data-options="field:'create_time', title:'创建时间', width:'150'"></th>-->
-			              	<th data-options="field:'update_time', title:'更新时间', width:'150',align:'center'"></th>
-							<th data-options="field:'id', title:'', width:'13%',formatter :idformatter,align:'center'"></th>
+			              	<th data-options="field:'update_time', title:'更新时间', width:'150px',align:'center'"></th>
+							<th data-options="field:'id', title:'', width:'60px',formatter :idformatter,align:'center'"></th>
 			            </tr>
 			        </thead>
 			    </table>
@@ -101,19 +101,12 @@
 function field_formatter_sn(value, row){
 	return "<a target=\"_blank\" href='/budget/item/advanced_edit/" + row.id + "'>" + value + "</a>";
 }
-function field_formatter_name(value, row){
-	return "<a target=\"_blank\" href='/budget/item/advanced_edit/" + row.id + "'>" + value + "</a>";
-}
-
-function field_formatter_order_name(value, row){
-	return row.order_sn + " | " + value;
-}
 
 function idformatter(value,data){
 		var re = "";
   		//re += "<a href='/budget/budget_class?budget_id=" + value + "'>查看</a>" +" | "+
-	re += "<a href='javascript:new_window(\"/budget/budget_edit/"+value+"\");'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
-	re += "<a href='/budget/variation_list?budget_id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 预算变更单</a>";
+	re += "<a href='javascript:new_window(\"/budget/budget_add?id="+value+"\");'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
+	//re += "<a href='/budget/variation_list?budget_id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 预算变更单</a>";
 	//re +=" | " + "<a href='/budget/preview?budget_id=" + value + "' target='_blank'>预览</a>";
 
 	return re;

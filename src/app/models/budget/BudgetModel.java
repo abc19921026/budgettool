@@ -1,9 +1,12 @@
 package app.models.budget;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import app.dao.Budget;
 
@@ -21,7 +24,7 @@ public class BudgetModel extends Budget{
 		List<Object> params=new ArrayList<Object>();
 		String select = "SELECT b.*";
 		StringBuffer sqlExceptSelect = new StringBuffer( " FROM budget b");
-				sqlExceptSelect.append(" WHERE b.order_id <> 0 ");
+				sqlExceptSelect.append(" WHERE 1=1 ");
 		if(StrKit.notBlank(sn)){
 			sqlExceptSelect.append(" and b.sn like ?");
 			params.add("%"+sn+"%");
@@ -41,5 +44,26 @@ public class BudgetModel extends Budget{
 		re.put("total", total);
 		re.put("rows", list);
 		return re;
+	}
+	
+	/**
+	 * 生成预算编号
+	 * @param budget_id
+	 * @return
+	 */
+	public static String generate_budget_sn(){
+		String budget_sn_token = "Y";
+		String sn = "";
+		Date date = new Date();
+		SimpleDateFormat f = new SimpleDateFormat("yyMMddHH");
+		//String s = f.format(date).substring(2,8);
+		String s = f.format(date);//161011
+		//int rand_4 = Math.random()
+		int min = 1000, max = 9999; //生成四位数的随机数
+        Random random = new Random();
+
+        int random_4 = random.nextInt(max)%(max-min+1) + min;
+		sn = budget_sn_token + s + "-" + random_4;
+		return sn;
 	}
 }
