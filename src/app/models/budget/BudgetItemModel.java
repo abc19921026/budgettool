@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 import app.dao.BudgetItem;
 
@@ -65,4 +67,39 @@ public class BudgetItemModel extends BudgetItem{
 		}
 		return re;
 	}
+	
+	/**
+	 * 按不同类别加载，0基础工程1主材2优惠
+	 * @param q
+	 * @param section
+	 * @return
+	 */
+	public static List<Record> get_class_catalog(String q, int section,int type,int parent_id)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql = new StringBuffer("select bc.name as id, bc.name as text ");
+			sql.append(" FROM budget_class bc");
+			sql.append(" where bc.section = ?");
+			param.add(section);
+		if(type==0){
+			sql.append(" and bc.parent_id = 0");
+		}	
+		if(StrKit.notBlank(q)){
+			sql.append(" and bc.name like ?");
+			param.add("%"+q+"%");
+		}
+		if(parent_id>0){
+			sql.append(" and bc.parent_id = ?");
+			param.add(parent_id);
+		}
+			sql.append(" group by bc.name order by bc.weight asc");
+		List<Record> re = Db.find(sql.toString(), param.toArray());
+		return re;
+	}	
+	
+	public static List<Record> get_same_class_catalog(String name)throws Exception{
+		String sql = "select * from budget_class "
+				+" where name = ?";
+		List<Record> list = Db.find(sql, name);
+		return list;
+	}		
 }

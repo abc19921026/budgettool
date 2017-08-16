@@ -1,7 +1,11 @@
 package app.controllers.budget;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import app.dao.Budget;
 import app.dao.BudgetClass;
@@ -12,6 +16,7 @@ import app.models.budget.BudgetModel;
 import com.jfinal.aop.Clear;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Record;
 
 import system.core.BaseController;
 import system.core.BaseModel;
@@ -145,5 +150,110 @@ public class BudgetController extends BaseController{
 		}
 		String jsonList = JsonKit.toJson(re);
 		renderJson(jsonList);
+	}
+	
+	@Clear(LoginInterceptor.class)
+	public void budget_class_edit()throws Exception{
+		int id = getParaToInt("budget_class_id", 0);
+		int budget_id = getParaToInt("budget_id", 0);
+		int section = getParaToInt("section", 0);//0基础1主材2优惠与汇总
+		//上级分类id
+		int parent_id = getParaToInt("parent_id", 0);
+		
+		BudgetClass record = new BudgetClass();
+
+		if(id > 0){
+			//更新
+			record = BudgetClassModel.get_budget_class_with_parent(id);
+			budget_id = record.getBudgetId();
+		}else{
+			//新建
+			record.setBudgetId(budget_id);
+			record.setSection(section);
+		}		
+		//新建时指定了上级分类
+		if(parent_id > 0){
+			record.setParentId(parent_id);
+			String parent_name = BudgetClassModel.dao.findById(parent_id).getName();
+			record.put("parent_name", parent_name);
+		}
+		
+		setAttr("record", record);
+		setAttr("budget_id", budget_id);
+		setAttr("section", section);
+		
+		String level = getPara("level", "");
+		render("budget_class_edit.html");		
+	}
+	
+	/**
+	 * 工程分类
+	 */
+	@Clear(LoginInterceptor.class)
+	public void json_class_catalog_select2()throws Exception{
+		String q = getPara("q", "");
+		int section = getParaToInt("section", 0);
+		int parent_id = getParaToInt("parent_id", 0);
+		Integer type = getParaToInt("type");
+		if(type==0){
+			List<Record> re = BudgetItemModel.get_class_catalog(q, section,0,0);
+			if(re == null){
+				renderText("[]");
+				return;
+			}
+			String jsonList = JsonKit.toJson(re);
+			renderJson(jsonList);
+		}else{
+			HashSet<Record> set = new HashSet<Record>();
+			BudgetClass top_bc = BudgetClass.dao.findById(parent_id);
+			List<Record> list = BudgetItemModel.get_same_class_catalog(top_bc.getName());
+			for(Record record : list){
+				List<Record> catalog = BudgetItemModel.get_class_catalog(q, section,1,record.getInt("id"));
+				if(catalog.size()>0){
+					set.addAll(catalog);					
+				}
+			}
+			List<Record> re = new ArrayList<Record>();
+			re.addAll(set);
+			if(re.size()==0){
+				renderText("[]");
+				return;
+			}
+			String jsonList = JsonKit.toJson(re);
+			renderJson(jsonList);
+		}
+	}	
+	@Clear(LoginInterceptor.class)
+	public void json_budget_class_update(){
+		String message = "保存成功";
+		boolean re = false;
+		BudgetClass record = getModel(BudgetClass.class, "");
+		if(record.getParentId()!= null && record.getParentId() > 0){
+			//如果是子分类，把上级分类的project_item_catalog_id 当作子类的project_item_catalog_id
+			int project_item_catalog_id = BudgetClassModel.dao.findById(record.getParentId()).getProjectItemCatalogId();
+			record.setProjectItemCatalogId(project_item_catalog_id);
+		}
+		if(record.getId() != null){
+			//更新
+			message = "更新成功";
+			BaseModel.setUpdateTime(record);
+			re = record.update();
+		}else{
+			//新建
+			BaseModel.setCreateTime(record);
+			BaseModel.setUpdateTime(record);
+			re = record.save();
+		}
+		//todo 更新序号及编号
+		int budget_id = record.getBudgetId();
+//		BudgetClassModel.update_budget_class_sn(budget_id);
+		if(re){
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("budget_class", record);
+			render_success_message(message, data, 1);
+		}else{
+			message = "操作失败，请重试";
+			render_error_message(message);
+		}
 	}
 }

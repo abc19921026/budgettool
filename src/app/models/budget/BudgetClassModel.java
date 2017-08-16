@@ -57,4 +57,18 @@ public class BudgetClassModel extends BudgetClass{
 			return null;
 		}
 	}
+	
+	public static BudgetClass get_budget_class_with_parent(int id) {
+		try {
+			String sql = "select b_c.*, b_c_2.name as parent_name, b_c_2.sn as parent_sn "
+					+ "from budget_class b_c "
+					+ "left join budget_class b_c_2 on b_c.parent_id = b_c_2.id "
+					+ "where b_c.id = ?";
+			BudgetClass re = dao.findFirst(sql, id);
+
+			return re;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

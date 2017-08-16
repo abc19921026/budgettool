@@ -1,0 +1,159 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- <h3 class="page-title"> 预算编号：#20160702-47</h3> -->
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">预算分类</span>
+               </div>
+               <div class="actions" style="display:none;">
+                   <div class="btn-group btn-group-devided" data-toggle="buttons">
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm active">
+                           <input type="radio" name="options" class="toggle" id="option1">Actions</label>
+                       <label class="btn btn-transparent dark btn-outline btn-circle btn-sm">
+                           <input type="radio" name="options" class="toggle" id="option2">Settings</label>
+                   </div>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<input type="hidden" name="budget_id" value="${(record.budget_id)!}" />
+            <input type="hidden" name="section" value="${(record.section)!}" />
+            <input type="hidden" name="id" value="${(record.id)!}" />
+           	<div class="form-body">
+
+                        <#if record.parent_id??&&(record.parent_id>0)>                     
+                       <div class="form-group">
+                        <label class="col-md-3 control-label">上级分类</label>
+                        <div class="col-md-6">
+                         <input type="hidden" name="parent_id" value="${(record.parent_id)!}" />
+                            <input type="text" value="${(record.parent_name)!}" readonly="readonly" style="height: 35px;width: 300px" class="form-control input-inline" >
+                        </div>
+                        </div>
+                  		 <div class="form-group">
+                           <label class="col-md-3 control-label">分类名称</label>
+                           <div class="col-md-6">
+                           		<!--  <input type="hidden" id="budget_class_name" name="name" value="${(record.name)!}" />-->
+				           		<input id="cc" class="easyui-combobox" name="name" value="${(record.name)!}" style="height: 35px;width: 300px"
+    									data-options="valueField:'id',textField:'text',url:'/budget/json_class_catalog_select2?section=${(section)!}&type=1&parent_id=${(record.parent_id)!}'">
+                           </div>
+                       </div> 
+                       <#else>
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">分类名称</label>
+                           <div class="col-md-6">
+                           		<!--  <input type="hidden" id="budget_class_name" name="name" value="${(record.name)!}" />-->
+				           		<input id="cc" class="easyui-combobox" name="name" value="${(record.name)!}" style="height: 35px;width: 300px"
+    									data-options="valueField:'id',textField:'text',url:'/budget/json_class_catalog_select2?section=${(section)!}&type=0'">
+                           </div>
+                       </div> 
+                       </#if>
+                     <div class="form-group">
+                        <label class="col-md-3 control-label">排序</label>
+                        <div class="col-md-6">
+                            <input type="text" name="weight" value="${(record.weight)!"1000"}" data-options="missingMessage:'请输入排序',required:true,height:32" class="form-control easyui-numberbox input-inline input-xsmall" placeholder="">
+                        </div>
+                        </div>
+                  	</div>
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                               <!-- <button type="button" class="btn default">取消</button> -->
+                           </div>
+                       </div>
+                   </div>
+                   
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+
+	
+	function save_data(){
+		console.log("save");
+		form_data_save("#ff", "/budget/json_budget_class_update", function(data){
+			//$("#treegrid").treegrid("reload");
+			//$("#tg").treegrid("reload");
+			$(".easyui-treegrid").treegrid("reload");
+		});
+	}
+	
+	$(function(){
+
+		$('#select2').select2({
+            //allowClear: true,
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择分类",
+            ajax:{
+            	url:"/budget/json_project_item_catalog_select2?section=${section!"-1"}",
+            	delay: 500,
+            	//dataType: 'json',
+			    data: function (params) {
+			    	
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			        budget_id: ${budget_id!"0"}
+			      };
+			
+			      // Query paramters will be ?search=[term]&page=[page]
+			      return query;
+			    },
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+
+			      return {results:data};
+
+			    }, 
+			    
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.sn);
+            	if(typeof data.sn != "undefined" && data.sn != null){
+					return data.sn + " - " + data.text;
+            	}else{
+            		return data.text;
+            	}
+
+			  }
+            
+        });
+		$('#select2').on('select2:select', function (e) {
+			  // Do something
+			  //console.log(e);
+			  //var selected_name = $.trim(e.target.textContent);
+			  //console.log(selected_name);
+			  //console.log(e.currentTarget.value);
+			  var selected_name = $('#select2 :selected').text();
+			  //console.log(selected_name);
+			  
+			  //if($("#budget_class_name").val() == ""){
+				  //设置预算名称
+				  $("#budget_class_name").val(selected_name);
+			  //}
+		});
+	});
+	
+
+</script>
