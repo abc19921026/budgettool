@@ -101,5 +101,17 @@ public class BudgetItemModel extends BudgetItem{
 				+" where name = ?";
 		List<Record> list = Db.find(sql, name);
 		return list;
-	}		
+	}	
+	
+	/**
+	 * 根据预算分类id查询分类下的工程项目个数
+	 * @param budget_class_id
+	 * @return
+	 */
+	public static int get_budget_item_num_by_class(int budget_class_id)throws Exception{
+		String sql = "select count(*) as total from budget_item where budget_class_id = ?";
+		Record re = Db.findFirst(sql, budget_class_id);
+		int total = re.getLong("total").intValue();
+		return total;
+	}
 }

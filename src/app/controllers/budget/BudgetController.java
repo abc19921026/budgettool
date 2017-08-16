@@ -256,4 +256,51 @@ public class BudgetController extends BaseController{
 			render_error_message(message);
 		}
 	}
+	
+	/**
+	 * 删除一条预算分类
+	 */
+	@Clear(LoginInterceptor.class)
+	public void json_budget_class_delete()throws Exception{		
+		String checked_ids = getPara("checked_ids");
+		String status = "SUCCESS", message = "删除成功";
+		int budget_id = 0;
+		if (StrKit.notBlank(checked_ids)) {
+			String[] delete_ids = checked_ids.split(",");
+			int budget_class_id = 0;
+			//BudgetClass bc = null;
+			for (int i = 0; i < delete_ids.length; i++) {
+				String id = delete_ids[i];
+				budget_class_id = Integer.parseInt(id);
+				BudgetClass bc = BudgetClass.dao.findById(budget_class_id);
+				if(bc == null){
+					continue;					
+				}
+				if(budget_id <= 0){
+					budget_id = BudgetClass.dao.findById(budget_class_id).getBudgetId();
+				}
+				//判断该分类下是否有子工程项目，如果有，禁止删除
+				if(BudgetItemModel.get_budget_item_num_by_class(budget_class_id) > 0){
+					status = "ERROR";
+					message = "该分类下有工程项目，请先删除工程项目再删除此分类";
+					break;//required!					
+					//TODO 有可能直接删除该分类下的工程项
+				}if(BudgetClassModel.get_budget_subclass(budget_class_id).size() > 0){
+					status = "ERROR";
+					message = "该分类下有下级分类，请先删除下级分类再删除此分类";
+					break;//required!				
+					//TODO 有可能直接删除该分类下的工程项
+				}else{
+					BudgetClassModel.dao.deleteById(id);
+				}
+
+			}
+			//更新预算合计
+//			BudgetModel.total(budget_id);
+		} else {
+			render_error_message("数据错误，请重试。");
+			return;//required!
+		}	
+		render_message(status, message);
+	}
 }
