@@ -3,10 +3,13 @@ package app.controllers.budget;
 import java.util.Map;
 
 import app.dao.Budget;
+import app.models.budget.BudgetClassModel;
+import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetModel;
 
 import com.jfinal.aop.Clear;
 import com.jfinal.kit.JsonKit;
+import com.jfinal.kit.StrKit;
 
 import system.core.BaseController;
 import system.core.BaseModel;
@@ -84,5 +87,41 @@ public class BudgetController extends BaseController{
 		}else{
 			render_error_message("请输入预算名称");
 		}
+	}
+	
+	/**
+	 * 批量删除预算
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_list_delete() throws Exception{
+		String checked_ids = getPara("checked_ids");
+		int force_delete = getParaToInt("force_delete", 0);//是否强制删除
+		String status = "SUCCESS", message = "删除成功";
+		if (StrKit.notBlank(checked_ids)) {
+			String[] delete_ids = checked_ids.split(",");
+			for (int i = 0; i < delete_ids.length; i++) {
+				String id = delete_ids[i];
+				int budget_id = Integer.parseInt(id);
+				//检查预算下的分类是否为空，如果不为空，禁止删除
+				if(force_delete == 0 && BudgetClassModel.get_budget_class_num_by_budget_id(budget_id) > 0){
+					render_error_message("请先删除预算中的项目!");
+					return;//required!
+				}else{
+					//删除预算分类
+					BudgetClassModel.delete_budget_class_by_budget_id(budget_id);
+					//删除预算项目
+					BudgetItemModel.delete_budget_item_by_budget_id(budget_id);
+					//删除预算line item
+					//BudgetLineItemModel.delete_budget_line_item_by_budget_id(budget_id);
+					//最后删除预算
+					Budget.dao.deleteById(id);					
+				}
+			}
+		} else {
+			render_error_message("数据错误，请重试。");
+			return;//required!
+		}
+		render_message(status, message);
 	}
 }
