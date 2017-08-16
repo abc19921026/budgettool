@@ -1,0 +1,109 @@
+
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <a href="/budget">项目预算</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span><#--${(order.order_name)!}-->${(budget.name)}</span>
+            </li>
+            <li>
+            	<i class="fa fa-circle"></i>
+            	<#if !(budget.status)?? || budget.status==0 >
+                	<span>未审核 </span>
+                <#elseif budget.status==1>
+                	<span>待审核</span>
+                <#elseif budget.status==2>
+                	<span>审核通过</span>
+                <#else>
+                	<span>审核未通过</span>
+                </#if>
+            </li>
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown"> 操作
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <!-- <li>
+                        <a href="#">
+                            <i class="icon-bell"></i> 预览</a>
+                    </li> -->
+                    <li>
+                        <a href="/budget/view_cover?budget_id=${budget_id}" target="_blank"><i class="fa fa-eye"></i> 查看封面</a>
+                    </li>
+                    <li>
+                        <a href="../../export?budget_id=${budget_id!0}" target="_blank">
+                            <i class="fa fa-print"></i> PDF预览</a>
+                    </li>
+                    <li class="divider"> </li>
+                    <#if budget.status==0 || budget.status==-1><!-- 未审核/审核未通过 -->
+                    	<#if TF.has_perm("order_budget_apply")>
+	                    <li>
+	                    	<a href="javascript:;" onclick="budgetapply()"><i class="fa fa-send-o"></i> 提交申请</a>
+	                    </li>
+	                    </#if>
+                    <#elseif budget.status==1><!-- 待审核 -->
+                    	<#if TF.has_perm("order_budget_check")>
+	                    <li>
+	                        <a href="javascript:;" onclick="budgetcheck()"><i class="glyphicon glyphicon-saved"></i> 审核 </a>
+	                    </li>  
+	                    </#if>                 
+                    </#if>
+                     <!-- 在下面我们要添加一个连接到内控的页面 -->
+                    <li>
+                        <a target="_blank" href="../../../../budget/cost/${budget_id!""}">
+                            <i class="fa fa-reply"></i> 预算内控</a>
+                    </li>
+                    <#--
+                    <#if !(budget.is_check)?? || budget.is_check==0>
+	                    <#if TF.has_perm("order_budget_check")>
+		                    <li>
+		                        <a href="javascript:;" onclick="check()">
+		                        <i class="fa fa-list-alt"></i>审核通过</a>
+		                    </li>
+	                    </#if>
+                    </#if>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <#if FLASH_DATA??>
+    <div class="alert alert-${(FLASH_DATA.type)!"success"} fade in">
+		<button type="button" class="close" data-dismiss="alert" ></button>
+		<i class="fa fa-info-circle"></i> ${(FLASH_DATA.message)!}
+	</div>  
+    </#if>
+    
+    <div class="tabbable">
+                                    
+           <ul class="nav nav-tabs nav-tabs-lg">
+           <li <#if section == 0 >class="active"</#if>>
+               <a href="../advanced_edit/${budget_id!}?section=0"> <i class="fa fa-tasks"></i> 基础工程部分 </a>
+           </li>
+           <li <#if section == 1 >class="active"</#if>>
+               <a href="../advanced_edit/${budget_id!}?section=1"><i class="fa fa-cubes"></i> 主材部分                
+               </a>
+           </li>
+           <li <#if section == 2 >class="active"</#if>>
+               <a href="../advanced_edit/${budget_id!}?section=2"><i class="fa fa-money"></i> 优惠                
+               </a>
+           </li>
+           <li <#if section == 3 >class="active"</#if>>
+               <a href="../line_item/${budget_id!}?section=3"><i class="glyphicon glyphicon-th-list"></i> 其他费用与汇总                
+               </a>
+           </li>                       
+       </ul>
+    </div>
+<script type="text/javascript">
+	function budgetapply(){
+		new_window('/budget/to_apply?budget_id=${budget_id}','',600,400);
+	}
+	
+	function budgetcheck(){
+		new_window('/budget/to_check?budget_id=${budget_id}','',800,600);
+	}
+</script>    

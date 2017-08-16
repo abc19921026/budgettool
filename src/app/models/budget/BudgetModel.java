@@ -51,7 +51,7 @@ public class BudgetModel extends Budget{
 	 * @param budget_id
 	 * @return
 	 */
-	public static String generate_budget_sn(){
+	public static String generate_budget_sn()throws Exception{
 		String budget_sn_token = "Y";
 		String sn = "";
 		Date date = new Date();
@@ -65,5 +65,17 @@ public class BudgetModel extends Budget{
         int random_4 = random.nextInt(max)%(max-min+1) + min;
 		sn = budget_sn_token + s + "-" + random_4;
 		return sn;
+	}
+	
+	public static Budget get_budget(int id)throws Exception {
+		// TODO Auto-generated method stub
+		try {
+			//Budget re = Budget.dao.findById(id);
+			String sql = "SELECT b.* FROM budget b WHERE b.id = ? ";
+			Budget re = Budget.dao.findFirst(sql, id);
+			return re;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

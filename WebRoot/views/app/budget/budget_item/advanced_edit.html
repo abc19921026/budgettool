@@ -1,0 +1,115 @@
+<#include "../../../inc/layout/page-default-top.html" />
+<#include "advance_edit_page_top.inc.html" />
+<div id="easyui-layout" class="easyui-layout" data-options="fit:true" style="">
+        <!-- <div data-options="region:'south',split:true" style="height:50px;"></div> -->
+        <!-- <div data-options="region:'east',split:true" title="小计" style="width:300px;"></div> -->
+        <div data-options="region:'west',split:true" title="分类" style="width:400px;height:600px;">
+        			     <table  class="easyui-treegrid" id="tg" style="width:376px;"
+			            data-options="
+			                url: '/budget/json_budget_class/${budget_id!""}?section=${section!"0"}',
+			                method: 'get',
+			                border:false,
+			                checkbox: false,
+			                rownumbers: false,
+			                idField: 'id',
+			                fitColumns:true,
+			                rownumbers: true,
+			                treeField: 'name',
+			                onDblClickRow: onTgDblclickRow,
+			                onLoadSuccess: onTgLoadSuccess,
+			                onContextMenu: onTgContextMenu,
+			                toolbar:tg_toolbar
+			            ">
+			        <thead>
+			            <tr>
+			            	<!-- <th data-options="field:'sn',align:'left',formatter:field_formatter_tg_sn" width="60">编号</th> -->
+			                <th data-options="field:'name', width:250">预算分类</th>                
+			                <th data-options="field:'subtotal',width:60, formatter:field_formatter_money,styler:field_styler_highlight" align="right">金额</th>
+			                <!-- <th data-options="field:'section', width:50">section</th> -->
+							<!-- <th data-options="field:'operation', formatter:field_formatter_tg_operation" width="100" align="right">操作</th> -->
+							 <!-- <th data-options="field:'comment'" width="" align="left">备注</th> -->
+			            </tr>
+			        </thead>
+			    </table>
+        </div>
+        <div data-options="region:'center',title:' '">
+            <table id="dg" class="easyui-datagrid"
+                    data-options="url:'/budget/item/advanced_edit_budget_item_load_json',
+                    rownumbers:true,
+                    <!-- queryParams:{budget_class_id:${budget_class_id!}}, -->
+                    method:'get',
+                    pagination:true,
+			        pageSize:50,
+                    checkOnSelect:false,
+                    striped:true,
+                    border:false,
+                    showFooter:true,
+                    <!-- singleSelect:true, -->
+                    <!-- onClickCell: onClickCell, -->
+                    <!-- onEndEdit:onEndEdit, -->
+                    onLoadSuccess:onDgLoadSuccess,
+                    fitColumns:true,
+                    toolbar:dg_toolbar
+                    " style="height:700px;">                  
+                <thead>
+                    <tr>
+                    	<th data-options="field:'ck',checkbox:true">全选</th>
+                        <th data-options="field:'name',formatter:field_formatter_dg_name" width="250">名称</th>
+                        <th data-options="field:'num',align:'left',editor:{type:'numberbox',options:{precision:2}}" width="80">数量</th>                        
+                        <th data-options="field:'unit'" width="40">单位</th>
+                        <th data-options="field:'price',align:'center',formatter:field_formatter_money_fixed" width="60">单价</th>
+                        <th data-options="field:'amount',align:'center',formatter:field_formatter_money,styler:field_styler_highlight" width="60">金额</th>
+                        <th data-options="field:'printable',align:'center',
+                        formatter:field_formatter_dg_printable,
+                        editor:{type:'checkbox',options:{on:'1',off:'0'}}" width="80">是否打印</th>
+                        <!-- <th data-options="field:'section',align:'left'" width="60">section</th> -->
+                        <#if section == 1>
+						<!-- <th data-options="field:'material_info',align:'left'" width="200">主材信息</th> -->
+						<th data-options="field:'product_name',align:'left'" width="200">产品名称</th>
+						<th data-options="field:'brand_name',align:'left'" width="100">品牌</th>
+						<th data-options="field:'specs',align:'left'" width="100">规格</th>
+						<th data-options="field:'model',align:'left'" width="100">型号</th>
+						</#if>
+						<#if section == 2>                    
+						<th data-options="field:'comment',align:'left'" width="250">备注</th>
+						</#if>
+                        <th data-options="field:'id',align:'center',formatter:field_formatter_dg_operation" width="60">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+<div class="margin-bottom-40"></div>
+<div id="mm" class="easyui-menu" style="width:200px;display:none;">
+    <div onclick="tg_add_sub_class();" data-options="iconCls:'glyphicon glyphicon-plus'">添加下级分类</div>
+    <div onclick="budget_class_edit();" data-options="iconCls:'glyphicon glyphicon-edit'">编辑</div>
+    <div class="menu-sep"></div>
+    <div onclick="tg_expand_all();" data-options="iconCls:'glyphicon glyphicon-indent-left'">全部展开</div>
+    <div onclick="tg_collapse_all();" data-options="iconCls:'glyphicon glyphicon-indent-right'">全部收起</div>
+    <div class="menu-sep"></div>
+    <!-- <div onclick="tg_data_move()" data-options="iconCls:'glyphicon glyphicon-arrow-up'">向上移动 [Alt+方向上键]</div>
+    <div onclick="tg_data_move()" data-options="iconCls:'glyphicon glyphicon-arrow-down'">向下移动 [Alt+方向下键]</div>
+    <div class="menu-sep"></div> -->
+    <div onclick="budget_class_delete()" data-options="iconCls:'glyphicon glyphicon-trash'">删除</div>
+    <div onclick="window.location.reload();" data-options="iconCls:'glyphicon glyphicon-refresh'">页面刷新</div>
+    <!-- <div onclick="save()">保存</div> -->
+</div>
+<input type="hidden" id="budget_id" value="${budget_id}"> 
+<script src="${BASE_PATH}public/js/accounting.min.js"></script>
+<script src="${BASE_PATH}public/js/datagrid_field.js"></script>
+<script src="${BASE_PATH}public/js/jquery.hash.js"></script>
+<script src="${BASE_PATH}public/js/jquery.blockUI.js"></script>
+<script>
+var BUDGET_ID = ${budget_id!-1};
+var SECTION = ${section!-1};
+var CHANGED_ROWS = [];//修改过数量的行
+var CHANGED_ROWS_PRINTABLE = [];//修改过 是否打印 的行
+$(window).bind("beforeunload", function() { 
+	//if(CHANGED_ROWS.length > 0){return '数据未保存，确认离开此页吗？';}
+	if(has_row_changed()){return '数据未保存，确认离开此页吗？';}
+});
+
+
+</script>
+<script src="${BASE_PATH}public/js/budget_advanced_edit.js"></script>
+<#include "../../../inc/layout/page-default-bottom.html" />    

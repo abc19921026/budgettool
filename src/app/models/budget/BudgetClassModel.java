@@ -1,5 +1,7 @@
 package app.models.budget;
 
+import java.util.List;
+
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
@@ -29,5 +31,30 @@ public class BudgetClassModel extends BudgetClass{
 		String sql = "delete from budget_class where budget_id = ?";
 		re = Db.update(sql, budget_id);
 		return re;
+	}
+	
+	public static List<BudgetClass> get_budget_class(int budget_id, int section) {
+		try {
+			String sql = "select b_c.*, b_c.name as text "
+					+ "from budget_class b_c where parent_id = 0 "
+					+ "and budget_id = ? and section = ? order by b_c.weight asc";
+			List<BudgetClass> re = dao.find(sql, budget_id, section);
+
+			return re;
+		} catch (Exception e) {
+			return null;
+		}
+	}	
+	
+	public static List<BudgetClass> get_budget_subclass(int budget_class_id) {
+		try {
+			String sql = "select b_c.*, b_c.name as text from budget_class b_c where parent_id = ? "
+					+ "order by b_c.weight asc";
+			List<BudgetClass> re = dao.find(sql, budget_class_id);
+
+			return re;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

@@ -1,8 +1,10 @@
 package app.controllers.budget;
 
+import java.util.List;
 import java.util.Map;
 
 import app.dao.Budget;
+import app.dao.BudgetClass;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetModel;
@@ -123,5 +125,25 @@ public class BudgetController extends BaseController{
 			return;//required!
 		}
 		render_message(status, message);
+	}
+	
+	@Clear(LoginInterceptor.class)
+	public void json_budget_class()throws Exception{
+		int budget_id = getParaToInt(0, 0);
+		int section = getParaToInt("section", 0);
+		if(budget_id <=0){
+			renderError(404);
+		}
+		//按不同部分section 加载
+		List<BudgetClass> re = BudgetClassModel.get_budget_class(budget_id, section);
+		
+		for(int i = 0; i < re.size(); i++){
+			List<BudgetClass> budgetSubClass = BudgetClassModel.get_budget_subclass(re.get(i).getId());
+			if(budgetSubClass.size() > 0){
+				re.get(i).put("children", budgetSubClass);
+			}
+		}
+		String jsonList = JsonKit.toJson(re);
+		renderJson(jsonList);
 	}
 }
