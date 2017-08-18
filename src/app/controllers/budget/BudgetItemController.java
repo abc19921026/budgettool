@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.jfinal.aop.Clear;
 import com.jfinal.kit.StrKit;
 
@@ -181,5 +182,46 @@ public class BudgetItemController extends BaseController{
 		footer.add(footer_line_item);
 		re.put("footer", footer);
 		renderJson(re);
+	}
+	/**
+	 * 批量更新预算项目
+	 */
+	@Clear(LoginInterceptor.class)
+	public void advanced_edit_save(){
+		String jsonString = getPara("data", "");
+		
+		int budget_class_id = getParaToInt("budget_class_id", 0);
+		
+		//将前台获取的json数据转换成list数组
+		List<BudgetItem> list_budget_item = JSON.parseArray(jsonString, BudgetItem.class);
+		for(int i = 0;i < list_budget_item.size();i ++){
+			BudgetItem budget_item = list_budget_item.get(i);
+			if(budget_item != null){
+				//金额在后台更新
+				BigDecimal amount = budget_item.getPrice().multiply(budget_item.getNum());
+				budget_item.setAmount(amount);
+				BaseModel.setUpdateTime(budget_item);
+				//如果数量不为0，设为必须打印
+				BigDecimal zero = new BigDecimal(0);
+				if(budget_item.getNum().compareTo(zero) != 0){//-1 小于   0 等于    1 大于 
+					budget_item.setPrintable(1);
+				}
+				budget_item.update();
+				
+				//更新各单项金额
+				int budget_item_id = budget_item.getId();
+				BigDecimal num = budget_item.getNum();
+				
+				//批量更新时不更新价格，只更新数量
+				
+				//计算各单项金额和成本
+				BudgetItemModel.caculate_budget_item_amount_cost(budget_item_id, num);
+			}
+		}
+		
+		//更新分类小计与预算合计
+		BudgetClassModel.subtotal(budget_class_id);
+		
+		render_success_message("保存成功");
 	}
 }
