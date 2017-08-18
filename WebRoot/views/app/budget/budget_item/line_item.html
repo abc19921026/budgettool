@@ -1,0 +1,271 @@
+<#include "../../../inc/layout/page-default-top.html" />
+
+<#include "advance_edit_page_top.inc.html" />
+
+<div id="layout">
+		<div class="margin-bottom-10">
+			<a title="按回车键可以快速保存"  data-placement="top" onclick="line_item_save();" class="btn btn-sm btn-success tooltips"><i class="fa fa-save"></i> 保存</a>
+			<a data-placement="top" onclick="reject();" class="btn btn-sm btn-default tooltips"><i class="icon-reload"></i> 取消</a>
+		</div>
+
+
+         <table id="dg" class="easyui-datagrid"
+                 data-options="url:'/budget/item/line_item_json/${budget_id!41}',
+                 rownumbers:true,
+                 <!-- queryParams:{budget_class_id:${budget_class_id!}}, -->
+                 method:'get',
+                 pagination:false,
+       			 pageSize:10,
+                 <!-- checkOnSelect:false, -->
+                 striped:true,
+                 border:true,
+                 <!-- singleSelect:true, -->
+                 <!-- onClickCell: onClickCell, -->
+                 <!-- onEndEdit:onEndEdit, -->
+                 onLoadSuccess:onLineItemLoadSuccess,
+                 <!-- toolbar:dg_toolbar, -->
+                 showFooter:true,
+                 fitColumns:true
+                 " style="height:350px;">                  
+          <thead>
+              <tr>
+              	<!-- <th data-options="field:'ck',checkbox:true">全选</th> -->
+                  <th data-options="field:'line_item_name'" width="150">项目</th>
+                  <th data-options="field:'line_item_amount',align:'left',
+                  editor:{type:'numberbox',options:{precision:2}},
+                  formatter:field_formatter_money,
+                  styler:field_styler_highlight"
+                   width="100">工程造价（元）</th>
+		<th data-options="field:'line_item_comment',align:'left'" width="250">备注</th>
+		<!-- <th data-options="field:'id',align:'left'" width="250">操作</th> -->
+              </tr>
+          </thead>
+      </table>
+</div>   
+        
+    
+   
+<script src="${BASE_PATH}public/js/accounting.min.js"></script>
+<script src="${BASE_PATH}public/js/datagrid_field.js"></script>
+<script src="${BASE_PATH}public/js/jquery.hash.js"></script>
+<script src="${BASE_PATH}public/js/jquery.blockUI.js"></script>
+<script>
+
+
+
+var BUDGET_ID = ${budget_id!0};
+var SECTION = ${section!0};
+
+var CHANGED_ROWS = [];//用来检查没有数据修改时不向后台提交
+
+$(window).bind("beforeunload", function() { 
+	if(CHANGED_ROWS.length > 0){return '数据未保存，确认离开此页吗？';}
+});
+
+
+
+function onLineItemLoadSuccess(data){
+
+	//console.log(data);
+	$.each(data.rows, function(index, element){
+		//页面加载完成后，开启 数量 编辑框
+		//console.log(element);
+		if($.inArray(element.line_item_field, ["project","material","management"]) >= 0 ){
+			//基础工程小计和主材小计不开放编辑
+			return;
+		}
+		$('#dg').datagrid('beginEdit', index);
+		//绑定 编辑器 事件
+		//return;
+        var ed = $('#dg').datagrid('getEditor', {index:index, field: "line_item_amount"});
+		//console.log(element);
+		var initial_value = element.line_item_amount;
+        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target))
+        .data("ROW_INDEX", index)//把index放在自定义数据中
+        .data("INITIAL_VALUE", initial_value)//把初始值放在自定义数据中
+        .attr("tabindex", index+1);//避免index为0
+        //textbox是在原input 后 新加的input
+        //textbox('textbox') Return the textbox object. The user can bind any events to this editing box.
+        //console.log(ed);
+        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).bind('keyup', function(e){
+        	//alert("hi");
+        	//移除焦点时更新金额
+         	var current_value = $(this).val();
+         	var initial_value = $(this).data("INITIAL_VALUE");//页面初始化时数量，用来判断用户是否修改了数量值
+         	var VALUE_CHANGED = false;
+         	if(current_value != initial_value){
+         		VALUE_CHANGED = true;
+         	}
+         	
+        	var row_index = $(this).data("ROW_INDEX");
+        	//console.log(index);
+        	var row = $('#dg').datagrid('getRows')[row_index];
+        	//console.log(row);
+        	//var price = row.price;
+        	//console.log(val);
+        	//console.log(price);
+        	//var amount = price * num; 
+        	//amount = accounting.formatMoney(amount);
+        	
+        	//$('#dg').datagrid('endEdit', row_index);
+        	//更新金额
+        	//$('#dg').datagrid('updateRow', {"index":row_index, row:{"amount":amount}});
+        	//更新后再次开启编辑框
+        	//console.log(amount);
+        	//找到金额
+        	//$(this).closest("td[field='num']").css({border:"1px solid #f00"});
+        	//定位到相同行的金额列，更新金额
+        	//$(this).closest("td[field='num']").siblings("td[field='amount']").find("div").html(amount);
+        	
+
+        	//$('#dg').datagrid('selectRow', row_index);
+        	//var row = $('#dg').datagrid('getRows')[row_index];
+        	if(VALUE_CHANGED){
+        		$(this).closest("tr.datagrid-row").addClass("datagrid-row-changed");
+        		CHANGED_ROWS.push(row_index);//有变动的行加入
+        		//更新footer中的合计数值
+        		update_total(current_value);
+        	}else{
+        		$(this).closest("tr.datagrid-row").removeClass("datagrid-row-changed");
+        		//console.log(row_index);
+				if(CHANGED_ROWS.indexOf(row_index) >= 0){
+        			CHANGED_ROWS.splice(CHANGED_ROWS.indexOf(row_index), 1);//有变动的行删除	
+				}
+        	}
+  
+        	CHANGED_ROWS = $.unique(CHANGED_ROWS);
+          	//console.log(CHANGED_ROWS);
+        	//$('#dg').datagrid('beginEdit', row_index);
+        	//var price = 
+        }).bind("focus",function(e){
+        	//获得焦点时选中
+        	$(this).select();
+        }).bind("keyup",function(e){
+        	var row_index = $(this).data("ROW_INDEX");
+        	//console.log(index);
+			
+        	
+            var code = e.keyCode || e.which;
+			//console.log(code);
+            if(code == 13) { //Enter keycode 回车键
+              //Trigger code to save row
+                                  //This executes onAfterEdit event code
+              //更新 金额列
+
+				
+              	//$('#dg').datagrid('endEdit', index);
+            	line_item_save();
+            }else if(code == 40){
+            	//方向下键
+            	//var row = $('#dg').datagrid('getRows')[row_index + 1];
+            	//获取下一行的编辑框
+            	var ed = $('#dg').datagrid('getEditor', {index:row_index + 1, field: "line_item_amount"});
+            	//console.log(row_index);
+            	if(!ed){return;}
+            	($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+            	
+            }else if(code == 38){
+            	//方向上键
+            	if(row_index == 0){
+            		return;
+            	}
+            	var ed = $('#dg').datagrid('getEditor', {index:row_index - 1, field: "line_item_amount"});
+            	if(!ed){return;}
+            	//console.log(row_index);
+            	($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();            	
+            }
+        });
+	});
+
+}
+
+function line_item_save(){
+    
+
+    //$('#dg').datagrid('acceptChanges');
+    //console.log(CHANGED_ROWS);
+    if(CHANGED_ROWS.length <= 0){$.messager.alert("提示", "没有任何修改", "info");return;}
+    var rows = $("#dg").datagrid("getRows");
+    if(rows.length > 0){   
+    	//console.log(rows);
+    	$('#dg').datagrid('acceptChanges');
+    	update_data(rows);
+    }else{
+    	return true;
+    	//$.messager.alert("", "没有任何修改");
+    }
+}
+
+//向后台发送请求
+function update_data(rows){
+	//console.log(rows);
+	$.messager.progress({msg:"正在处理，请稍候...",text:""});
+	
+	var post_data = [];
+	$.each(rows, function(k, v){
+		post_data.push(v);
+	});
+	try{
+    	post_data = JSON.stringify(post_data);
+    	var budget_id = BUDGET_ID;
+    	//console.log(post_data);
+     	$.ajax({
+    		url: "/budget/item/line_item_update_json?budget_id=" + budget_id,
+    		data: {"data":post_data},
+    		method: "post",
+    		success: function(){
+    			$.messager.progress("close");
+    			//$.messager.alert("","保存成功.");
+    			CHANGED_ROWS = [];
+    			$("#dg").datagrid("reload");
+    			//$("#tg").treegrid("reload");
+    		},
+    		error:function(){
+    		   $.messager.progress("close");
+    			$.messager.alert("","保存失败，请重试.", "error",function(re){
+    				window.location.reload();
+    			});
+    		}
+    	}); 
+	}catch(e){
+		alert("客户端错误，请更换浏览器重试.");
+	}
+}
+
+function reject(){
+    $('#dg').datagrid('rejectChanges');
+    CHANGED_ROWS = [];
+}
+//更新预算合计
+function update_total(current_row_value){
+	var footer_rows = $('#dg').datagrid('getFooterRows');
+	//rows[0]['name'] = 'new name';
+	var rows = $('#dg').datagrid('getRows');
+	var total = 0;
+	$.each(rows, function(index, row){
+		//console.log(row);
+		var line_item_amount = 0;
+		//先找编辑器的值
+		//console.log(row);
+		var ed = $('#dg').datagrid('getEditor', {index:index, field: "line_item_amount"});
+		if(ed){
+			//拿编辑框中的值
+			var ed_target = $(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target);
+			line_item_amount = ed_target.val();
+		}else{
+			line_item_amount = row.line_item_amount;
+		}
+		//console.log(line_item_amount);
+		
+		total += Number(line_item_amount);
+		//console.log(total);
+	});
+	//console.log(total);
+	//var total = Number(current_row_value) + line_item_amount;
+	footer_rows[0]['line_item_amount'] = total;
+	$('#dg').datagrid('reloadFooter');
+}
+
+</script>
+<!-- <script src="${BASE_PATH}public/js/budget_advanced_edit.js"></script> -->
+<#include "../../../inc/layout/page-default-bottom.html" />    

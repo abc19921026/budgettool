@@ -81,4 +81,34 @@ public class BudgetModel extends Budget{
 			return null;
 		}
 	}
+	
+	/**
+	 * 预算总计
+	 * 
+	 * @param budget_id
+	 *            预算id
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean total(int budget_id) {
+		if(budget_id <=0 ){
+			return false;
+		}
+		boolean result = false;
+		BigDecimal total;
+		//先计算基础工程总计
+		BudgetLineItemModel.subtotal_by_section(budget_id, 0);
+		//计算主材工程总计
+		BudgetLineItemModel.subtotal_by_section(budget_id, 1);
+		//计算管理费
+		BudgetLineItemModel.subtotal_management(budget_id);
+		String sql = "SELECT SUM(line_item_amount) AS total FROM budget_line_item  WHERE budget_id = ?";
+		Record re = Db.findFirst(sql, budget_id);
+		total = re.getBigDecimal("total");
+		if(total != null){
+			result = Budget.dao.findById(budget_id).set("total", total).update();
+		}
+		
+		return result;
+	}
 }

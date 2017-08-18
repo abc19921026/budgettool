@@ -1,0 +1,312 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- <h3 class="page-title"> 预算编号：#20160702-47</h3> -->
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title display-none">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold uppercase">工程项目</span>
+               </div>
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">         				
+           				<input type="hidden" name="record.budget_id" value="${(budget_class.budget_id)!""}" />
+           				<input type="hidden" name="record.budget_class_id" value="${(budget_class.id)!}" />
+           				<input type="hidden" name="record.section" value="${(budget_class.section)!""}" />
+           				<input type="hidden" name="record.id" value="${(record.id)!""}" />
+                       
+                        <div class="form-group">
+                           <label class="col-md-2 control-label">预算分类</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control input-large" value="${budget_class.name}" readonly="readonly" />
+                           </div>
+                       </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">项目名称</label>
+                           <div class="col-md-6">
+                    			<#if record.id??>
+                    			<input name="record.name" class="form-control input-inline  easyui-validatebox" required="required" style="width:900px;height: 32px" value="${(record.name)!}">
+                    			<#else>
+                    			<select class="easyui-combogrid easyui-validatebox" id="mallid" name="record.name" style="width:800px;height: 32px" data-options="
+									panelWidth: '800px',
+									panelHeight:'450px',
+									idField: 'name',
+									textField: 'name',
+									url: '/budget/json_budget_item_select2',
+									method: 'get',
+									pagination : true,//是否分页
+									pageSize: 10,//每页显示的记录条数，默认为10 
+									fitColumns: true,
+									rownumbers:true,//序号
+									nowrap:false,
+									columns: [[
+										{field:'name',title:'项目名称',width:'40%'},
+										{field:'class_name',title:'分类',width:'25%',align:'center'},
+										{field:'unit',title:'单位',width:'70px',align:'center'},
+										{field:'price',title:'单价',width:'130px',formatter:field_formatter_money,align:'center'}
+									]],
+									keyHandler: {  
+                            			up: function() {},  
+                            			down: function() {},  
+                            			enter: function() {},  
+			                            query: function(q) {  
+			                                //动态搜索  
+			                                $('#mallid').combogrid('grid').datagrid('reload', { 'keyword': q });  
+			                                $('#mallid').combogrid('setValue', q);  
+			                            },  
+                        			},
+                        			onSelect:function(newValue,oldValue){
+                        				var select=$('#mallid').combogrid('grid').datagrid('getSelected');//获得选中的行
+                        				$('#price_material').numberbox('setValue',select.price_material);
+                        				$('#price_assist').numberbox('setValue',select.price_assist);
+                        				$('#price_labor').numberbox('setValue',select.price_labor);
+                        				$('#price_machinery').numberbox('setValue',select.price_machinery);
+                        				$('#price_loss').numberbox('setValue',select.price_loss);
+                        				$('#unit').val(select.unit);
+                        				$('#price').val(select.price);                     
+                        				update_price();//更新金额
+                        			},
+                        			missingMessage:'请输入关键字搜索',
+                        			required:true
+									">
+								</select>
+								</#if>
+                           </div>
+                       </div>       
+	                 <div class="form-group">
+	                 		<label class="col-md-2 control-label">单项价格</label>                      
+				<div class="col-md-10" id="segment_price">
+	
+				<label class="control-label">主材</label>
+                 <input type="text" id="price_material" name="budget_item_amount.price_material" value="${(budget_item_amount.price_material)!"0.00"}"
+                  data-options="missingMessage:'请输入主材价格',required:true,precision:2,height:32,tipPosition:'bottom',onChange:update_price,disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+	
+				<label class="control-label">辅材</label>
+                 <input type="text" id="price_assist" name="budget_item_amount.price_assist" value="${(budget_item_amount.price_assist)!"0.00"}"
+                  data-options="missingMessage:'请输入辅材价格',required:true,precision:2,height:32,tipPosition:'bottom',onChange:update_price,disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+			
+							
+				<label class="control-label">机械</label>
+                 <input type="text" id="price_machinery" name="budget_item_amount.price_machinery" value="${(budget_item_amount.price_machinery)!"0.00"}"
+                  data-options="missingMessage:'请输入机械价格',required:true,precision:2,height:32,tipPosition:'bottom',onChange:update_price,disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+			
+			
+				<label class="control-label">人工</label>
+                  <input type="text" id="price_labor" name="budget_item_amount.price_labor" value="${(budget_item_amount.price_labor)!"0.00"}"
+                  data-options="missingMessage:'请输入人工价格',required:true,precision:2,height:32,tipPosition:'bottom',onChange:update_price,disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+				
+			
+				<label class="control-label">损耗</label>
+                   <input type="text" id="price_loss" name="budget_item_amount.price_loss" value="${(budget_item_amount.price_loss)!"0.00"}"
+                    data-options="missingMessage:'请输入损耗价格',required:true,precision:2,height:32,tipPosition:'bottom',onChange:update_price,disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">															
+	              </div>                                              
+	           </div><!-- .form-group -->
+                       
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">单位</label>
+                           <div class="col-md-6">
+                                <input type="text" id="unit" name="record.unit" value="${(record.unit)!}"
+	                                class="form-control input-inline input-small"  />
+                           </div>
+                       </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">单价</label>
+                           <div class="col-md-6">
+                                <input type="text" id="price" name="record.price" value="${(record.price)!"0"}"
+	                                class="form-control input-inline input-small" readonly="readonly" />
+                           </div>
+                       </div><!-- .form-group -->
+                       
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">数量</label>
+                           <div class="col-md-6">
+                                <input type="text" id="num" name="record.num" value="${(record.num)!"1"}"
+                                data-options="missingMessage:'请输入数量',required:true,precision:2,height:32,tipPosition:'right',onChange:update_price" 
+	                                class="form-control easyui-numberbox input-inline input-small">
+	                                <!-- <input type="text" id="num" name="record.num" value="${(record.num)!"0"}" /> -->
+                           </div>
+                       </div><!-- .form-group -->                                               
+
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">金额</label>
+                           <div class="col-md-6">
+                                <input type="text" id="amount" name="record.amount" value="${(record.amount)!"0"}"
+	                                class="form-control input-inline input-small" readonly="readonly" />
+                           </div>
+                       </div><!-- .form-group -->                   
+                       
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">排序<span class="required"></span></label>
+                           <div class="col-md-6">
+                               <input type="text" name="record.weight" value="${(record.weight)!}" data-options="missingMessage:'请输入排序',required:true,height:32" class="form-control easyui-numberbox input-inline input-small" placeholder="">
+                           </div>
+                       </div><!-- .form-group -->
+                      
+                      
+                      <div class="form-group">
+                           <label class="col-md-2 control-label">备注</label>
+                           <div class="col-md-8">
+                               <textarea name="record.comment" rows="2" class="form-control">${(record.comment)!""}</textarea>
+                           </div>
+                       </div><!-- .form-group -->  
+                       
+                       
+                  </div><!-- .form-body -->
+                  
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-2 col-md-9">
+                               <button type="button" onclick="save();" class="btn green">提交</button>
+                               <!-- <button type="button" class="btn default">取消</button> -->
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+	/* $("#save").click(function(){
+		$.messager.alert("hi");
+	}); */
+/* 	$(function(){
+		$('input.easyui-validatebox').validatebox({
+                validateOnCreate: false,
+                err: function(target, message, action){
+                    var opts = $(target).validatebox('options');
+                    message = message || opts.prompt;
+                    $.fn.validatebox.defaults.err(target, message, action);
+                }
+            });
+	}); */
+	
+	function save(){
+		if($("#price_loss").val()==""||$("#price_machinery").val()==""||$("#price_labor").val()==""||$("#price_assist").val()==""||$("#price_material").val()==""){
+			$.messager.alert("","单项价格中不能存在空项，请填写完整","warning");
+		}else{
+			form_data_save("#ff", "/budget/item/json_budget_item_details_update", function(data){
+				//console.log(data);
+				try{
+					$(".easyui-datagrid").datagrid("reload");
+					$(".easyui-treegrid").treegrid("reload");
+				}catch(e){
+					console.log(e);
+				}
+			},{window_close:true});
+		}
+	}
+	
+	function update_price(){
+		//console.log(newValue);
+		var price = 0;
+		$("#segment_price .easyui-numberbox").each(function(index, item){
+			price += changeTwoDecimal($(item).val());
+		});
+		//var price = $("#price").val();
+		var num = changeTwoDecimal($("#num").val());
+		//price *= num;
+		//console.log(num);
+		$("#price").val(price);//单价
+		var amount = price*num;
+		$("#amount").val(amount);//金额
+	}
+	
+	function changeTwoDecimal(x)
+	{
+		var f_x = parseFloat(x);
+		if (isNaN(f_x))
+		{
+		//alert('function:changeTwoDecimal->parameter error');
+		return 0;
+		}
+		f_x = Math.round(f_x *100)/100;
+	
+		return f_x;
+	}	
+	
+	
+	$(function(){
+
+		<#if !(record.id)??><#-- 编辑页面不让他修改工程项目 -->
+		 $('#select2').select2({
+            //theme:"default",
+            language: "zh-CN",
+            minimumInputLength: 0,//2
+            placeholder:"请选择项目",
+            ajax:{
+            	url:"/budget/json_budget_item_select2",
+            	delay: 500,
+            	//dataType: 'json',
+            	data:function(params){
+      		      var query = {
+      			        q: params.term,
+      			        page: params.page,
+      			        rows: 50,
+      			      	project_item_catalog_id: ${(budget_class.project_item_catalog_id)!"-1"}
+      			  };
+            	
+      			  // Query paramters will be ?search=[term]&page=[page]
+      			  return query;
+            	},
+            	cache:true,
+             	processResults: function (data, params) {//when use ajax data this method is required!!!
+
+			      return {results:data};
+
+			    }, 
+			    
+            },
+            //data:person_info,
+            templateResult: function (data) {
+            	//console.log(data.sn);
+            	if(typeof data.index_no != "undefined" && data.index_no != null){
+					//return data.index_no + " - " + data.text;
+					return data.text + " [" + data.index_no + "]"; 
+            	}else{
+            		return data.text;
+            	}
+
+			}		
+            
+        }); 
+		</#if>
+		
+		
+		$('#select2').on('select2:select', function (e) {
+			  // Do something
+			  //console.log("hi");
+			  //console.log(e.currentTarget.value);
+		});
+		
+		$("#num").keyup(function(e){
+			//console.log("c");
+			update_price();
+		});
+				
+	});	
+
+</script>

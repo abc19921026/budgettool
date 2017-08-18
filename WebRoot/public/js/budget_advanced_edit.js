@@ -345,6 +345,7 @@ function tg_data_add(){
 	var budget_id = BUDGET_ID;
 	var section = SECTION;
 	new_window('../../budget_class_edit?level=top&budget_id=' + budget_id + "&section=" + section);
+		
 }
 
 /**
@@ -354,8 +355,20 @@ function tg_add_sub_class(){
 	var budget_id = BUDGET_ID;
 	var section = SECTION;
 	var budget_class_id = $("#tg").treegrid("getSelected").id;
-	//console.log(budget_class_id);
-	new_window('../../budget_class_edit?budget_id=' + budget_id + "&parent_id=" + budget_class_id + "&section=" + section);
+	$.ajax({
+		type:'POST',
+		url:'/budget/check_has_budget_item?id='+budget_class_id,
+		dataType:"json",
+		success:function(data){
+			if(data>0){
+				$.messager.alert("提示", "该预算分类下存在项目，不能新建下级预算分类，如需新建下级预算分类，请先删除项目", "info");
+				return;
+			}else{
+				new_window('../../budget_class_edit?budget_id=' + budget_id + "&parent_id=" + budget_class_id + "&section=" + section);
+			}
+		}
+	});	
+	
 }
 
 function tg_item_move(index, up_down){
@@ -389,13 +402,28 @@ function dg_data_add(){
 			$.messager.alert("提示", "请选择预算分类", "info");
 			return;
 		}
+	}else {
+		$.ajax({
+			type:'POST',
+			url:'/budget/check_has_subclass?id='+budget_class_id,
+			dataType:"json",
+			success:function(data){
+				//console.log(data);
+				if(data>0){
+					$.messager.alert("提示", "该预算分类下存在下级预算分类，不能新建项目，如需新建项目，请先删除下级预算分类", "info");
+					return;
+				}else{
+					new_window('../../budget_item_edit?budget_class_id=' + budget_class_id,"",1200,700);
+				}
+			}
+		});		
 	}
-	new_window('../../budget_item_edit?budget_class_id=' + budget_class_id);
+	
 }
 
 function dg_data_edit(budget_item_id){
 	//console.log(id);
-	new_window('/budget/budget_item_edit?id=' + budget_item_id, "", 800, 610);
+	new_window('/budget/budget_item_edit?id=' + budget_item_id, "", 1200, 700);
 }
 
 /**

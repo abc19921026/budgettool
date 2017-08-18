@@ -1,5 +1,6 @@
 package app.models.budget;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -70,5 +71,39 @@ public class BudgetClassModel extends BudgetClass{
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	/**
+	 * 小计
+	 * 
+	 * @param budget_class_id
+	 *            预算分类id
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean subtotal(int budget_class_id){
+		if(budget_class_id <= 0){
+			return false;
+		}
+		boolean result = false;
+		BigDecimal total;
+		int budget_id = 0;
+		String sql = "SELECT SUM(amount) AS total FROM budget_item WHERE budget_class_id = ?";
+		Record re = Db.findFirst(sql, budget_class_id);
+		total = re.getBigDecimal("total");
+		
+		BudgetClass bc = BudgetClass.dao.findById(budget_class_id);
+		budget_id = bc.getBudgetId();
+
+		result = bc.set("subtotal", total).update();
+		
+		int budget_parent_id = bc.getParentId();
+		if(budget_parent_id > 0){
+			sql = "SELECT SUM(subtotal) AS total FROM budget_class WHERE parent_id = ?";
+			re = Db.findFirst(sql, budget_parent_id);
+			total = re.getBigDecimal("total");
+			BudgetClass.dao.findById(budget_parent_id).set("subtotal", total).update();
+		}
+		BudgetModel.total(budget_id);	
+		return result;
 	}
 }

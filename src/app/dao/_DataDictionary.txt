@@ -112,6 +112,20 @@ Table: budget_item_cost
  updated             | INT(10)       | YES  |     |         | 更新时间戳   
 ---------------------+---------------+------+-----+---------+---------
 
+Table: budget_line_item
+-------------------+---------------+------+-----+---------+---------
+ Field             | Type          | Null | Key | Default | Remarks 
+-------------------+---------------+------+-----+---------+---------
+ id                | INT(10)       | NO   | PRI |         |         
+ section           | INT(10)       | NO   |     |         | 0基础工程1主材2优惠
+ budget_id         | INT(10)       | NO   |     |         |         
+ weight            | INT(10)       | YES  |     |         | 排序      
+ line_item_field   | CHAR(50)      | YES  |     |         | base_project/material/other
+ line_item_name    | VARCHAR(50)   | YES  |     |         |         
+ line_item_comment | VARCHAR(255)  | YES  |     |         |         
+ line_item_amount  | DECIMAL(10,2) | YES  |     | 0.00    |         
+-------------------+---------------+------+-----+---------+---------
+
 Table: crm_department
 -------------+-------------+------+-----+---------+---------
  Field       | Type        | Null | Key | Default | Remarks 

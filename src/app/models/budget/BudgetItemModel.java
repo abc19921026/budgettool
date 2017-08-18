@@ -12,6 +12,8 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 
 import app.dao.BudgetItem;
+import app.dao.BudgetItemAmount;
+import app.dao.BudgetItemCost;
 
 public class BudgetItemModel extends BudgetItem{
 
@@ -96,10 +98,10 @@ public class BudgetItemModel extends BudgetItem{
 		return re;
 	}	
 	
-	public static List<Record> get_same_class_catalog(String name)throws Exception{
+	public static List<Record> get_same_class_catalog(String name,int section)throws Exception{
 		String sql = "select * from budget_class "
-				+" where name = ?";
-		List<Record> list = Db.find(sql, name);
+				+" where name = ? and section = ?";
+		List<Record> list = Db.find(sql, name,section);
 		return list;
 	}	
 	
@@ -113,5 +115,59 @@ public class BudgetItemModel extends BudgetItem{
 		Record re = Db.findFirst(sql, budget_class_id);
 		int total = re.getLong("total").intValue();
 		return total;
+	}
+	/**
+	 * 根据预算分类id查询分类下的工程项目
+	 * @param budget_class_id
+	 * @return
+	 */
+	public static List<Record> get_budget_item_by_budget_class_id(int budget_class_id)throws Exception{
+		String sql = "select name from budget_item where budget_class_id = ?";
+		List<Record> re = Db.find(sql, budget_class_id);
+		return re;
+	}
+	
+	public static Map<String, Object> get_budget_item_select2(int page,int rows,String q)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		String select = "select distinct bi.name,bi.section,bi.unit,bi.price,bia.price_material,bia.price_assist,bia.price_labor,bia.price_machinery,bia.price_loss,"
+						+" if(top_bc.name is null,bc.name,concat(top_bc.name,'-',bc.name))as class_name";
+		StringBuffer sql = new StringBuffer(" from budget_item bi");
+				sql.append(" left join budget_item_amount bia on bia.id=bi.id");
+				sql.append(" left join budget_class bc on bc.id = bi.budget_class_id");
+				sql.append(" left join budget_class top_bc on top_bc.id = bc.parent_id");
+				sql.append(" where 1=1");
+		if(StrKit.notBlank(q)){
+			sql.append(" and bi.name like ?");
+			param.add("%"+q+"%");
+		}		
+		List<Record> list = Db.find(select+sql,param.toArray());
+		Map<String,Object> map=new HashMap<String,Object>();
+		int total = list.size();
+		int start_num = (page-1)*rows;
+		int end_num = page*rows;
+		if(end_num>total){
+			end_num = total;
+		}
+		map.put("total", list.size());
+		map.put("rows", list.subList(start_num, end_num));
+		return map;
+	}
+	/**
+	 * 计算各单项金额
+	 * @param budget_item_id
+	 * @param num
+	 */
+	public static void caculate_budget_item_amount_cost(int budget_item_id, BigDecimal num){
+		//计算各单项金额
+		BudgetItemAmount bia = BudgetItemAmount.dao.findById(budget_item_id);
+		if(bia == null){
+			return;
+		}
+		bia.setAmountAssist(bia.getPriceAssist().multiply(num));
+		bia.setAmountMaterial(bia.getPriceMaterial().multiply(num));
+		bia.setAmountLabor(bia.getPriceLabor().multiply(num));
+		bia.setAmountMachinery(bia.getPriceMachinery().multiply(num));
+		bia.setAmountLoss(bia.getPriceLoss().multiply(num));
+		bia.update();
 	}
 }

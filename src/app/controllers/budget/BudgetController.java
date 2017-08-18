@@ -9,6 +9,8 @@ import java.util.Set;
 
 import app.dao.Budget;
 import app.dao.BudgetClass;
+import app.dao.BudgetItem;
+import app.dao.BudgetItemAmount;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetModel;
@@ -172,16 +174,14 @@ public class BudgetController extends BaseController{
 			record.setSection(section);
 		}		
 		//新建时指定了上级分类
-		if(parent_id > 0){
+		if(parent_id > 0){		
 			record.setParentId(parent_id);
 			String parent_name = BudgetClassModel.dao.findById(parent_id).getName();
 			record.put("parent_name", parent_name);
 		}
-		
 		setAttr("record", record);
 		setAttr("budget_id", budget_id);
-		setAttr("section", section);
-		
+		setAttr("section", section);		
 		String level = getPara("level", "");
 		render("budget_class_edit.html");		
 	}
@@ -206,7 +206,7 @@ public class BudgetController extends BaseController{
 		}else{
 			HashSet<Record> set = new HashSet<Record>();
 			BudgetClass top_bc = BudgetClass.dao.findById(parent_id);
-			List<Record> list = BudgetItemModel.get_same_class_catalog(top_bc.getName());
+			List<Record> list = BudgetItemModel.get_same_class_catalog(top_bc.getName(),section);
 			for(Record record : list){
 				List<Record> catalog = BudgetItemModel.get_class_catalog(q, section,1,record.getInt("id"));
 				if(catalog.size()>0){
@@ -293,14 +293,64 @@ public class BudgetController extends BaseController{
 				}else{
 					BudgetClassModel.dao.deleteById(id);
 				}
-
 			}
 			//更新预算合计
-//			BudgetModel.total(budget_id);
+			BudgetModel.total(budget_id);
 		} else {
 			render_error_message("数据错误，请重试。");
 			return;//required!
 		}	
 		render_message(status, message);
+	}
+	
+	/**
+	 * 项目编辑
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_item_edit()throws Exception{
+		int id = getParaToInt("id", 0);
+		int budget_class_id = getParaToInt("budget_class_id", 0);		
+		BudgetClass budget_class = null;
+		BudgetItem budget_item = BudgetItemModel.dao.findById(id);
+		BudgetItemAmount budget_item_amount = BudgetItemAmount.dao.findById(id);	
+		if(budget_class_id > 0){
+			budget_class = BudgetClassModel.dao.findById(budget_class_id);
+		}else{
+			budget_class = BudgetClassModel.dao.findById(budget_item.getBudgetClassId());
+		}			
+		if(budget_item == null){
+			//新建工程项目时从分类拿section
+			budget_item = new BudgetItem();
+			budget_item.setSection(budget_class.getSection());
+		}			
+		setAttr("budget_class", budget_class);
+		setAttr("budget_item_amount", budget_item_amount);
+		setAttr("record", budget_item);
+		
+	}	
+	@Clear(LoginInterceptor.class)
+	public void json_budget_item_select2()throws Exception{
+		String q = getPara("keyword");
+		if(StrKit.notBlank(q)){
+			Map<String, Object> map = BudgetItemModel.get_budget_item_select2(page, rows, q);
+			String jsonList = JsonKit.toJson(map);
+			renderJson(jsonList);
+		}else{
+			renderText("[]");
+			return;
+		}
+		
+	}
+	@Clear(LoginInterceptor.class)
+	public void check_has_subclass()throws Exception{
+		Integer budget_class_id = getParaToInt("id");
+		List<BudgetClass> list = BudgetClassModel.get_budget_subclass(budget_class_id);
+		renderJson(list.size());
+	}
+	@Clear(LoginInterceptor.class)
+	public void check_has_budget_item()throws Exception{
+		Integer budget_class_id = getParaToInt("id");
+      	int sum = BudgetItemModel.get_budget_item_num_by_class(budget_class_id);
+		renderJson(sum);
 	}
 }
