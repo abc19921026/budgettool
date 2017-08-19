@@ -9,7 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import system.core.BaseModel;
 import app.dao.Budget;
+import app.dao.BudgetClass;
+import app.dao.BudgetItem;
+import app.dao.BudgetItemAmount;
+import app.dao.BudgetItemCost;
+import app.dao.BudgetLineItem;
 
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
@@ -108,7 +114,116 @@ public class BudgetModel extends Budget{
 		if(total != null){
 			result = Budget.dao.findById(budget_id).set("total", total).update();
 		}
-		
 		return result;
+	}
+	/**
+	 * 搜索历史预算表
+	 * @param q
+	 * @throws Exception
+	 */
+	public static List<Record> get_history_budget(String q)throws Exception{
+		List<Object> params=new ArrayList<Object>();
+		StringBuffer sql = new StringBuffer("select b.*,b.name as text from budget b where 1=1");
+		if(StrKit.notBlank(q)){
+			sql.append(" and b.name like ?");
+			params.add("%"+q+"%");
+		}
+		List<Record> list = Db.find(sql.toString(), params.toArray());
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @param budget_id
+	 * @param new_budget_id
+	 * @return
+	 */
+	public static boolean budget_copy_all(int budget_id, int new_budget_id){
+
+		boolean succeed = false;
+
+		// 复制一级 budget_class
+		String sql = "select * from budget_class where budget_id = ? and parent_id = 0";
+		List<BudgetClass> re = BudgetClass.dao.find(sql, budget_id);
+		for (int i = 0; i < re.size(); i++) {
+			BudgetClass bc = re.get(i);
+			int budget_class_id = bc.getId();
+			// int budget_parent_id = bc.getParentId();
+			bc.setId(null);
+			bc.setBudgetId(new_budget_id);
+			bc.setParentId(0);
+			BaseModel.setCreateTime(bc);
+			BaseModel.setUpdateTime(bc);
+			succeed = bc.save();
+			//新的预算分类id
+			int new_budget_class_id = bc.getId();
+			copy_budget_item(budget_class_id, new_budget_class_id,new_budget_id);
+			
+			//检查该分类下是否有下级分类，如果有继续复制
+			String sql_has_children = "select * from budget_class where parent_id = ?";
+			List<BudgetClass> re_children = BudgetClass.dao.find(sql_has_children, budget_class_id);
+			for( int j = 0; j < re_children.size(); j++){
+				//System.out.println(budget_class_id);
+				BudgetClass bc_child = re_children.get(j);
+				int budget_class_child_id = bc_child.getId();
+				bc_child.setId(null);//重置对象，设为新对象
+				bc_child.setBudgetId(new_budget_id);
+				bc_child.setParentId(new_budget_class_id);
+				BaseModel.setCreateTime(bc_child);
+				BaseModel.setUpdateTime(bc_child);
+				succeed = bc_child.save();				
+				int new_budget_class_child_id = bc_child.getId();
+				copy_budget_item(budget_class_child_id, new_budget_class_child_id, new_budget_id);				
+			}
+		}
+		copy_budget_line_item(budget_id,new_budget_id);
+		return succeed;	
+	}
+	private static void copy_budget_line_item(int budget_id, int new_budget_id) {
+		String sql = "select bli.* from budget_line_item bli where bli.budget_id = ?";
+		List<BudgetLineItem> list = BudgetLineItem.dao.find(sql, budget_id);
+		for(BudgetLineItem bli:list){
+			bli.setId(null);
+			bli.setBudgetId(new_budget_id);
+			bli.save();
+		}
+		
+	}
+
+	/**
+	 * 根据分类id复制预算条目，同时复制budget_item_amount 和budget_item_cost
+	 * @param budget_class_id
+	 * @param new_budget_class_id
+	 * @param new_budget_id
+	 * @return
+	 */
+	public static boolean copy_budget_item(int budget_class_id,
+			int new_budget_class_id, int new_budget_id) {
+		String sql2 = "select bi.*, bia.* from budget_item bi "
+				+ "left join budget_item_amount bia on bi.id = bia.id "
+				+ "where bi.budget_class_id = ? ";
+		List<BudgetItem> re2 = BudgetItem.dao.find(sql2, budget_class_id);
+
+		boolean re = false;
+		for (int j = 0; j < re2.size(); j++) {
+
+			BudgetItem bi = re2.get(j);
+			Integer id = bi.getId();
+			bi.setId(null);
+			bi.setBudgetId(new_budget_id);
+			bi.setBudgetClassId(new_budget_class_id);
+
+			BaseModel.setCreateTime(bi);
+			BaseModel.setUpdateTime(bi);
+			re = bi.save();
+			
+			int budget_item_id = bi.getId();
+			//从模板复制budget item amount 
+			BudgetItemAmount bia = BudgetItemAmount.dao.findById(id);
+			bia.setId(budget_item_id);
+			//金额均为默认值0
+			bia.save();
+		}
+		return re;
 	}
 }

@@ -13,6 +13,7 @@ import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
+import app.models.budget.BudgetLineItemModel;
 import app.models.budget.BudgetModel;
 
 import com.jfinal.aop.Clear;
@@ -87,6 +88,16 @@ public class BudgetController extends BaseController{
 				budget.setSn(BudgetModel.generate_budget_sn());
 				budget.setType("budget");
 				flag = budget.save();
+				Integer history_budget_id = getParaToInt("history_budget_id");
+				if(history_budget_id==null){
+					BudgetLineItemModel.load_line_item(budget.getId());
+				}else{
+					Budget history_budget = Budget.dao.findById(history_budget_id);
+					budget.setTotal(history_budget.getTotal());
+					budget.update();
+					BudgetModel.budget_copy_all(history_budget_id, budget.getId());	
+				}
+				
 			}
 			if(flag==true){
 				render_success_message("保存成功");
@@ -352,5 +363,12 @@ public class BudgetController extends BaseController{
 		Integer budget_class_id = getParaToInt("id");
       	int sum = BudgetItemModel.get_budget_item_num_by_class(budget_class_id);
 		renderJson(sum);
+	}
+	@Clear(LoginInterceptor.class)
+	public void budget_select2()throws Exception{
+		String q = getPara("q");
+		List<Record> list = BudgetModel.get_history_budget(q);
+		String jsonList = JsonKit.toJson(list);
+		renderJson(jsonList);
 	}
 }

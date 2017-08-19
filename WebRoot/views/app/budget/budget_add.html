@@ -25,6 +25,13 @@
                                <input type="text" id="budget_name" class="form-control easyui-validatebox" data-options="missingMessage:'请输入预算名称',required:true" name="budget.name" value="${(budget.name)!}" />
                            </div>
                        </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">历史预算表</label>
+                           <div class="col-md-6">                                   
+                           		<select id="budget_select2" name="history_budget_id" class="form-control select2" > </select>
+                           </div>
+                       </div>
 
                    <div class="form-actions">
                        <div class="row">
@@ -50,7 +57,38 @@ function save_data(){
 	form_data_save("#ff", "/budget/budget_list_update", function(data){
 		$("#list").datagrid("reload");//预算中心页面
 		$("#datagrid").datagrid("reload");//订单预算页面
-	}, {window_close:true});
-	
+	}, {window_close:true});	
 }
+$(function(){
+	$('#budget_select2').select2({
+ 	   allowClear: true,
+        language: "zh-CN",
+        minimumInputLength: 0,//2
+        placeholder:"请选择历史预算表",
+        ajax:{
+        	url:"/budget/budget_select2",
+        	delay: 500,
+        	//dataType: 'json',
+		    data: function (params) {			    	
+		    	//console.log(params);
+		      var query = {
+		        q: params.term,
+		        page: params.page,
+		        rows: 20,
+		        id: ${id!"0"}
+		      };
+		      return query;
+		    },
+        	cache:true,
+         	processResults: function (data, params) {//when use ajax data this method is required!!!
+		      return {results:data};
+		    },   
+        },
+        //data:person_info,
+        templateResult: function (data) {
+        	//console.log(data.name);
+        		return data.text;
+		  }
+    });
+})
 </script>

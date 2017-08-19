@@ -92,4 +92,67 @@ public class BudgetLineItemModel extends BudgetLineItem{
 		}
 		return re;
 	}
+	/**
+	 * 新建预算时 加载总计和其他费用
+	 * @param budget_id
+	 * @throws Exception
+	 */
+	public static void load_line_item(int budget_id)throws Exception{
+		BudgetLineItem project = new BudgetLineItem();
+		project.setSection(0);
+		project.setWeight(0);
+		project.setLineItemField("project");
+		project.setLineItemName("基础工程总计");
+		project.setLineItemComment("详见小计");
+		project.setBudgetId(budget_id);
+		project.save();
+		BudgetLineItem material = new BudgetLineItem();
+		material.setSection(1);
+		material.setWeight(10);
+		material.setLineItemField("material");
+		material.setLineItemName("主材工程总计");
+		material.setLineItemComment("详见小计");
+		material.setBudgetId(budget_id);
+		material.save();
+		BudgetLineItem management = new BudgetLineItem();
+		management.setSection(2);
+		management.setWeight(20);
+		management.setLineItemField("management");
+		management.setLineItemName("管理费");
+		management.setLineItemComment("（基础工程总计+主材工程总计）*10%");
+		management.setBudgetId(budget_id);
+		management.save();
+		BudgetLineItem design = new BudgetLineItem();
+		design.setSection(3);
+		design.setWeight(30);
+		design.setLineItemField("design");
+		design.setLineItemName("设计费");
+		design.setLineItemComment("80-120元/平方");
+		design.setBudgetId(budget_id);
+		design.save();
+		BudgetLineItem draw = new BudgetLineItem();
+		draw.setSection(4);
+		draw.setWeight(40);
+		draw.setLineItemField("draw");
+		draw.setLineItemName("制图费");
+		draw.setLineItemComment("依设计师、装修风格等情况而定，1000-3000元/套");
+		draw.setBudgetId(budget_id);
+		draw.save();
+		BudgetLineItem tax = new BudgetLineItem();
+		tax.setSection(5);
+		tax.setWeight(50);
+		tax.setLineItemField("tax");
+		tax.setLineItemName("税金");
+		tax.setLineItemComment("甲方如需开发票，税金自理，税金按直接价和管理费的总和的6%计算。");
+		tax.setBudgetId(budget_id);
+		tax.save();
+		BudgetLineItem remote = new BudgetLineItem();
+		remote.setSection(6);
+		remote.setWeight(60);
+		remote.setLineItemField("remote");
+		remote.setLineItemName("远程管理费");
+		remote.setLineItemComment("杭州地区（不含老余杭、萧山南郊、富阳）之外，另收3-12%的远程管理费。");
+		remote.setBudgetId(budget_id);
+		remote.save();
+	}
 }

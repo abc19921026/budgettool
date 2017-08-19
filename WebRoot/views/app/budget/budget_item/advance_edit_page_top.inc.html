@@ -39,33 +39,13 @@
                             <i class="fa fa-print"></i> PDF预览</a>
                     </li>
                     <li class="divider"> </li>
-                    <#if budget.status==0 || budget.status==-1><!-- 未审核/审核未通过 -->
-                    	<#if TF.has_perm("order_budget_apply")>
-	                    <li>
-	                    	<a href="javascript:;" onclick="budgetapply()"><i class="fa fa-send-o"></i> 提交申请</a>
-	                    </li>
-	                    </#if>
-                    <#elseif budget.status==1><!-- 待审核 -->
-                    	<#if TF.has_perm("order_budget_check")>
-	                    <li>
-	                        <a href="javascript:;" onclick="budgetcheck()"><i class="glyphicon glyphicon-saved"></i> 审核 </a>
-	                    </li>  
-	                    </#if>                 
-                    </#if>
+                    
                      <!-- 在下面我们要添加一个连接到内控的页面 -->
                     <li>
                         <a target="_blank" href="../../../../budget/cost/${budget_id!""}">
                             <i class="fa fa-reply"></i> 预算内控</a>
                     </li>
-                    <#--
-                    <#if !(budget.is_check)?? || budget.is_check==0>
-	                    <#if TF.has_perm("order_budget_check")>
-		                    <li>
-		                        <a href="javascript:;" onclick="check()">
-		                        <i class="fa fa-list-alt"></i>审核通过</a>
-		                    </li>
-	                    </#if>
-                    </#if>-->
+                    
                 </ul>
             </div>
         </div>

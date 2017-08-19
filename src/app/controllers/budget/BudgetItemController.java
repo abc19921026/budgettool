@@ -2,6 +2,7 @@ package app.controllers.budget;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import app.dao.Budget;
 import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
 import app.dao.BudgetItemCost;
+import app.dao.BudgetLineItem;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetLineItemModel;
@@ -224,4 +226,38 @@ public class BudgetItemController extends BaseController{
 		
 		render_success_message("保存成功");
 	}
+	@Clear(LoginInterceptor.class)
+	public void line_item_update_json(){
+		String jsonString = getPara("data", "");
+		
+		int budget_id = getParaToInt("budget_id", 0);
+		
+		//将前台获取的json数据转换成list数组
+		List<BudgetLineItem> list_budget_item = JSON.parseArray(jsonString, BudgetLineItem.class);
+		
+		for(int i = 0; i< list_budget_item.size(); i++){
+			BudgetLineItem budget_line_item = list_budget_item.get(i);
+			if(budget_line_item != null){
+				//基础工程、主材工程和管理费不处理，在计算total时计算
+				String[] auto_calculate_fields = new String[] {"project","material","management"};
+
+				if(Arrays.asList(auto_calculate_fields).contains(budget_line_item.getLineItemField())){
+					//主材
+					continue;
+				}
+				//金额在后台更新
+				//BudgetLineItemModel.update_budget_line_item(budget_line_item);
+				if(budget_line_item.getLineItemAmount() == null){
+					BigDecimal default_amount = new BigDecimal(0);
+					budget_line_item.setLineItemAmount(default_amount);
+				}
+				budget_line_item.update();
+
+			}
+		}
+		
+		//合计
+		BudgetModel.total(budget_id);
+		render_success_message("保存成功");
+	}	
 }
