@@ -226,4 +226,26 @@ public class BudgetModel extends Budget{
 		}
 		return re;
 	}
+	/**
+	 * 获得封面信息
+	 * @return
+	 * @param budget_id
+	 * @throws Exception
+	 */
+	public static Record get_cover_info(int budget_id) throws Exception{
+//		String sql=	" select b.version,bp.name as package_name,o.order_name,cs1.name as designer_name,cs1.mobile as designer_mobile "
+//				  + " ,cc.name as customer_name,cc.mobile as customer_mobile,ocs.structure,oi.box_area,b.sn as budget_sn "
+//				  + " from budget b "
+//				  + " left join `order` o on b.order_id=o.id "
+//				  + " left join order_info oi on o.id=oi.id "
+//				  + " left join budget_package bp on oi.contract_package_id=bp.id "
+//				  + " left join crm_staff cs1 on cs1.id=o.designer_id "
+//				  + " left join crm_customer cc on o.customer_id=cc.id "
+//				  + " left join order_construction_site ocs on ocs.id = o.construction_site_id "
+//				  + " where b.id=? ";
+		String sql = "select b.*"
+				+" from budget b"
+				+" where b.id=?";
+		return Db.findFirst(sql, budget_id);
+	}
 }

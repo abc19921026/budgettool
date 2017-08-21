@@ -1,5 +1,6 @@
 package app.controllers.budget;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,9 @@ import com.jfinal.plugin.activerecord.Record;
 import system.core.BaseController;
 import system.core.BaseModel;
 import system.core.LoginInterceptor;
+import system.report.ReportGenerator;
 import system.tools.DateTools;
+import system.tools.PdfRender;
 
 public class BudgetController extends BaseController{
 	/**
@@ -371,4 +374,34 @@ public class BudgetController extends BaseController{
 		String jsonList = JsonKit.toJson(list);
 		renderJson(jsonList);
 	}
+	
+	/**
+     * 查看封面
+     * @throws Exception
+     */
+	@Clear(LoginInterceptor.class)
+    public void view_cover() throws Exception{
+   	 int budget_id=getParaToInt("budget_id");
+   	 Record cover_info=BudgetModel.get_cover_info(budget_id);
+   	 setAttr("cover_info", cover_info);
+   	 render("budget_cover.html");
+    }
+	/**
+	 * 页面预览
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void export() {
+		int budget_id = getParaToInt("budget_id", 0);
+		if(budget_id <= 0 ){
+			renderError(404);
+		}
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("budgetid", budget_id);
+		ReportGenerator rg = new ReportGenerator();
+		
+		ByteArrayOutputStream res = rg.generateJasperReport(parameters, "budget_all");
+		String file_path=rg.generatePDFReport(res, "budget_all");
+		render(new PdfRender(file_path));
+	}	
 }

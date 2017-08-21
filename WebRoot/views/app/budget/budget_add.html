@@ -25,14 +25,14 @@
                                <input type="text" id="budget_name" class="form-control easyui-validatebox" data-options="missingMessage:'请输入预算名称',required:true" name="budget.name" value="${(budget.name)!}" />
                            </div>
                        </div>
-                       
+                       <#if !budget.id??>
                        <div class="form-group">
                            <label class="col-md-3 control-label">历史预算表</label>
                            <div class="col-md-6">                                   
                            		<select id="budget_select2" name="history_budget_id" class="form-control select2" > </select>
                            </div>
                        </div>
-
+					</#if>
                    <div class="form-actions">
                        <div class="row">
                            <div class="col-md-offset-3 col-md-9">

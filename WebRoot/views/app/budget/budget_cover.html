@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>杭州铭鸿装饰工程有限公司工程预算封面</title>
+    <link href="${BASE_PATH}assets/global/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    
+   	<style type="text/css">
+		body{
+		    font-family: 'Microsoft YaHei', sans-serif;
+		}
+
+		#budget_cover{
+			width:1050px;
+			margin:10px auto;
+			border:1px dashed #000;
+			margin-bottom:30px;
+		}
+
+		#budget_cover .container{
+			width:1030px;
+
+		}
+
+		#budget_cover .container h1,h3{
+			text-align: center;
+			font-weight:bold;
+			margin-top:15px;
+			
+		}
+
+
+		#budget_cover .container h1{
+			font-size:45px;
+			margin-top:15px;
+         	letter-spacing:8px;
+		}
+
+
+		#budget_cover .container .row .col-md-5,.col-md-2,.col-md-4,.col-md-8{
+			padding-left:40px;
+		}
+
+		#budget_cover .container .row .col-md-5 p{
+			font-size:16px;
+			font-weight:bold;
+		}
+
+		#budget_cover .container .row span{
+			font-size:12px;
+		}
+
+		.row_boder{
+			border-bottom:1px solid #aaa;
+			width:1000px;
+			margin:30px auto;
+		}
+
+      .bottom_text{
+         margin-top:50px;
+         margin-bottom:20px;
+
+      }
+
+      .img_style{
+
+         width:170px;
+         height:110px;
+         margin-top:10px;
+
+      }
+
+      .prompt{
+         width:1050px;
+         margin:10px auto;
+         border:1px dashed #000;
+         padding:10px;
+         color:red;
+         text-align: center;
+      }
+
+      .attachment{
+         display:none;
+      }
+   	</style>
+
+   	<link href="${BASE_PATH}public/css/budget_cover_printstyle.css" rel="stylesheet">
+</head>
+<body>
+   <div id="budget_cover">
+   		<div class="container">
+            <div class="row attachment">
+               <div class="col-md-12 col-sm-12 col-xs-12"><span>附件一:</span></div>
+            </div>
+            <div class="row title">
+               <div class="col-md-3 col-sm-3 col-xs-3" style="padding-left:60px;">
+                  <img src="${BASE_PATH}public/img/app/mhome-logo-s.png" class="img_style img-responsive">
+               </div>
+               <div class="col-md-8 col-sm-8 col-xs-8" style="padding-left:15px;">
+                  <h1>杭州铭鸿装饰工程有限公司</h1>
+                  <h3>HANGZHOU MING HONG DECORATION CO., LTD.</h3>
+                  <h3>${(cover_info.name)!}</h3>
+               </div>
+               <div class="col-md-1 col-sm-1 col-xs-1"></div>
+            </div>
+   			<div class="row" style="margin-top:80px;">
+   				<div class="col-md-5 col-sm-5 col-xs-5">
+   					<p>预算编号：${(cover_info.sn)!}</p>
+   				</div>
+   				<div class="col-md-2 col-sm-2 col-xs-2"></div>
+   				<div class="col-md-5 col-sm-5 col-xs-5">  				
+   					<p>预算部：0571-81901591</p>   					
+   				</div>
+   			</div>
+
+   			<div class="row row_boder"></div>
+
+   			<div class="row" style="margin-top:30px;">
+   				<div class="col-md-8 col-sm-8 col-xs-8">
+   					<p>杭州旗舰店：杭州江干区秋涛北路332号佰富时代中心3号楼12F</p>
+   					<p>杭州工程中心：杭州江干区秋涛北路332号佰富时代中心3号楼15F</p>
+   					<p>香港设计中心：香港九龙尖沙咀科学馆道14号新华中心A座9楼917室</p>
+   					<p>宁波余姚分部：宁波余姚市望湖路248-252号东城名苑南大门</p>
+   				</div>
+   				<div class="col-md-4 col-sm-4 col-xs-4">
+    				   <p>电话：0571-81901590</p>
+   					<p>电话：0571-81901591</p>
+   					<p>电话：00852-27935511</p>
+   					<p>电话：0574-62771100</p>
+   				</div>
+   			</div>
+
+   			<div class="row bottom_text">
+   				<div class="col-md-4 col-sm-4 col-xs-4"><span></span></div>
+   				<div class="col-md-4 col-sm-4 col-xs-4"><span>客户（签字）:</span></div>
+   				<div class="col-md-4 col-sm-4 col-xs-4"><span>公司代表（签字）:</span></div>
+   			</div>
+   		</div>
+
+
+   </div>
+
+   <div class="prompt">
+      <h5>提示：打印时，请选择横向、A4纸、默认边距。</h5>
+   </div>
+
+</body>
+</html>
