@@ -37,6 +37,18 @@ var dg_toolbar = [{
     text:'保存',
     iconCls:'glyphicon glyphicon-saved',
     handler:function(){dg_data_save();}
+},'-',{
+    text:'排序',
+    iconCls:'glyphicon glyphicon-list',
+    handler:function(){dg_data_sort();}
+},'-',{
+    text:'上移',
+    iconCls:'glyphicon glyphicon-arrow-up',
+    handler:function(){dg_data_move_up();}
+},'-',{
+    text:'下移',
+    iconCls:'glyphicon glyphicon-arrow-down',
+    handler:function(){dg_data_move_down();}
 }];
 
 function field_formatter_tg_sn(value, row, index){
@@ -318,8 +330,6 @@ function onDgLoadSuccess(data){
         	}
         	update_dg_row_changed_style($(this), row_index);
         });
-        
-        $('#dg').datagrid('enableDnd');
 	});
 }
 
@@ -445,7 +455,7 @@ function tg_data_edit(budget_class_id){
 //datagrid保存按钮事件
 function dg_data_save(){
     if(!has_row_changed()){
-    	$.messager.alert("提示", "没有任何修改", "info");return;
+    	$.messager.alert("提示", "没有任何修改", "info");return;budget_item_edit
     }
     
     var rows = $("#dg").datagrid("getRows");
@@ -459,7 +469,10 @@ function dg_data_save(){
     	//$.messager.alert("", "没有任何修改");
     }
 }
-
+function dg_data_sort(budget_class_id){
+	var budget_class_id = $.hash("budget_class_id");
+	new_window('/budget/item/budget_item_weight_sort?budget_class_id='+budget_class_id,"",700,750);
+}
 function dg_reject(){
     $('#dg').datagrid('rejectChanges');
     clear_row_changed();

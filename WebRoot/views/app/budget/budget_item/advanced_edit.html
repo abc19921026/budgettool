@@ -49,13 +49,11 @@
                     <#-- onEndEdit:onEndEdit, -->
                     onLoadSuccess:onDgLoadSuccess,
                     fitColumns:true,
-                    toolbar:dg_toolbar,
-                    dropAccept:'tr.datagrid-row',
-                    dragSelection:false               
+                    toolbar:dg_toolbar,               
                     " style="height:700px;">                  
                 <thead>
                     <tr>
-                    	<th data-options="field:'ck',checkbox:true">全选</th>
+                    	<th data-options="field:'ck',checkbox:true"></th>
                         <th data-options="field:'name',formatter:field_formatter_dg_name" width="250">名称</th>
                         <th data-options="field:'num',align:'left',editor:{type:'numberbox',options:{precision:2}}" width="80">数量</th>                        
                         <th data-options="field:'unit'" width="40">单位</th>
@@ -111,7 +109,6 @@ $(window).bind("beforeunload", function() {
 	//if(CHANGED_ROWS.length > 0){return '数据未保存，确认离开此页吗？';}
 	if(has_row_changed()){return '数据未保存，确认离开此页吗？';}
 });
-
 
 </script>
 <script src="${BASE_PATH}public/js/budget_advanced_edit.js"></script>

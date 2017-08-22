@@ -11,6 +11,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 
+import app.dao.BudgetClass;
 import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
 import app.dao.BudgetItemCost;
@@ -189,5 +190,14 @@ public class BudgetItemModel extends BudgetItem{
 		String sql = "select * from budget_item bi where bi.budget_class_id = ? and bi.weight between ? and ?";
 		List<BudgetItem> list = BudgetItem.dao.find(sql, budget_class_id,start_weight,end_weight);
 		return list;
+	}
+	
+	public static Map<String, Object> get_budget_item_for_sort(Integer budget_class_id)throws Exception{
+		String sql = "select bi.* from budget_item bi where bi.budget_class_id = ? order by bi.weight asc";
+		List<BudgetClass> list = BudgetClass.dao.find(sql, budget_class_id);
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("total", list.size());
+		map.put("rows", list);
+		return map;
 	}
 }

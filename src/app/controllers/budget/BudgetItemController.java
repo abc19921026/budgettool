@@ -12,6 +12,7 @@ import com.jfinal.aop.Clear;
 import com.jfinal.kit.StrKit;
 
 import app.dao.Budget;
+import app.dao.BudgetClass;
 import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
 import app.dao.BudgetItemCost;
@@ -193,7 +194,7 @@ public class BudgetItemController extends BaseController{
 	 */
 	@Clear(LoginInterceptor.class)
 	public void advanced_edit_save(){
-		String jsonString = getPara("data", "");	
+		String jsonString = getPara("data", "");
 		int budget_class_id = getParaToInt("budget_class_id", 0);
 		//将前台获取的json数据转换成list数组
 		List<BudgetItem> list_budget_item = JSON.parseArray(jsonString, BudgetItem.class);
@@ -263,33 +264,47 @@ public class BudgetItemController extends BaseController{
 		render_success_message("保存成功");
 	}	
 	/**
-	 * 项目拖拽后修改weight
+	 * 跳转到项目拖拽页面
 	 * @throws Exception
 	 */
 	@Clear(LoginInterceptor.class)
-	public void update_budget_item_weight()throws Exception{
-		Integer target_id = getParaToInt("target_id");//目标行id，即拖拽到的行的id
-		Integer source_id = getParaToInt("source_id");//所拖拽行的id
-		BudgetItem target = BudgetItem.dao.findById(target_id);
-		BudgetItem source = BudgetItem.dao.findById(source_id);
-		Integer target_weight = target.getWeight();
-		Integer source_weight = source.getWeight();
-		if(target_weight<source_weight){
-			List<BudgetItem> list = BudgetItemModel.get_budget_item_by_weight(source.getBudgetClassId(), source_weight, target_weight);
+	public void budget_item_weight_sort()throws Exception{
+		Integer budget_class_id = getParaToInt("budget_class_id");
+		if(budget_class_id==null){
+			render_error_message("请先选择预算分类！");
+		}else{
+			BudgetClass bc = BudgetClass.dao.findById(budget_class_id);
+			setAttr("bc", bc);
+			render("budget_item_weight_sort.html");
+		}
+	}
+	
+	@Clear(LoginInterceptor.class)
+	public void budget_item_weight_sort_json()throws Exception{
+		int budget_class_id = getParaToInt("budget_class_id", 0);
+		Map<String, Object> re = BudgetItemModel.get_budget_item_for_sort(budget_class_id);
+		renderJson(re);
+	}
+	@Clear(LoginInterceptor.class)
+	public void budget_item_weight_sort_update()throws Exception{
+		String data = getPara("data");
+		List<BudgetItem> list = JSON.parseArray(data, BudgetItem.class);
+		boolean flag = false;
+		int count = 10;
+		if(list.size()>0){
 			for(BudgetItem bi : list){
-				bi.setWeight(bi.getWeight()+10);
-				bi.update();
+				bi.setWeight(count);
+				count += 10;
+				flag = bi.update();
+				if(flag==false){
+					break;
+				}
 			}
-			source.setWeight(target_weight);
-			source.update();
-		}else if(target_weight>source_weight){
-			List<BudgetItem> list = BudgetItemModel.get_budget_item_by_weight(source.getBudgetClassId(), source_weight, target_weight);
-			for(BudgetItem bi : list){
-				bi.setWeight(bi.getWeight()-10);
-				bi.update();
-			}
-			source.setWeight(target_weight);
-			source.update();
+		}		
+		if(flag==true){
+			render_success_message("保存成功");
+		}else{
+			render_error_message("保存失败，请重试");
 		}
 	}
 }
