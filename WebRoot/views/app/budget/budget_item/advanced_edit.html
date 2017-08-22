@@ -44,12 +44,14 @@
                     striped:true,
                     border:false,
                     showFooter:true,
-                    <!-- singleSelect:true, -->
-                    <!-- onClickCell: onClickCell, -->
-                    <!-- onEndEdit:onEndEdit, -->
+                    singleSelect:true,
+                    <#-- onClickCell: onClickCell, -->
+                    <#-- onEndEdit:onEndEdit, -->
                     onLoadSuccess:onDgLoadSuccess,
                     fitColumns:true,
-                    toolbar:dg_toolbar
+                    toolbar:dg_toolbar,
+                    dropAccept:'tr.datagrid-row',
+                    dragSelection:false               
                     " style="height:700px;">                  
                 <thead>
                     <tr>
@@ -99,6 +101,7 @@
 <script src="${BASE_PATH}public/js/datagrid_field.js"></script>
 <script src="${BASE_PATH}public/js/jquery.hash.js"></script>
 <script src="${BASE_PATH}public/js/jquery.blockUI.js"></script>
+<script src="${BASE_PATH}public/js/datagrid-dnd.js"></script>
 <script>
 var BUDGET_ID = ${budget_id!-1};
 var SECTION = ${section!0};

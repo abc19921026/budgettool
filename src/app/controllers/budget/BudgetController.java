@@ -238,15 +238,10 @@ public class BudgetController extends BaseController{
 		}
 	}	
 	@Clear(LoginInterceptor.class)
-	public void json_budget_class_update(){
+	public void json_budget_class_update()throws Exception{
 		String message = "保存成功";
 		boolean re = false;
 		BudgetClass record = getModel(BudgetClass.class, "");
-		if(record.getParentId()!= null && record.getParentId() > 0){
-			//如果是子分类，把上级分类的project_item_catalog_id 当作子类的project_item_catalog_id
-			int project_item_catalog_id = BudgetClassModel.dao.findById(record.getParentId()).getProjectItemCatalogId();
-			record.setProjectItemCatalogId(project_item_catalog_id);
-		}
 		if(record.getId() != null){
 			//更新
 			message = "更新成功";
@@ -256,6 +251,13 @@ public class BudgetController extends BaseController{
 			//新建
 			BaseModel.setCreateTime(record);
 			BaseModel.setUpdateTime(record);
+			if(record.getParentId()==null){
+				Integer max = BudgetClassModel.get_max_weight_in_budget_class(record.getBudgetId(), null);
+				record.setWeight(max+10);
+			}else{
+				Integer max = BudgetClassModel.get_max_weight_in_budget_class(null, record.getParentId());
+				record.setWeight(max+10);
+			}
 			re = record.save();
 		}
 		//todo 更新序号及编号

@@ -170,4 +170,24 @@ public class BudgetItemModel extends BudgetItem{
 		bia.setAmountLoss(bia.getPriceLoss().multiply(num));
 		bia.update();
 	}
+	/**
+	 * 获得某个预算分类下项目中最大的weight
+	 * @param budget_class_id
+	 * @throws Exception
+	 */
+	public static Integer get_max_weight_in_budget_item(Integer budget_class_id)throws Exception{
+		String sql = "select max(weight) from budget_item where budget_class_id = ?";
+		Integer max = Db.queryInt(sql, budget_class_id);
+		if(max==null){
+			return 0;
+		}else{
+			return max;
+		}
+	}
+	
+	public static List<BudgetItem> get_budget_item_by_weight(Integer budget_class_id,Integer start_weight,Integer end_weight)throws Exception{
+		String sql = "select * from budget_item bi where bi.budget_class_id = ? and bi.weight between ? and ?";
+		List<BudgetItem> list = BudgetItem.dao.find(sql, budget_class_id,start_weight,end_weight);
+		return list;
+	}
 }

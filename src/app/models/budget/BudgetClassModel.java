@@ -1,10 +1,12 @@
 package app.models.budget;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.sun.swing.internal.plaf.metal.resources.metal;
 
 import app.dao.BudgetClass;
 
@@ -105,5 +107,23 @@ public class BudgetClassModel extends BudgetClass{
 		}
 		BudgetModel.total(budget_id);	
 		return result;
+	}
+	public static Integer get_max_weight_in_budget_class(Integer budget_id,Integer budget_class_id)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql =new StringBuffer("select max(weight) from budget_class bc where 1=1");
+		if(budget_id!=null){
+			sql.append(" and bc.budget_id = ?");
+			param.add(budget_id);
+		}
+		if(budget_class_id!=null){
+			sql.append(" and bc.parent_id = ?");
+			param.add(budget_class_id);
+		}
+		Integer max = Db.queryInt(sql.toString(), param.toArray());
+		if(max==null){
+			return 0;
+		}else{
+			return max;
+		}
 	}
 }

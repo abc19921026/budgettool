@@ -45,15 +45,9 @@ public class BudgetItemController extends BaseController{
 	}
 	//预算高级编辑 右边栏工程条目
 	@Clear(LoginInterceptor.class)
-	public void advanced_edit_budget_item_load_json(){
+	public void advanced_edit_budget_item_load_json()throws Exception{
 		int budget_class_id = getParaToInt("budget_class_id", 0);
-		
-		//Object re = BudgetItemModel.get_budget_item_by_class(budget_class_id, rows, page);
 		Map<String, Object> re = BudgetItemModel.get_budget_item_by_class(budget_class_id, rows, page);
-		//String jsonList = JsonKit.toJson(re);
-		//String jsonList = JSONObject.toJSONString(re);
-		//renderJson(jsonList);
-		//renderText(jsonList);//这种方式field value = null 的项目不输出！
 		renderJson(re);
 	}
 	
@@ -61,12 +55,10 @@ public class BudgetItemController extends BaseController{
 	 * 单条更新预算项目
 	 */
 	@Clear(LoginInterceptor.class)
-	public void json_budget_item_details_update(){
+	public void json_budget_item_details_update()throws Exception{
 		String message = "";
-		boolean re = false;
-		
+		boolean re = false;		
 		BudgetItem record = getModel(BudgetItem.class, "record");
-	
 		BudgetItemAmount budget_item_amount = getModel(BudgetItemAmount.class, "budget_item_amount");
 		int budget_class_id = record.getBudgetClassId();
 		int current_user_id = current_user_id();
@@ -75,7 +67,11 @@ public class BudgetItemController extends BaseController{
 			//单个更新时，价格也可以修改，从前台获取
 			budget_item_amount.setId(record.getId());
 			budget_item_amount.update();//保存从前台获取的单项价格
-			
+			if(record.getNum().doubleValue()!=0){
+				record.setPrintable(1);
+			}else{
+				record.setPrintable(0);
+			}
 			BigDecimal price = budget_item_amount.getPriceAssist()
 					.add(budget_item_amount.getPriceMaterial())
 					.add(budget_item_amount.getPriceLabor())
@@ -105,6 +101,13 @@ public class BudgetItemController extends BaseController{
 			BaseModel.setCreateTime(record);
 			BaseModel.setUpdateTime(record);
 			message = "保存成功";
+			if(record.getNum().doubleValue()!=0){
+				record.setPrintable(1);
+			}else{
+				record.setPrintable(0);
+			}
+			Integer max = BudgetItemModel.get_max_weight_in_budget_item(record.getBudgetClassId());
+			record.setWeight(max+10);
 			re = record.save();
 			
 			//初始化各单项价格
@@ -190,10 +193,8 @@ public class BudgetItemController extends BaseController{
 	 */
 	@Clear(LoginInterceptor.class)
 	public void advanced_edit_save(){
-		String jsonString = getPara("data", "");
-		
+		String jsonString = getPara("data", "");	
 		int budget_class_id = getParaToInt("budget_class_id", 0);
-		
 		//将前台获取的json数据转换成list数组
 		List<BudgetItem> list_budget_item = JSON.parseArray(jsonString, BudgetItem.class);
 		for(int i = 0;i < list_budget_item.size();i ++){
@@ -204,9 +205,10 @@ public class BudgetItemController extends BaseController{
 				budget_item.setAmount(amount);
 				BaseModel.setUpdateTime(budget_item);
 				//如果数量不为0，设为必须打印
-				BigDecimal zero = new BigDecimal(0);
-				if(budget_item.getNum().compareTo(zero) != 0){//-1 小于   0 等于    1 大于 
+				if(budget_item.getNum().doubleValue() != 0){//-1 小于   0 等于    1 大于 
 					budget_item.setPrintable(1);
+				}else{
+					budget_item.setPrintable(0);
 				}
 				budget_item.update();
 				
@@ -260,4 +262,34 @@ public class BudgetItemController extends BaseController{
 		BudgetModel.total(budget_id);
 		render_success_message("保存成功");
 	}	
+	/**
+	 * 项目拖拽后修改weight
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void update_budget_item_weight()throws Exception{
+		Integer target_id = getParaToInt("target_id");//目标行id，即拖拽到的行的id
+		Integer source_id = getParaToInt("source_id");//所拖拽行的id
+		BudgetItem target = BudgetItem.dao.findById(target_id);
+		BudgetItem source = BudgetItem.dao.findById(source_id);
+		Integer target_weight = target.getWeight();
+		Integer source_weight = source.getWeight();
+		if(target_weight<source_weight){
+			List<BudgetItem> list = BudgetItemModel.get_budget_item_by_weight(source.getBudgetClassId(), source_weight, target_weight);
+			for(BudgetItem bi : list){
+				bi.setWeight(bi.getWeight()+10);
+				bi.update();
+			}
+			source.setWeight(target_weight);
+			source.update();
+		}else if(target_weight>source_weight){
+			List<BudgetItem> list = BudgetItemModel.get_budget_item_by_weight(source.getBudgetClassId(), source_weight, target_weight);
+			for(BudgetItem bi : list){
+				bi.setWeight(bi.getWeight()-10);
+				bi.update();
+			}
+			source.setWeight(target_weight);
+			source.update();
+		}
+	}
 }

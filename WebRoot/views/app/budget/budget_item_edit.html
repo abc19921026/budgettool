@@ -150,16 +150,7 @@
 	                                class="form-control input-inline input-small" readonly="readonly" />
                            </div>
                        </div><!-- .form-group -->                   
-                       
-                       
-                       <div class="form-group">
-                           <label class="col-md-2 control-label">排序<span class="required"></span></label>
-                           <div class="col-md-6">
-                               <input type="text" name="record.weight" value="${(record.weight)!}" data-options="missingMessage:'请输入排序',required:true,height:32" class="form-control easyui-numberbox input-inline input-small" placeholder="">
-                           </div>
-                       </div><!-- .form-group -->
-                      
-                      
+     
                       <div class="form-group">
                            <label class="col-md-2 control-label">备注</label>
                            <div class="col-md-8">
@@ -204,20 +195,15 @@
             });
 	}); */
 	
-	function save(){
-		if($("#price_loss").val()==""||$("#price_machinery").val()==""||$("#price_labor").val()==""||$("#price_assist").val()==""||$("#price_material").val()==""){
-			$.messager.alert("","单项价格中不能存在空项，请填写完整","warning");
-		}else{
-			form_data_save("#ff", "/budget/item/json_budget_item_details_update", function(data){
-				//console.log(data);
-				try{
-					$(".easyui-datagrid").datagrid("reload");
-					$(".easyui-treegrid").treegrid("reload");
-				}catch(e){
-					console.log(e);
-				}
-			},{window_close:true});
-		}
+	function save(){	
+		form_data_save("#ff", "/budget/item/json_budget_item_details_update", function(data){
+			try{
+				$(".easyui-datagrid").datagrid("reload");
+				$(".easyui-treegrid").treegrid("reload");
+			}catch(e){
+				console.log(e);
+			}
+		},{window_close:true});
 	}
 	
 	function update_price(){

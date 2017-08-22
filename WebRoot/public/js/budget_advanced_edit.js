@@ -188,9 +188,13 @@ function load_budget_item_now(budget_class_id){
 	$("#easyui-layout").layout("panel", "center").panel("setTitle", title);
 }
 
+/*function enableDnd(){
+	$('#dg').datagrid('enableDnd');
+}*/
 function onDgLoadSuccess(data){
 	//console.log(data);
-	$.each(data.rows, function(index, element){
+	//
+	$.each(data.rows, function(index, element){		
 		//页面加载完成后，开启 数量 编辑框
 		$('#dg').datagrid('beginEdit', index);
 		//绑定 编辑器 事件
@@ -204,6 +208,8 @@ function onDgLoadSuccess(data){
         //textbox是在原input 后 新加的input
         //textbox('textbox') Return the textbox object. The user can bind any events to this editing box.
         //console.log(ed);
+        
+        
         ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).bind('keyup', function(e){
         	//alert("hi");
         	//移除焦点时更新金额
@@ -288,6 +294,7 @@ function onDgLoadSuccess(data){
             }
         });
         
+        
         //处理打印checkbox 事件
         var ed_printable = $('#dg').datagrid('getEditor', {index:index, field: "printable"});
         
@@ -310,8 +317,9 @@ function onDgLoadSuccess(data){
         		CHANGED_ROWS_PRINTABLE.push(row_index);//有变动的行加入
         	}
         	update_dg_row_changed_style($(this), row_index);
-        	
         });
+        
+        $('#dg').datagrid('enableDnd');
 	});
 }
 
