@@ -198,6 +198,7 @@ public class BudgetItemController extends BaseController{
 		int budget_class_id = getParaToInt("budget_class_id", 0);
 		//将前台获取的json数据转换成list数组
 		List<BudgetItem> list_budget_item = JSON.parseArray(jsonString, BudgetItem.class);
+		int count = 10;
 		for(int i = 0;i < list_budget_item.size();i ++){
 			BudgetItem budget_item = list_budget_item.get(i);
 			if(budget_item != null){
@@ -211,6 +212,8 @@ public class BudgetItemController extends BaseController{
 				}else{
 					budget_item.setPrintable(0);
 				}
+				budget_item.setWeight(count);
+				count += 10;
 				budget_item.update();
 				
 				//更新各单项金额

@@ -38,10 +38,6 @@ var dg_toolbar = [{
     iconCls:'glyphicon glyphicon-saved',
     handler:function(){dg_data_save();}
 },'-',{
-    text:'排序',
-    iconCls:'glyphicon glyphicon-list',
-    handler:function(){dg_data_sort();}
-},'-',{
     text:'上移',
     iconCls:'glyphicon glyphicon-arrow-up',
     handler:function(){dg_data_move_up();}
@@ -49,6 +45,10 @@ var dg_toolbar = [{
     text:'下移',
     iconCls:'glyphicon glyphicon-arrow-down',
     handler:function(){dg_data_move_down();}
+},'-',{
+    text:'排序',
+    iconCls:'glyphicon glyphicon-list',
+    handler:function(){dg_data_sort();}
 }];
 
 function field_formatter_tg_sn(value, row, index){
@@ -332,7 +332,6 @@ function onDgLoadSuccess(data){
         });
 	});
 }
-
 /**
  * 判断当前页面是否某行的数据有修改
  * @returns
@@ -455,7 +454,7 @@ function tg_data_edit(budget_class_id){
 //datagrid保存按钮事件
 function dg_data_save(){
     if(!has_row_changed()){
-    	$.messager.alert("提示", "没有任何修改", "info");return;budget_item_edit
+    	$.messager.alert("提示", "没有任何修改", "info");return;
     }
     
     var rows = $("#dg").datagrid("getRows");
@@ -477,7 +476,50 @@ function dg_reject(){
     $('#dg').datagrid('rejectChanges');
     clear_row_changed();
 }
-
+function dg_data_move_up(){
+	var row = $("#dg").datagrid('getSelected');//得到选中的行数据
+	if(row==null){
+		$.messager.alert("提示", "请先选择要上移的行", "info");
+		return;
+	}
+	var index = $("#dg").datagrid('getRowIndex', row);//得到选中行数据的索引
+//	var rows = $("#dg").datagrid('getRows');//得到当前页的所有行数据
+	if(index==0){
+		$.messager.alert("提示", "选择行已在最顶行，无法上移", "info");
+		return;
+	}
+	$("#dg").datagrid("deleteRow", index);//删除一行
+	$("#dg").datagrid("insertRow", {  //增加一行
+        index : index - 1, //  
+        row : row  
+    });  
+	$("#dg").datagrid("selectRow", index - 1); //选中一行
+	$('#dg').datagrid('checkRow', index - 1); //勾选一行
+	$('#dg').datagrid('beginEdit', index - 1);//开启编辑
+	CHANGED_ROWS.push($("#dg").datagrid('getRowIndex', index-1));
+}
+function dg_data_move_down(){
+	var row = $("#dg").datagrid('getSelected');
+	if(row==null){
+		$.messager.alert("提示", "请先选择要下移的行", "info");
+		return;
+	}
+	var index = $("#dg").datagrid('getRowIndex', row);
+	var rows = $("#dg").datagrid('getRows');
+	if(rows.length==(index+1)){
+		$.messager.alert("提示", "选择行已在最低行，无法下移", "info");
+		return;
+	}
+	$("#dg").datagrid("deleteRow", index);  
+	$("#dg").datagrid("insertRow", {  
+        index : index + 1, // 索引从0开始  
+        row : row  
+    });  
+	$("#dg").datagrid("selectRow", index + 1);
+	$('#dg').datagrid('checkRow', index + 1);
+	$('#dg').datagrid('beginEdit', index + 1);
+	CHANGED_ROWS.push($("#dg").datagrid('getRowIndex', index+1));
+}
 //向后台发送请求
 function update_data(rows){
 	//console.log(rows);
