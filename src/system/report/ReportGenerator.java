@@ -1,6 +1,5 @@
 package system.report;
 import java.io.ByteArrayOutputStream;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -86,8 +85,8 @@ public class ReportGenerator {
         String str = "";
         try {
             Connection conn = this.getConnection(); 
-            String reportModelFile = getFileTemplatePath() + "/" + "report/"+reportName+".jasper";       
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reportModelFile,parameters,conn);
+            String reportModelFile = getFileTemplatePath() + "/" + "report/"+reportName+".jasper";
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportModelFile,parameters,conn);           
             JasperExportManager.exportReportToPdfStream(jasperPrint, outPut);
         }catch(JRException e){
             e.printStackTrace();

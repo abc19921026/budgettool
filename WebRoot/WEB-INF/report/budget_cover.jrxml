@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-11-11T15:13:51 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budget_cover" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c0326065-d765-45cc-9ed7-94021d0bbe9d">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="budgetid" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT budget_name
+,customer_name
+,customer_mobile
+,acreage
+,addr
+,court_serivce
+,court_trash_out_service
+,house_type_name
+,designer_name
+,designer_mobile
+,department_tel 
+FROM budget_info
+where budget_id =  $P{budgetid}]]>
+	</queryString>
+	<field name="budget_name" class="java.lang.String"/>
+	<field name="customer_name" class="java.lang.String"/>
+	<field name="customer_mobile" class="java.lang.String"/>
+	<field name="acreage" class="java.lang.String"/>
+	<field name="addr" class="java.lang.String"/>
+	<field name="court_serivce" class="java.lang.Integer"/>
+	<field name="court_trash_out_service" class="java.lang.Integer"/>
+	<field name="house_type_name" class="java.lang.String"/>
+	<field name="designer_name" class="java.lang.String"/>
+	<field name="designer_mobile" class="java.lang.String"/>
+	<field name="department_tel" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="525" splitType="Stretch">
+			<staticText>
+				<reportElement x="125" y="40" width="630" height="65" uuid="b16c3774-9034-461c-8e5a-061a16653f62"/>
+				<textElement>
+					<font fontName="华文宋体" size="48" isBold="true"/>
+				</textElement>
+				<text><![CDATA[杭州铭鸿装饰工程有限公司]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="125" y="105" width="630" height="30" uuid="b1a14e86-6565-4cf2-8d0e-7b490896835a"/>
+				<textElement>
+					<font fontName="华文宋体" size="22"/>
+				</textElement>
+				<text><![CDATA[  HANGZHOU   MING  HONG   DECORATION  CO.  LED]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="135" width="590" height="40" uuid="39f6d226-4d0c-4e38-a5d0-187c68e3befb"/>
+				<textElement textAlignment="Center">
+					<font fontName="华文宋体" size="26" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="138" y="227" width="220" height="30" uuid="f282be49-896d-49f7-a82b-91ccb13beb74"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{addr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="38" y="227" width="110" height="30" uuid="2ccb01ed-69da-43c2-837c-6210e969772d"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[工程地址：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="138" y="257" width="220" height="30" uuid="43012ff8-fa1f-466c-bcf5-7323b3cc7a8f"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customer_name} + "  " + $F{customer_mobile}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="38" y="257" width="110" height="30" uuid="d5e2c39f-1a44-46f4-b9d5-e4279a6500cb"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[业主姓名：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="138" y="287" width="220" height="30" uuid="f943e805-8e79-425e-9b1a-6207f24011b5"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{acreage}+" 平方"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="38" y="287" width="130" height="30" uuid="75d574e1-d1c8-467f-b7c5-ea62b90a80eb"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[框外面积：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="158" y="317" width="220" height="30" uuid="b710c585-ec85-4ccf-9019-aad119a5f4c7"/>
+				<textElement>
+					<font fontName="华文宋体" size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{court_serivce}==1,"有","无")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="38" y="317" width="130" height="30" uuid="f2eafb49-beae-49d8-9be8-d570460d1de5"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[小区服务队：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="638" y="317" width="100" height="30" uuid="6f744110-0e62-48d5-8401-d4262e57b469"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{court_trash_out_service}==1,"有","无")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="448" y="317" width="210" height="30" uuid="14ef0ec8-de32-407a-a195-4fc3ee4ebba1"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[小区垃圾外运服务：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="508" y="287" width="230" height="30" uuid="7a467d8b-6eca-4867-90aa-9fe371436385"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{house_type_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="448" y="287" width="100" height="30" uuid="5b88e4de-dd19-4b79-9b05-db025531ead7"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[户型：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="528" y="257" width="210" height="30" uuid="7ff7cfc6-6683-4221-837d-c680a4a67d58"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{department_tel}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="448" y="257" width="100" height="30" uuid="5b5070b8-349d-41de-b947-a1b8098ef1d0"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[预算部：]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="528" y="227" width="210" height="30" uuid="46606e14-66a4-43b0-aa21-1c351e58c877"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{designer_name}+" "+$F{designer_mobile}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="448" y="227" width="90" height="30" uuid="260be4bf-201d-4644-87f3-647528ebcdb5"/>
+				<textElement>
+					<font fontName="华文宋体" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[设计师：]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="38" y="347" width="702" height="20" backcolor="#828282" uuid="e4e1b33e-9969-4185-8e43-ef63feb392c2"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="405" width="450" height="24" uuid="779c646e-50bc-4f6b-a7c9-04a59f63d567"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[杭州总部：杭州江干区秋涛北路332号佰富时代中心3号楼12F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="552" y="405" width="186" height="24" uuid="a7ddbbae-965c-4872-93ff-89014f5fefa7"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[电话：0571-81901590]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="429" width="450" height="24" uuid="a8d4694a-92dc-4091-a416-681147334d00"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[展    厅：杭州江干区秋涛北路332号佰富时代中心3号楼12F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="552" y="429" width="186" height="24" uuid="56362b20-1e76-48f3-b065-743332f4d896"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[电话：0571-81901590]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="455" width="480" height="24" uuid="e5e38ce6-736f-4257-a8b6-baca73193c42"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[香港设计中心：香港九龙尖沙咀科学馆道14号新华中心A座9楼917室]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="552" y="455" width="186" height="24" uuid="7d16c450-d3b4-43ea-a1f2-29ab5365b814"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[电话：00852-27935511]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="479" width="450" height="24" uuid="01c0d989-5e9f-4f8f-9171-f30a438fc2af"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[宁波余姚分部：宁波余姚市望湖路248-252号东城名苑南大门]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="552" y="479" width="186" height="24" uuid="3b65ac21-39bc-4158-a8b1-66110ab56ff1"/>
+				<textElement>
+					<font fontName="华文宋体" size="16"/>
+				</textElement>
+				<text><![CDATA[电话：0574-62771100]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

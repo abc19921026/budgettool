@@ -401,8 +401,9 @@ public class BudgetController extends BaseController{
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("budgetid", budget_id);
 		ReportGenerator rg = new ReportGenerator();
-		
+
 		ByteArrayOutputStream res = rg.generateJasperReport(parameters, "budget_all");
+		
 		String file_path=rg.generatePDFReport(res, "budget_all");
 		render(new PdfRender(file_path));
 	}	
