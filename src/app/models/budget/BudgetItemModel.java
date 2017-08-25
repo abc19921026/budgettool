@@ -200,4 +200,44 @@ public class BudgetItemModel extends BudgetItem{
 		map.put("rows", list);
 		return map;
 	}
+	
+	public static Integer get_max_no_in_budget_item(Integer budget_class_id)throws Exception{
+		String sql = "select max(bi.no) from budget_item bi where bi.budget_class_id = ?";
+		Integer max = Db.queryInt(sql,budget_class_id);
+		if(max==null){
+			return 0;
+		}else{
+			return max;
+		}
+	}
+	
+	public static Long get_num_in_budget_item(Integer budget_class_id,Integer no)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql = new StringBuffer("select count(id) from budget_item bi where bi.budget_class_id = ?");
+		param.add(budget_class_id);
+		if(no!=null){
+			sql.append(" and bi.no < ?");
+			param.add(no);
+		}
+		Long num = Db.queryLong(sql.toString(), param.toArray());
+		if(num==null){
+			return 0L;
+		}else{
+			return num;
+		}
+	}
+	
+	public static void change_budget_item_sn(Integer budget_class_id,Integer no)throws Exception{
+		String sql = "select bi.* from budget_item bi where bi.budget_class_id = ? and bi.no > ? order by bi.no asc";
+		List<BudgetItem> list = BudgetItem.dao.find(sql, budget_class_id,no);
+		if(list.size()>0){
+			Long num = get_num_in_budget_item(budget_class_id, no);
+			for(BudgetItem bi : list){
+				num += 1;
+				String[] sn = bi.getSn().split("-");
+				bi.setSn(sn[0]+"-"+num);
+				bi.update();
+			}
+		}
+	}
 }

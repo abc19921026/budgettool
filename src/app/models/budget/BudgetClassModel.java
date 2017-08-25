@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.javaflow.bytecode.transformation.bcel.BcelClassTransformer;
+
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.sun.swing.internal.plaf.metal.resources.metal;
 
 import app.dao.BudgetClass;
+import app.dao.BudgetItem;
 
 public class BudgetClassModel extends BudgetClass{
 	/**
@@ -124,6 +127,116 @@ public class BudgetClassModel extends BudgetClass{
 			return 0;
 		}else{
 			return max;
+		}
+	}
+	
+	public static Integer get_max_no_in_budget_class(Integer budget_id,Integer budget_class_id)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql =new StringBuffer("select max(no) from budget_class bc where 1=1");
+		if(budget_id!=null){
+			sql.append(" and bc.budget_id = ?");
+			param.add(budget_id);
+		}
+		if(budget_class_id!=null){
+			sql.append(" and bc.parent_id = ?");
+			param.add(budget_class_id);
+		}
+		Integer max = Db.queryInt(sql.toString(), param.toArray());
+		if(max==null){
+			return 0;
+		}else{
+			return max;
+		}
+	}
+	
+	public static Long get_num_in_budget_class(Integer budget_id,Integer budget_class_id,Integer no)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql =new StringBuffer("select count(id) from budget_class bc where 1=1");
+		if(budget_id!=null){
+			sql.append(" and bc.budget_id = ? and bc.parent_id=0");
+			param.add(budget_id);
+		}
+		if(budget_class_id!=null){
+			sql.append(" and bc.parent_id = ?");
+			param.add(budget_class_id);
+		}
+		if(no!=null){
+			sql.append(" and bc.no < ?");
+			param.add(no);
+		}
+		Long num = Db.queryLong(sql.toString(), param.toArray());
+		if(num==null){
+			return (long) 0;
+		}else{
+			return num;
+		}
+	}
+	
+	public static void change_budget_class_sn(Integer budget_id,Integer budget_class_id,Integer no)throws Exception{
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer sql =new StringBuffer("select bc.* from budget_class bc where bc.no> ?");
+		param.add(no);
+		if(budget_id!=null){
+			sql.append(" and bc.budget_id = ? and bc.parent_id = 0");
+			param.add(budget_id);
+		}
+		if(budget_class_id!=null){
+			sql.append(" and bc.parent_id = ?");
+			param.add(budget_class_id);
+		}
+		sql.append(" order by bc.no asc");
+		List<BudgetClass> list = BudgetClass.dao.find(sql.toString(), param.toArray());
+		if(list.size()>0){
+			if(budget_id!=null){
+				Long num = get_num_in_budget_class(budget_id, null, no);
+				for(BudgetClass bc : list){
+					num += 1;
+					bc.setSn(num.toString());
+					bc.update();
+					if(BudgetClassModel.get_budget_subclass(bc.getId()).size() > 0){
+						change_budget_subclass_sn(bc.getId(), num);
+					}else{
+						change_budget_item_sn_by_budget_class(bc.getId());
+					}					
+				}
+			}else if(budget_class_id!=null){
+				Long num = get_num_in_budget_class(null, budget_class_id, no);
+				String sn = BudgetClass.dao.findById(budget_class_id).getSn();
+				for(BudgetClass bc : list){
+					num += 1;
+					bc.setSn(sn+"."+num);
+					bc.update();
+					if(BudgetItemModel.get_budget_item_num_by_class(bc.getId()) > 0){
+						change_budget_item_sn_by_budget_class(bc.getId());
+					}
+				}
+			}
+		}
+	}
+	
+	public static void change_budget_subclass_sn(Integer budget_class_id,Long sn)throws Exception{
+		String sql = "select * from budget_class where parent_id = ?";
+		List<BudgetClass> list = BudgetClass.dao.find(sql, budget_class_id);
+		if(list.size()>0){
+			for(BudgetClass bc : list){
+				String bc_sn = bc.getSn();
+				String[] split = bc_sn.split("\\.");
+				bc.setSn(sn+"."+split[1]);
+				bc.update();
+				if(BudgetItemModel.get_budget_item_num_by_class(bc.getId()) > 0){
+					change_budget_item_sn_by_budget_class(bc.getId());
+				}
+			}
+		}
+	}
+	
+	public static void change_budget_item_sn_by_budget_class(Integer budget_class_id)throws Exception{
+		BudgetClass bc = BudgetClass.dao.findById(budget_class_id);
+		String select = "select bi.* from budget_item bi where bi.budget_class_id = ? order by bi.no asc";
+		List<BudgetItem> bi_list = BudgetItem.dao.find(select, budget_class_id);
+		for(BudgetItem bi: bi_list){
+			bi.setSn(bc.getSn()+"-"+bi.getSn().split("-")[1]);
+			bi.update();
 		}
 	}
 }

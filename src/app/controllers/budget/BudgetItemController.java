@@ -70,8 +70,6 @@ public class BudgetItemController extends BaseController{
 			budget_item_amount.update();//保存从前台获取的单项价格
 			if(record.getNum().doubleValue()!=0){
 				record.setPrintable(1);
-			}else{
-				record.setPrintable(0);
 			}
 			BigDecimal price = budget_item_amount.getPriceAssist()
 					.add(budget_item_amount.getPriceMaterial())
@@ -104,11 +102,14 @@ public class BudgetItemController extends BaseController{
 			message = "保存成功";
 			if(record.getNum().doubleValue()!=0){
 				record.setPrintable(1);
-			}else{
-				record.setPrintable(0);
 			}
-			Integer max = BudgetItemModel.get_max_weight_in_budget_item(record.getBudgetClassId());
-			record.setWeight(max+10);
+			Integer max_weight = BudgetItemModel.get_max_weight_in_budget_item(budget_class_id);
+			record.setWeight(max_weight+10);
+			Integer max_no = BudgetItemModel.get_max_no_in_budget_item(budget_class_id);
+			record.setNo(max_no+1);
+			Long num = BudgetItemModel.get_num_in_budget_item(budget_class_id, null);
+			Long sn = num + 1;
+			record.setSn(BudgetClass.dao.findById(budget_class_id).getSn()+"-"+sn);
 			re = record.save();
 			
 			//初始化各单项价格
@@ -134,7 +135,7 @@ public class BudgetItemController extends BaseController{
 		render_success_message(message);
 	}	
 	@Clear(LoginInterceptor.class)
-	public void json_delete(){
+	public void json_delete()throws Exception{
 		String checked_ids = getPara("checked_ids");
 		String status = "SUCCESS", message = "删除成功";
 		if (StrKit.notBlank(checked_ids)) {
@@ -142,9 +143,11 @@ public class BudgetItemController extends BaseController{
 			int budget_class_id = 0;
 			for (int i = 0; i < delete_ids.length; i++) {
 				String id = delete_ids[i];
+				BudgetItem bi = BudgetItemModel.dao.findById(id);
 				if(budget_class_id <= 0 ){
-					budget_class_id = BudgetItemModel.dao.findById(id).getBudgetClassId();
+					budget_class_id = bi.getBudgetClassId();
 				}
+				BudgetItemModel.change_budget_item_sn(budget_class_id, bi.getNo());
 				BudgetItemModel.dao.deleteById(id);
 				BudgetItemAmount.dao.deleteById(id);
 				BudgetItemCost.dao.deleteById(id);
@@ -198,7 +201,7 @@ public class BudgetItemController extends BaseController{
 		int budget_class_id = getParaToInt("budget_class_id", 0);
 		//将前台获取的json数据转换成list数组
 		List<BudgetItem> list_budget_item = JSON.parseArray(jsonString, BudgetItem.class);
-		int count = 10;
+		int count = 1;
 		for(int i = 0;i < list_budget_item.size();i ++){
 			BudgetItem budget_item = list_budget_item.get(i);
 			if(budget_item != null){
@@ -209,11 +212,11 @@ public class BudgetItemController extends BaseController{
 				//如果数量不为0，设为必须打印
 				if(budget_item.getNum().doubleValue() != 0){//-1 小于   0 等于    1 大于 
 					budget_item.setPrintable(1);
-				}else{
-					budget_item.setPrintable(0);
 				}
-				budget_item.setWeight(count);
-				count += 10;
+				budget_item.setWeight(count*10);
+				budget_item.setNo(count);
+				budget_item.setSn(budget_item.getSn().split("-")[0]+"-"+count);
+				count += 1;
 				budget_item.update();
 				
 				//更新各单项金额
@@ -293,11 +296,13 @@ public class BudgetItemController extends BaseController{
 		String data = getPara("data");
 		List<BudgetItem> list = JSON.parseArray(data, BudgetItem.class);
 		boolean flag = false;
-		int count = 10;
+		int count = 1;
 		if(list.size()>0){
 			for(BudgetItem bi : list){
-				bi.setWeight(count);
-				count += 10;
+				bi.setWeight(count*10);
+				bi.setNo(count);
+				bi.setSn(bi.getSn().split("-")[0]+"-"+count);
+				count += 1;
 				flag = bi.update();
 				if(flag==false){
 					break;

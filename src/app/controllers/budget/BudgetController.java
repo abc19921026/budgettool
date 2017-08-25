@@ -251,12 +251,22 @@ public class BudgetController extends BaseController{
 			//新建
 			BaseModel.setCreateTime(record);
 			BaseModel.setUpdateTime(record);
-			if(record.getParentId()==null){
-				Integer max = BudgetClassModel.get_max_weight_in_budget_class(record.getBudgetId(), null);
-				record.setWeight(max+10);
+			if(record.getParentId()==null||record.getParentId()==0){
+				Integer weight_max = BudgetClassModel.get_max_weight_in_budget_class(record.getBudgetId(), null);
+				record.setWeight(weight_max+10);
+				Integer no_max = BudgetClassModel.get_max_no_in_budget_class(record.getBudgetId(), null);
+				record.setNo(no_max+1);
+				Long num = BudgetClassModel.get_num_in_budget_class(record.getBudgetId(), null,null);
+				Long sn = num+1;
+				record.setSn(sn.toString());
 			}else{
-				Integer max = BudgetClassModel.get_max_weight_in_budget_class(null, record.getParentId());
-				record.setWeight(max+10);
+				Integer weight_max = BudgetClassModel.get_max_weight_in_budget_class(null, record.getParentId());
+				record.setWeight(weight_max+10);
+				Integer no_max = BudgetClassModel.get_max_no_in_budget_class(null, record.getParentId());
+				record.setNo(no_max+1);
+				Long num = BudgetClassModel.get_num_in_budget_class(null, record.getParentId(),null);
+				Long sn = num+1;
+				record.setSn(BudgetClass.dao.findById(record.getParentId()).getSn()+"."+sn);
 			}
 			re = record.save();
 		}
@@ -293,7 +303,7 @@ public class BudgetController extends BaseController{
 					continue;					
 				}
 				if(budget_id <= 0){
-					budget_id = BudgetClass.dao.findById(budget_class_id).getBudgetId();
+					budget_id = bc.getBudgetId();
 				}
 				//判断该分类下是否有子工程项目，如果有，禁止删除
 				if(BudgetItemModel.get_budget_item_num_by_class(budget_class_id) > 0){
@@ -307,7 +317,14 @@ public class BudgetController extends BaseController{
 					break;//required!				
 					//TODO 有可能直接删除该分类下的工程项
 				}else{
+					Integer parent_id = bc.getParentId();
+					Integer no = bc.getNo();
 					BudgetClassModel.dao.deleteById(id);
+					if(parent_id==0){						
+						BudgetClassModel.change_budget_class_sn(budget_id, null, no);
+					}else{
+						BudgetClassModel.change_budget_class_sn(null, parent_id, no);
+					}
 				}
 			}
 			//更新预算合计

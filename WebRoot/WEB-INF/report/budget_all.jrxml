@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-12T22:42:41 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-08-25T17:48:26 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budget_all" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a5237fa1-fae6-44df-95ff-792d54374e5a">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="net.sf.jasperreports.components.table.generate.pdf.tags" value="true"/>
@@ -17,7 +17,7 @@
 	<detail>
 		<band height="525" splitType="Stretch">
 			<subreport>
-				<reportElement x="-2" y="0" width="842" height="525" uuid="e5eefc61-5d47-41c5-ac24-dc2329214ae5">
+				<reportElement x="10" y="0" width="842" height="525" uuid="e5eefc61-5d47-41c5-ac24-dc2329214ae5">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -30,7 +30,20 @@
 		</band>
 		<band height="525">
 			<subreport>
-				<reportElement x="0" y="0" width="832" height="525" uuid="0eb45e40-4332-451a-87ad-549e69548c6d">
+				<reportElement x="-10" y="0" width="842" height="525" uuid="8b886131-3bc8-4628-8481-c3306e02bc4a">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="budgetid">
+					<subreportParameterExpression><![CDATA[$P{budgetid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["budget_cover.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="535">
+			<subreport>
+				<reportElement x="10" y="10" width="832" height="525" uuid="0eb45e40-4332-451a-87ad-549e69548c6d">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -39,21 +52,6 @@
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["budget_detail.jasper"]]></subreportExpression>
-			</subreport>
-		</band>
-		<band height="525">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<subreport>
-				<reportElement x="0" y="0" width="842" height="525" uuid="a456c890-9505-4e55-8f69-c850ecba488e">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<subreportParameter name="budgetid">
-					<subreportParameterExpression><![CDATA[$P{budgetid}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["budget_material.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="525">
