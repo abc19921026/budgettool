@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T17:48:26 -->
+<!-- 2017-08-28T15:38:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budget_all" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a5237fa1-fae6-44df-95ff-792d54374e5a">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -17,7 +17,7 @@
 	<detail>
 		<band height="525" splitType="Stretch">
 			<subreport>
-				<reportElement x="10" y="0" width="842" height="525" uuid="e5eefc61-5d47-41c5-ac24-dc2329214ae5">
+				<reportElement x="0" y="0" width="842" height="525" uuid="e5eefc61-5d47-41c5-ac24-dc2329214ae5">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -29,8 +29,9 @@
 			</subreport>
 		</band>
 		<band height="525">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 			<subreport>
-				<reportElement x="-10" y="0" width="842" height="525" uuid="8b886131-3bc8-4628-8481-c3306e02bc4a">
+				<reportElement x="0" y="0" width="842" height="525" uuid="f0db47bf-08c6-4fce-b6bf-5b9ffe7901d8">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -38,7 +39,7 @@
 					<subreportParameterExpression><![CDATA[$P{budgetid}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["budget_cover.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["budget_description.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="535">
