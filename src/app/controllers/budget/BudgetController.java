@@ -410,7 +410,7 @@ public class BudgetController extends BaseController{
 	 * @throws Exception
 	 */
 	@Clear(LoginInterceptor.class)
-	public void export() {
+	public void export()throws Exception {
 		int budget_id = getParaToInt("budget_id", 0);
 		if(budget_id <= 0 ){
 			renderError(404);
@@ -418,10 +418,25 @@ public class BudgetController extends BaseController{
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("budgetid", budget_id);
 		ReportGenerator rg = new ReportGenerator();
-
-		ByteArrayOutputStream res = rg.generateJasperReport(parameters, "budget_all");
-		
-		String file_path=rg.generatePDFReport(res, "budget_all");
+		ByteArrayOutputStream res = rg.generateJasperReport(parameters, "budget_all");		
+		String file_path=rg.generatePDFReport(res, "budget_all");		
 		render(new PdfRender(file_path));
 	}	
+	/**
+	 * 优惠预览
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void view_discount()throws Exception{
+		int budget_id = getParaToInt("budget_id", 0);
+		if(budget_id <= 0 ){
+			renderError(404);
+		}
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("budgetid", budget_id);
+		ReportGenerator rg = new ReportGenerator();
+		ByteArrayOutputStream res = rg.generateJasperReport(parameters, "budget_discount");		
+		String file_path=rg.generatePDFReport(res, "budget_discount");		
+		render(new PdfRender(file_path));
+	}
 }
