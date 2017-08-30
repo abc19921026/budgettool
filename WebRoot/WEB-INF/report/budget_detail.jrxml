@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-29T10:06:53 -->
+<!-- 2017-08-30T15:30:14 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budget_detail" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="10" rightMargin="10" topMargin="15" bottomMargin="15" uuid="13be4cc1-f471-4b67-9544-d8707223315e">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="minghong_erp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -108,6 +108,9 @@ order by bc.l0weight,bc.l1weight,bi.weight]]>
 	<variable name="l1amount" class="java.lang.Double" resetType="Group" resetGroup="l1class" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="l0amount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{l1amount}]]></variableExpression>
 	</variable>
 	<group name="l0nclass" minHeightToStartNewPage="10">
 		<groupExpression><![CDATA[$F{l0name}]]></groupExpression>
