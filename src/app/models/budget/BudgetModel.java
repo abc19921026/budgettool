@@ -28,7 +28,7 @@ public class BudgetModel extends Budget{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static Map<String, Object> get_json_budget_list(int rows, int page,String sn, String startdate, String enddate) throws Exception{
+	public static Map<String, Object> get_json_budget_list(int rows, int page,String sn, String startdate, String enddate,String name) throws Exception{
 		// TODO Auto-generated method stub
 		List<Object> params=new ArrayList<Object>();
 		String select = "SELECT b.*";
@@ -42,6 +42,10 @@ public class BudgetModel extends Budget{
 			sqlExceptSelect.append(" AND DATE_FORMAT(b.update_time,'%Y-%m-%d') >= ? AND DATE_FORMAT(b.update_time,'%Y-%m-%d') <= ? ");
 			params.add(startdate);
 			params.add(enddate);
+		}
+		if(StrKit.notBlank(name)){
+			sqlExceptSelect.append(" and b.name like ?");
+			params.add("%"+name+"%");
 		}
 		sqlExceptSelect.append(" order by b.update_time desc");
 		Page<Budget> pages;

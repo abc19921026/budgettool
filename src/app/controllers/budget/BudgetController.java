@@ -52,8 +52,9 @@ public class BudgetController extends BaseController{
 	public void index_json() throws Exception{
 		String sn = getPara("sn", "").trim();
 		String startdate = getPara("startdate", "").trim();
+		String name = getPara("name","").trim();
 		String enddate =  DateTools.daysLater(getPara("enddate", "").trim(),1);//查询时当前日期+1
-		Map<String,Object> re = BudgetModel.get_json_budget_list(rows,page,sn,startdate,enddate);
+		Map<String,Object> re = BudgetModel.get_json_budget_list(rows,page,sn,startdate,enddate,name);
 		String jsonList = JsonKit.toJson(re);
 		renderJson(jsonList);
 	}
