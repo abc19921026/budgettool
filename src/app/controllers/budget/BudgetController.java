@@ -243,6 +243,9 @@ public class BudgetController extends BaseController{
 		String message = "保存成功";
 		boolean re = false;
 		BudgetClass record = getModel(BudgetClass.class, "");
+		if(StrKit.isBlank(record.getComment())){
+			record.setComment("无");
+		}
 		if(record.getId() != null){
 			//更新
 			message = "更新成功";
