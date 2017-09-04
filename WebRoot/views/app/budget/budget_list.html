@@ -50,7 +50,7 @@
 			 		<div class="col-md-2">
 					 		<label>预算编号：<br /><input type="text" name="sn" class="form-control input-small input-inline" placeholder="请输入项目编号" /></label></div>	 
 					 <div class="col-md-2">
-					 		<label>预算名称：<br /><input type="text" name="name" class="form-control input-small input-inline" placeholder="请输入项目编号" /></label></div>	 
+					 		<label>预算名称：<br /><input type="text" name="name" class="form-control input-small input-inline" placeholder="请输入项目名称" /></label></div>	 
 					 <div class="col-md-2">
 					 		<label>起始时间：<br /><input type="text" name="startdate" class="easyui-datebox" style="height:32px;" value = "${startdate!}" /></label></div>
 					 <div class="col-md-2">
@@ -62,7 +62,7 @@
 				 </div>
 			 
 			 	
-			     <table  class="easyui-datagrid" id="list" style="width:98%;height:450px"
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:650px"
 			            data-options="
 			                url: '/budget/index_json',
 			                method:'POST',
@@ -70,7 +70,7 @@
 			                checkOnSelect:false,
 			                pagination:true,
 			                pageSize:50,
-			               
+			               rownumbers:true
 			            ">
 			        <thead>
 			            <tr>
@@ -88,7 +88,7 @@
 			            	<!--<th data-options="field:'total', title:'总计', width:'5%',align:'center'"></th>-->
 			            	<!--<th data-options="field:'create_time', title:'创建时间', width:'150'"></th>-->
 			              	<th data-options="field:'update_time', title:'更新时间', width:'150px',align:'center'"></th>
-							<th data-options="field:'id', title:'', width:'60px',formatter :idformatter,align:'center'"></th>
+							<th data-options="field:'id', title:'', width:'80px',formatter :idformatter,align:'center'"></th>
 			            </tr>
 			        </thead>
 			    </table>
