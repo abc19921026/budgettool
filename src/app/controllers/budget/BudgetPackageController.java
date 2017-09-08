@@ -125,7 +125,8 @@ public class BudgetPackageController extends BaseController{
 	public void json_budget_package_item_list()throws Exception{
 		String title = getPara("title");
 		Integer budget_package_id = getParaToInt("budget_package_id");
-		Map<String, Object> re = BudgetPackageModel.get_budget_package_item_list(rows, page, budget_package_id, title);
+		Integer budget_id = getParaToInt("budget_id",0);
+		Map<String, Object> re = BudgetPackageModel.get_budget_package_item_list(rows, page, budget_package_id,budget_id, title);
 		String jsonList = JsonKit.toJson(re);
 		renderJson(jsonList);
 	}

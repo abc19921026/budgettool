@@ -25,6 +25,14 @@
                                <input type="text" id="budget_name" class="form-control easyui-validatebox" data-options="missingMessage:'请输入预算名称',required:true" name="budget.name" value="${(budget.name)!}" />
                            </div>
                        </div>
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">房屋面积</label>
+                           <div class="col-md-6">                                                 
+                           	<input type="text"  name="budget.total_area" value="${(budget.total_area)!"0"}"
+                  				data-options="missingMessage:'请输入房屋面积',required:true,precision:2,height:32,tipPosition:'bottom',disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+                           </div>
+                       </div>
                        <#if !budget.id??>
                        <div class="form-group">
                            <label class="col-md-3 control-label">历史预算表</label>

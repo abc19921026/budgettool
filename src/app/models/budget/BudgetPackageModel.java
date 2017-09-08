@@ -53,11 +53,17 @@ public class BudgetPackageModel extends BudgetPackage{
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<String,Object>get_budget_package_item_list(int rows, int page,Integer budget_package_id,String title)throws Exception{
+	public static Map<String,Object>get_budget_package_item_list(int rows, int page,Integer budget_package_id,Integer budget_id,String title)throws Exception{
 		List<Object> params=new ArrayList<Object>();
 		String select = "select bpi.*";
-		StringBuffer sql = new StringBuffer(" from budget_package_item bpi where bpi.budget_package_id = ? and bpi.budget_id is null");
+		StringBuffer sql = new StringBuffer(" from budget_package_item bpi where bpi.budget_package_id = ?");
 		params.add(budget_package_id);
+		if(budget_id>0){
+			sql.append(" and bpi.budget_id = ?");
+			params.add(budget_id);
+		}else{
+			sql.append(" and bpi.budget_id is null");
+		}
 		if(StrKit.notBlank(title)){
 			sql.append(" and bpi.title like ?");
 			params.add("%"+title+"%");

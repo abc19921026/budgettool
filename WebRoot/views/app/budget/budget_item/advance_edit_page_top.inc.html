@@ -76,6 +76,16 @@
                <a href="../advanced_edit/${budget_id!}?section=2"><i class="fa fa-money"></i> 优惠                
                </a>
            </li>
+           <#if (budget.budget_package_id>0)>
+           <li <#if section == 4 >class="active"</#if>>
+           		<a href="../budget_package_item/${budget_id!}?section=4"><i class="fa fa-wpforms"></i> 套餐项目                
+               	</a>
+           </li>
+           <li <#if section == 5 >class="active"</#if>>
+           		<a href="../budget_package_variation_item/${budget_id!}?section=5"><i class="fa fa-credit-card-alt"></i> 增减配项目                
+               	</a>
+           </li>
+           </#if>
            <li <#if section == 3 >class="active"</#if>>
                <a href="../line_item/${budget_id!}?section=3"><i class="glyphicon glyphicon-th-list"></i> 其他费用与汇总                
                </a>

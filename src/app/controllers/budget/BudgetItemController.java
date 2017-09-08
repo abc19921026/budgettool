@@ -315,4 +315,42 @@ public class BudgetItemController extends BaseController{
 			render_error_message("保存失败，请重试");
 		}
 	}
+	/**
+	 * 跳转到某个工程的套餐项目列表
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_package_item()throws Exception{
+		int budget_id = getParaToInt(0, 0);
+		int budget_class_id = getParaToInt("budget_class_id", 0);
+		int section = getParaToInt("section", 0);//0基础工程1主材2汇总与优惠
+		
+		Budget budget = BudgetModel.get_budget(budget_id);
+		if(budget == null){
+			renderError(404);
+		}
+		setAttr("budget", budget);
+		setAttr("section", section);
+		setAttr("budget_id", budget_id);
+		setAttr("budget_class_id", budget_class_id);
+	}
+	/**
+	 * 跳转到某个工程的套餐增减配项目列表
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_package_variation_item()throws Exception{
+		int budget_id = getParaToInt(0, 0);
+		int budget_class_id = getParaToInt("budget_class_id", 0);
+		int section = getParaToInt("section", 0);//0基础工程1主材2汇总与优惠
+		
+		Budget budget = BudgetModel.get_budget(budget_id);
+		if(budget == null){
+			renderError(404);
+		}
+		setAttr("budget", budget);
+		setAttr("section", section);
+		setAttr("budget_id", budget_id);
+		setAttr("budget_class_id", budget_class_id);
+	}
 }

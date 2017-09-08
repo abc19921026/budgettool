@@ -1,0 +1,96 @@
+<#include "../../../inc/layout/page-default-top.html" />
+<#include "advance_edit_page_top.inc.html" />
+    <!-- BEGIN PAGE BAR -->
+   
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+	
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<h4>${(budget.name)}套餐项目</h4>				
+			</div>
+			 <div class="portlet-body">
+			 
+			 	 <div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+
+			 		
+					 <div class="col-md-2">
+					 		<label>套餐项目：<br /><input type="text" name="title" class="form-control input-small input-inline" placeholder="请输入项目名称" /></label></div>	 
+					 
+			 		<div class="col-md-2">&nbsp;<br /><a class="btn btn-success" id="filter" title="查询"><i class="fa fa-search"></i> 查询</a></div>
+
+					 </form>
+				 </div>
+			 
+			 	
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:600px"
+			            data-options="
+			                url: '/budget_package/json_budget_package_item_list?budget_package_id=${(budget.budget_package_id)!}&budget_id=${(budget.id)!}',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                nowrap:false,
+			               rownumbers:true,
+			               fitColumns:true
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'title', title:'套餐项目', width:'200px'"></th>
+			            	<th data-options="field:'unit', title:'单位', width:'60px'"></th>
+			            	<th data-options="field:'num', title:'数量', width:'60px',formatter:numformatter"></th>
+			            	<th data-options="field:'brand_name', title:'品牌', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'model', title:'型号', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'specs', title:'规格', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'comment', title:'备注',width:'60%'"></th>
+							
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<script type="text/javascript" src="${BASE_PATH}public/js/accounting.min.js"></script>
+<script type="text/javascript">
+function nullformatter(value){
+	if(value==null){
+		return '/';
+	}else{
+		return value;
+	}
+} 
+function numformatter(value){
+	if(value==null){
+		return '/';
+	}else{
+		return accounting.formatMoney(value);
+	}
+}
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#list').datagrid('load', search_data);
+  	});
+  	
+});
+
+
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />
