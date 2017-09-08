@@ -51,6 +51,9 @@ public class MysqlGenerator {
 		myMetaBuilder.addIncludedTable("budget_item_amount");
 		myMetaBuilder.addIncludedTable("budget_item_cost");
 		myMetaBuilder.addIncludedTable("budget_line_item");
+		myMetaBuilder.addIncludedTable("budget_package");
+		myMetaBuilder.addIncludedTable("budget_package_item");
+		myMetaBuilder.addIncludedTable("budget_package_variation_item");
 		generator.setMetaBuilder(myMetaBuilder);
 		
 		// 设置是否在 Model 中生成 dao 对象

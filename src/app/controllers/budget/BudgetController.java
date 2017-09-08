@@ -12,10 +12,12 @@ import app.dao.Budget;
 import app.dao.BudgetClass;
 import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
+import app.dao.BudgetPackage;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetLineItemModel;
 import app.models.budget.BudgetModel;
+import app.models.budget.BudgetPackageModel;
 
 import com.jfinal.aop.Clear;
 import com.jfinal.kit.JsonKit;
@@ -69,6 +71,9 @@ public class BudgetController extends BaseController{
 		Budget budget = null;
 		if(id>0){
 			budget = Budget.dao.findById(id);
+			if(budget.getBudgetPackageId()>0){
+				setAttr("bp", BudgetPackage.dao.findById(budget.getBudgetPackageId()));
+			}
 		}else{
 			budget = new Budget();
 		}	
@@ -100,6 +105,9 @@ public class BudgetController extends BaseController{
 					budget.setTotal(history_budget.getTotal());
 					budget.update();
 					BudgetModel.budget_copy_all(history_budget_id, budget.getId());	
+				}
+				if(budget.getBudgetPackageId()>0){
+					BudgetPackageModel.load_budget_package(budget.getBudgetPackageId(), budget.getId());
 				}
 				
 			}
@@ -443,5 +451,6 @@ public class BudgetController extends BaseController{
 		String file_path=rg.generatePDFReport(res, "budget_discount");		
 		render(new PdfRender(file_path));
 	}
+	
 }
  

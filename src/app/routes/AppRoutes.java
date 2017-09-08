@@ -3,8 +3,10 @@ package app.routes;
 import com.jfinal.config.Routes;
 
 
+
 import app.controllers.budget.BudgetController;
 import app.controllers.budget.BudgetItemController;
+import app.controllers.budget.BudgetPackageController;
 import app.controllers.crm.DepartmentController;
 import app.controllers.crm.JobTitleController;
 import app.controllers.crm.StaffController;
@@ -21,6 +23,7 @@ public class AppRoutes extends Routes{
 		//预算路由配置
 		add("/budget", BudgetController.class, "/app/budget/");
 		add("/budget/item", BudgetItemController.class, "/app/budget/budget_item/");
+		add("/budget_package", BudgetPackageController.class, "/app/budget/");
 		//系统消息配置
 		add("/inbox",MessageController.class,"/system/inbox/");
 	}

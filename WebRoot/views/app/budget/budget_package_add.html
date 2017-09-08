@@ -1,0 +1,67 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold">套餐信息</span><span class="caption-helper"> </span>
+               </div>
+
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+          		      	   				
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">套餐名称</label>
+                           <div class="col-md-6">
+                           		<input type="hidden" name="bp.id" value="${(bp.id)!}" />
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐名称',required:true" name="bp.name" value="${(bp.name)!}" />
+                           </div>
+                       </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-3 control-label">单位面积费用</label>
+                           <div class="col-md-6">                                   
+							<input type="text"  name="bp.price" value="${(bp.price)!"0"}"
+                  				data-options="missingMessage:'请输入单位面积费用',required:true,precision:2,height:32,tipPosition:'bottom',disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+                           </div>
+                       </div>
+					<div class="form-group">
+                           <label class="col-md-3 control-label">备注</label> 
+                           <div class="col-md-6">
+                               <textarea name="bp.comment" rows="5" class="form-control">${(bp.comment)!""}</textarea>
+                           </div>
+                       </div>
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+
+function save_data(){
+	form_data_save("#ff", "/budget_package/budget_package_list_update", function(data){
+		$("#list").datagrid("reload");//预算中心页面
+	}, {window_close:true});	
+}
+
+</script>

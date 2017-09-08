@@ -32,7 +32,23 @@
                            		<select id="budget_select2" name="history_budget_id" class="form-control select2" > </select>
                            </div>
                        </div>
-					</#if>
+						</#if>
+					<#if !budget.id??>
+					<div class="form-group">
+                           <label class="col-md-3 control-label">套餐</label>
+                           <div class="col-md-6">                                   
+                           		<select id="budget_package_select2" name="budget.budget_package_id" class="form-control select2" > </select>
+                           </div>
+                       </div>
+                     </#if>
+                     <#if (budget.budget_package_id??)&&(budget.budget_package_id>0)>
+                      <div class="form-group">
+                           <label class="col-md-3 control-label">套餐</label>
+                           <div class="col-md-6">                                   
+                           		<input type="text" class="form-control easyui-validatebox" value="${(bp.name)!}" readonly="readonly" />
+                           </div>
+                       </div>
+                     </#if>
                    <div class="form-actions">
                        <div class="row">
                            <div class="col-md-offset-3 col-md-9">
@@ -90,5 +106,36 @@ $(function(){
         		return data.text;
 		  }
     });
+	
+	$('#budget_package_select2').select2({
+	 	   allowClear: true,
+	        language: "zh-CN",
+	        minimumInputLength: 0,//2
+	        placeholder:"请选择套餐",
+	        ajax:{
+	        	url:"/budget_package/budget_package_select2",
+	        	delay: 500,
+	        	//dataType: 'json',
+			    data: function (params) {			    	
+			    	//console.log(params);
+			      var query = {
+			        q: params.term,
+			        page: params.page,
+			        rows: 20,
+			        id: ${id!"0"}
+			      };
+			      return query;
+			    },
+	        	cache:true,
+	         	processResults: function (data, params) {//when use ajax data this method is required!!!
+			      return {results:data};
+			    },   
+	        },
+	        //data:person_info,
+	        templateResult: function (data) {
+	        	//console.log(data.name);
+	        		return data.text;
+			  }
+	    });
 })
 </script>

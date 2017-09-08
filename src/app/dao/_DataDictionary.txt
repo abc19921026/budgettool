@@ -1,23 +1,24 @@
 Table: budget
--------------+---------------+------+-----+---------+---------
- Field       | Type          | Null | Key | Default | Remarks 
--------------+---------------+------+-----+---------+---------
- id          | INT(10)       | NO   | PRI |         |         
- name        | VARCHAR(128)  | YES  |     |         | 名称      
- sn          | VARCHAR(128)  | YES  |     |         | 预算编号    
- order_id    | INT(10)       | YES  |     | 0       | 订单id, 0为模板
- version     | VARCHAR(50)   | YES  |     |         | 版本号     
- type        | CHAR(20)      | YES  |     |         | 类型      
- status      | TINYINT(3)    | YES  |     | 0       | 状态0,初始，1主预算
- primary     | TINYINT(3)    | YES  |     | 0       |         
- total       | DECIMAL(10,2) | YES  |     | 0.00    | 总计      
- create_uid  | INT(10)       | YES  |     |         | 用户id    
- created     | INT(10)       | YES  |     |         | 时间戳     
- create_time | CHAR(20)      | YES  |     |         | 创建时间    
- update_uid  | INT(10)       | YES  |     |         |         
- updated     | INT(10)       | YES  |     |         |         
- update_time | CHAR(20)      | YES  |     |         |         
--------------+---------------+------+-----+---------+---------
+-------------------+---------------+------+-----+---------+---------
+ Field             | Type          | Null | Key | Default | Remarks 
+-------------------+---------------+------+-----+---------+---------
+ id                | INT(10)       | NO   | PRI |         |         
+ name              | VARCHAR(128)  | YES  |     |         | 名称      
+ sn                | VARCHAR(128)  | YES  |     |         | 预算编号    
+ budget_package_id | INT(10)       | YES  |     | 0       | 套餐id    
+ version           | VARCHAR(50)   | YES  |     |         | 版本号     
+ type              | CHAR(20)      | YES  |     |         | 类型      
+ status            | TINYINT(3)    | YES  |     | 0       | 状态0,初始，1主预算
+ primary           | TINYINT(3)    | YES  |     | 0       |         
+ total_area        | DECIMAL(10,2) | YES  |     | 0.00    | 房屋面积    
+ total             | DECIMAL(10,2) | YES  |     | 0.00    | 总计      
+ create_uid        | INT(10)       | YES  |     |         | 用户id    
+ created           | INT(10)       | YES  |     |         | 时间戳     
+ create_time       | CHAR(20)      | YES  |     |         | 创建时间    
+ update_uid        | INT(10)       | YES  |     |         |         
+ updated           | INT(10)       | YES  |     |         |         
+ update_time       | CHAR(20)      | YES  |     |         |         
+-------------------+---------------+------+-----+---------+---------
 
 Table: budget_class
 -------------------------+---------------+------+-----+---------+---------
@@ -125,6 +126,70 @@ Table: budget_line_item
  line_item_comment | VARCHAR(255)  | YES  |     |         |         
  line_item_amount  | DECIMAL(10,2) | YES  |     | 0.00    |         
 -------------------+---------------+------+-----+---------+---------
+
+Table: budget_package
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ name        | VARCHAR(50)   | YES  |     |         | 套餐名称    
+ comment     | VARCHAR(512)  | YES  |     |         | 备注      
+ price       | DECIMAL(10,2) | YES  |     | 0.00    | 单位面积金额  
+ total       | DECIMAL(10,2) | YES  |     | 0.00    | 总金额     
+ deleted     | TINYINT(3)    | YES  |     | 0       | 0未删除1已删除
+ create_uid  | INT(10)       | YES  |     |         |         
+ created     | INT(10)       | YES  |     |         |         
+ create_time | VARCHAR(20)   | YES  |     |         |         
+ update_uid  | INT(10)       | YES  |     |         |         
+ updated     | INT(10)       | YES  |     |         |         
+ update_time | VARCHAR(20)   | YES  |     |         |         
+-------------+---------------+------+-----+---------+---------
+
+Table: budget_package_item
+-------------------+---------------+------+-----+---------+---------
+ Field             | Type          | Null | Key | Default | Remarks 
+-------------------+---------------+------+-----+---------+---------
+ id                | INT(10)       | NO   | PRI |         |         
+ budget_id         | INT(10)       | YES  |     |         |         
+ budget_package_id | INT(10)       | YES  |     |         |         
+ title             | VARCHAR(50)   | YES  |     |         |         
+ unit              | VARCHAR(50)   | YES  |     |         | 单位      
+ num               | DECIMAL(10,2) | YES  |     |         | 数量      
+ brand_name        | VARCHAR(50)   | YES  |     |         | 品牌      
+ model             | VARCHAR(50)   | YES  |     |         | 型号      
+ specs             | VARCHAR(50)   | YES  |     |         | 规格      
+ comment           | VARCHAR(500)  | YES  |     |         | 备注      
+ weight            | INT(10)       | YES  |     |         |         
+ create_uid        | INT(10)       | YES  |     |         |         
+ created           | INT(10)       | YES  |     |         |         
+ create_time       | VARCHAR(50)   | YES  |     |         |         
+ updated           | INT(10)       | YES  |     |         |         
+ update_uid        | INT(10)       | YES  |     |         |         
+ update_time       | VARCHAR(50)   | YES  |     |         |         
+-------------------+---------------+------+-----+---------+---------
+
+Table: budget_package_variation_item
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ budget_id   | INT(10)       | YES  |     |         |         
+ name        | VARCHAR(50)   | YES  |     |         |         
+ unit        | VARCHAR(50)   | YES  |     |         | 单位      
+ model       | VARCHAR(50)   | YES  |     |         | 型号      
+ space       | VARCHAR(50)   | YES  |     |         | 规格      
+ brand_name  | VARCHAR(50)   | YES  |     |         | 品牌      
+ num         | DECIMAL(10,2) | YES  |     | 0.00    | 数量      
+ price       | DECIMAL(10,2) | YES  |     | 0.00    | 单价      
+ amount      | DECIMAL(10,2) | YES  |     | 0.00    | 总金额     
+ comment     | VARCHAR(512)  | YES  |     |         | 备注      
+ create_uid  | INT(10)       | YES  |     |         |         
+ created     | INT(10)       | YES  |     |         |         
+ create_time | VARCHAR(20)   | YES  |     |         |         
+ update_uid  | INT(10)       | YES  |     |         |         
+ updated     | INT(10)       | YES  |     |         |         
+ update_time | VARCHAR(20)   | YES  |     |         |         
+-------------+---------------+------+-----+---------+---------
 
 Table: crm_department
 -------------+-------------+------+-----+---------+---------

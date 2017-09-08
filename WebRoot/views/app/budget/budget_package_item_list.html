@@ -1,0 +1,129 @@
+<#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <span>预算中心</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>套餐管理</span>
+                <i class="fa fa-circle"></i>
+            </li> 
+            <li>
+                <span>套餐项目</span>
+            </li>            
+        </ul>
+		
+        
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+	
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<h3>${(bp.name)}项目</h3>				
+			</div>
+			 <div class="portlet-body">
+			 
+			 	 <div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+
+			 		
+					 <div class="col-md-2">
+					 		<label>套餐项目：<br /><input type="text" name="title" class="form-control input-small input-inline" placeholder="请输入项目名称" /></label></div>	 
+					 
+			 		<div class="col-md-2">&nbsp;<br /><a class="btn btn-success" id="filter" title="查询"><i class="fa fa-search"></i> 查询</a></div>
+
+					 </form>
+				 </div>
+			 
+			 	
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:600px"
+			            data-options="
+			                url: '/budget_package/json_budget_package_item_list?budget_package_id=${(bp.id)!}',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			                nowrap:false,
+			               rownumbers:true,
+			               toolbar:'#tb'
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'title', title:'套餐项目', width:'200px'"></th>
+			            	<th data-options="field:'unit', title:'单位', width:'60px'"></th>
+			            	<th data-options="field:'num', title:'数量', width:'60px',formatter:numformatter"></th>
+			            	<th data-options="field:'brand_name', title:'品牌', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'model', title:'型号', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'specs', title:'规格', width:'60px',formatter:nullformatter"></th>
+			            	<th data-options="field:'comment', title:'备注',width:'60%'"></th>
+							<th data-options="field:'id', title:'', width:'80px',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<div id="tb" style="height:auto">
+	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'fa fa-plus',plain:true" onclick="new_window('/budget_package/budget_package_item_add?budget_package_id=${(bp.id)!}','', 800, 800);">新建</a>
+	<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'fa fa-remove',plain:true">删除</a>
+</div>
+<script type="text/javascript" src="${BASE_PATH}public/js/accounting.min.js"></script>
+<script type="text/javascript">
+
+function idformatter(value,data){
+		var re = "";
+  		//re += "<a href='/budget/budget_class?budget_id=" + value + "'>查看</a>" +" | "+
+	re += "<a href='javascript:new_window(\"/budget_package/budget_package_item_add?budget_package_id=${bp.id}&id="+value+"\",\"\",800,800);'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
+	//re += "<a href='/budget/variation_list?budget_id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 预算变更单</a>";
+	//re +=" | " + "<a href='/budget/preview?budget_id=" + value + "' target='_blank'>预览</a>";
+	//re += "<a href='/budget_package/budget_package_item_list?id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 预算变更单</a>";
+	return re;
+}
+function nullformatter(value){
+	if(value==null){
+		return '/';
+	}else{
+		return value;
+	}
+} 
+function numformatter(value){
+	if(value==null){
+		return '/';
+	}else{
+		return accounting.formatMoney(value);
+	}
+}
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#list').datagrid('load', search_data);
+  	});
+  	//删除
+	$("#delete").click(function(){
+		var post_url = "/budget_package/budget_package_item_list_delete";
+		handle_datagrid_delete(post_url, "list");
+	});
+});
+
+
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />

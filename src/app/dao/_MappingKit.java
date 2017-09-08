@@ -22,6 +22,9 @@ public class _MappingKit {
 		arp.addMapping("budget_item_amount", "id", BudgetItemAmount.class);
 		arp.addMapping("budget_item_cost", "id", BudgetItemCost.class);
 		arp.addMapping("budget_line_item", "id", BudgetLineItem.class);
+		arp.addMapping("budget_package", "id", BudgetPackage.class);
+		arp.addMapping("budget_package_item", "id", BudgetPackageItem.class);
+		arp.addMapping("budget_package_variation_item", "id", BudgetPackageVariationItem.class);
 		arp.addMapping("crm_department", "id", CrmDepartment.class);
 		arp.addMapping("crm_job_title", "id", CrmJobTitle.class);
 		arp.addMapping("crm_staff", "id", CrmStaff.class);

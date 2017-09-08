@@ -1,0 +1,104 @@
+<#include "../../inc/layout/page-default-top.html" />
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <span>预算中心</span>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <span>套餐管理</span>
+            </li>            
+        </ul>
+		
+        
+    </div>
+                    
+<!-- END PAGE BAR -->
+<!-- BEGIN PAGE TITLE-->
+<h3 class="page-title hidden">全部套餐</h3>
+
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="row">
+	<div class="col-md-12" style="min-height:300px;">
+	
+		
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title">
+				<button class="btn btn-sm btn-success" onclick="new_window('/budget_package/budget_package_add','', 800, 500);"><i class="fa fa-plus"></i> &nbsp;新建</button>
+				<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-remove"></i> &nbsp;删除</button>
+			</div>
+			 <div class="portlet-body">
+			 
+			 	 <div class="row margin-bottom-10">
+			  		<form id="filter_form" action="" method="get">
+
+			 		
+					 <div class="col-md-2">
+					 		<label>套餐名称：<br /><input type="text" name="name" class="form-control input-small input-inline" placeholder="请输入套餐名称" /></label></div>	 
+					 
+			 		<div class="col-md-2">&nbsp;<br /><a class="btn btn-success" id="filter" title="查询"><i class="fa fa-search"></i> 查询</a></div>
+
+					 </form>
+				 </div>
+			 
+			 	
+			     <table  class="easyui-datagrid" id="list" style="width:98%;height:650px"
+			            data-options="
+			                url: '/budget_package/json_budget_package_list',
+			                method:'POST',
+			                checkOnSelect:false,
+			                pagination:true,
+			                pageSize:50,
+			               rownumbers:true
+			            ">
+			        <thead>
+			            <tr>
+			            	<th data-options="field:'',checkbox:true"></th>
+			            	<th data-options="field:'name', title:'套餐名称', width:'15%'"></th>
+			            	<th data-options="field:'price', title:'单位面积费用', width:'150px',formatter:function(v){
+									return accounting.formatMoney(v);}"></th>
+			              	<th data-options="field:'update_time', title:'更新时间', width:'150px',align:'center'"></th>
+							<th data-options="field:'id', title:'', width:'160px',formatter :idformatter,align:'center'"></th>
+			            </tr>
+			        </thead>
+			    </table>
+			 </div>
+		</div><!-- .portlet -->
+		
+	</div>
+
+</div><!-- end of row-->
+<script type="text/javascript" src="${BASE_PATH}public/js/accounting.min.js"></script>
+<script type="text/javascript">
+
+function idformatter(value,data){
+		var re = "";
+  		//re += "<a href='/budget/budget_class?budget_id=" + value + "'>查看</a>" +" | "+
+	re += "<a href='javascript:new_window(\"/budget_package/budget_package_add?id="+value+"\");'><i class='fa fa-pencil-square'></i> 编辑</a>&nbsp;&nbsp;";
+	//re += "<a href='/budget/variation_list?budget_id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 预算变更单</a>";
+	//re +=" | " + "<a href='/budget/preview?budget_id=" + value + "' target='_blank'>预览</a>";
+	re += "<a href='/budget_package/budget_package_item_list?id="+value+"' target='_blank'><i class='fa fa-wpforms'></i> 套餐项目</a>";
+	return re;
+}
+                    
+$(function(){
+	//查询(过滤器)
+	$("#filter").click(function(){
+  			//var search_field = $("#search_field").val().trim();
+  			var search_data = $("#filter_form").serializeObject();
+  			//console.log(search_data);
+  			$('#list').datagrid('load', search_data);
+  	});
+  	//删除
+	$("#delete").click(function(){
+		var post_url = "/budget_package/budget_package_list_delete";
+		handle_datagrid_delete(post_url, "list");
+	});
+});
+
+
+</script>
+
+<#include "../../inc/layout/page-default-bottom.html" />

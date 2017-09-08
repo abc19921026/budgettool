@@ -1,0 +1,98 @@
+<!-- BEGIN PAGE TITLE-->
+<!-- END PAGE TITLE-->
+<!-- END PAGE HEADER-->
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-12">
+         <div class="portlet light">
+           <div class="portlet-title">
+               <div class="caption">
+                   <i class="icon-note font-dark"></i>
+                   <span class="caption-subject font-dark sbold">套餐项目</span><span class="caption-helper"> </span>
+               </div>
+
+           </div>
+           <div class="portlet-body form">
+           	<form class="form-horizontal" method="post" data-options="novalidate:false" id="ff">
+           	<div class="form-body">
+          		      	   				
+                        <div class="form-group">
+                           <label class="col-md-2 control-label">套餐名称</label>
+                           <div class="col-md-6">
+                           		<input type="hidden" name="bpi.id" value="${(bpi.id)!}" />
+                           		<input type="hidden" name="bpi.budget_package_id" value="${(bp.id)!}" />
+                               <input type="text" class="form-control easyui-validatebox" readonly="readonly"  value="${(bp.name)!}" />
+                           </div>
+                       </div>
+                       
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">套餐项目名称</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐项目名称',required:true" name="bpi.title"  value="${(bpi.title)!}" />
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">单位</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐项目单位',required:true" name="bpi.unit"  value="${(bpi.unit)!}" />
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">数量</label>
+                           <div class="col-md-6">                                   
+							<input type="text"  name="bpi.num" value="${(bpi.num)!}"
+                  				data-options="missingMessage:'请输入套餐项目数量',precision:2,height:32,tipPosition:'bottom',disabled:false" 
+	                               class="form-control easyui-numberbox input-inline input-small" placeholder="">
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">品牌</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐项目品牌'" name="bpi.brand_name"  value="${(bpi.brand_name)!}" />
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">型号</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐项目型号'" name="bpi.model"  value="${(bpi.model)!}" />
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="col-md-2 control-label">规格</label>
+                           <div class="col-md-6">
+                               <input type="text" class="form-control easyui-validatebox" data-options="missingMessage:'请输入套餐项目规格'" name="bpi.specs"  value="${(bpi.specs)!}" />
+                           </div>
+                       </div>
+					<div class="form-group">
+                           <label class="col-md-2 control-label">备注</label> 
+                           <div class="col-md-8">
+                               <textarea name="bpi.comment" rows="8" class="form-control">${(bpi.comment)!""}</textarea>
+                           </div>
+                       </div>
+                   <div class="form-actions">
+                       <div class="row">
+                           <div class="col-md-offset-3 col-md-9">
+                               <button type="button" id="save" onclick="save_data();" class="btn green">提交</button>
+                           </div>
+                       </div>
+                   </div>
+           	</form>
+           </div>
+           </div><!-- end portlet -->
+	</div><!-- end of col-->
+</div><!-- end of row-->
+</div><!-- end of container-->
+
+
+
+<style type="text/css"></style>
+
+<script type="text/javascript">
+
+function save_data(){
+	form_data_save("#ff", "/budget_package/budget_package_item_list_update", function(data){
+		$("#list").datagrid("reload");//预算中心页面
+	}, {window_close:true});	
+}
+
+</script>
