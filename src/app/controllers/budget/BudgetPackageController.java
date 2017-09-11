@@ -8,6 +8,7 @@ import system.core.BaseModel;
 import system.core.LoginInterceptor;
 import app.dao.BudgetPackage;
 import app.dao.BudgetPackageItem;
+import app.dao.BudgetPackageVariationItem;
 import app.models.budget.BudgetModel;
 import app.models.budget.BudgetPackageModel;
 
@@ -212,5 +213,88 @@ public class BudgetPackageController extends BaseController{
 		List<Record> list = BudgetPackageModel.get_budget_package(q);
 		String jsonList = JsonKit.toJson(list);
 		renderJson(jsonList);
+	}
+	/**
+	 * 加载某预算的增减配项目
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void json_budget_package_variation_item_list()throws Exception{
+		Integer budget_id = getParaToInt("budget_id");
+		String name = getPara("name");
+		Map<String, Object> re = BudgetPackageModel.get_budget_package_variation_item_list(rows, page, budget_id, name);
+		String jsonList = JsonKit.toJson(re);
+		renderJson(jsonList);
+	}
+	/**
+	 * 新建，修改增减配项目
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_package_variation_item_edit()throws Exception{
+		Integer budget_id = getParaToInt("budget_id",0);
+		Integer id = getParaToInt("id",0);
+		if(budget_id==0){
+			render_error_message("数据错误，请重试。");
+			return;
+		}else{
+			setAttr("budget_id", budget_id);
+			BudgetPackageVariationItem bpvi = null;
+			if(id==0){
+				bpvi = new BudgetPackageVariationItem();
+			}else{
+				bpvi = BudgetPackageVariationItem.dao.findById(id);
+			}
+			setAttr("bpvi", bpvi);
+		}
+	}
+	/**
+	 * 保存增减配项目的新建，修改
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_package_variation_item_update()throws Exception{
+		BudgetPackageVariationItem bpvi = getModel(BudgetPackageVariationItem.class,"bpvi");
+		boolean flag = false;
+		if(bpvi.getId()==null){
+			BaseModel.setCreateTime(bpvi);
+			BaseModel.setUpdateTime(bpvi);
+			flag = bpvi.save();
+		}else{
+			BaseModel.setUpdateTime(bpvi);
+			flag = bpvi.update();
+		}
+		if(flag==true){
+			render_success_message("保存成功");
+		}else{
+			render_error_message("保存失败，请重新操作");
+		}
+	}
+	/**
+	 * 删除增减配项目
+	 * @throws Exception
+	 */
+	@Clear(LoginInterceptor.class)
+	public void budget_package_variation_item_delete()throws Exception{
+		String checked_ids = getPara("checked_ids");
+		boolean flag = false;
+		if(StrKit.notBlank(checked_ids)){
+			String[] delete_ids = checked_ids.split(",");
+			for(int i = 0; i < delete_ids.length; i++){
+				BudgetPackageVariationItem bpvi = BudgetPackageVariationItem.dao.findById(delete_ids[i]);
+				flag = bpvi.delete();
+				if(flag==false){
+					break;
+				}
+			}
+			if(flag==true){
+				render_success_message("删除成功");
+			}else{
+				render_error_message("删除失败，请重新操作");
+			}
+		}else{
+			render_error_message("数据错误，请重试。");
+			return;
+		}
 	}
 }

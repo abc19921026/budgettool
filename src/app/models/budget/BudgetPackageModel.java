@@ -1,5 +1,6 @@
 package app.models.budget;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.jfinal.plugin.activerecord.Record;
 
 import app.dao.BudgetPackage;
 import app.dao.BudgetPackageItem;
+import app.dao.BudgetPackageVariationItem;
 
 
 public class BudgetPackageModel extends BudgetPackage{
@@ -106,5 +108,59 @@ public class BudgetPackageModel extends BudgetPackage{
 			bpi.setBudgetId(budget_id);
 			bpi.save();
 		}
+	}
+	/**
+	 * 加载套餐增减配项目列表
+	 * @param rows
+	 * @param page
+	 * @param budget_id
+	 * @param title
+	 * @return
+	 * @throws Exception
+	 */
+	public static Map<String,Object> get_budget_package_variation_item_list(int rows, int page,Integer budget_id,String name)throws Exception{
+		List<Object> params=new ArrayList<Object>();
+		String select = "select bpvi.*";
+		StringBuffer sql = new StringBuffer(" from budget_package_variation_item bpvi where bpvi.budget_id = ?");
+		params.add(budget_id);
+		if(StrKit.notBlank(name)){
+			sql.append(" and bpvi.name like ?");
+			params.add("%"+name+"%");
+		}
+		Page<BudgetPackageVariationItem> pages = BudgetPackageVariationItem.dao.paginate(page, rows, select, sql.toString(),params.toArray());
+		List<BudgetPackageVariationItem> list = pages.getList();
+		int total = pages.getTotalRow();
+		List<BudgetPackageVariationItem> footerlist = new ArrayList<BudgetPackageVariationItem>();
+		BudgetPackageVariationItem footer = new BudgetPackageVariationItem();
+		footer.setName("总计:");
+		footer.setAmount(get_budget_package_variation_item_sum(budget_id, name));
+		footerlist.add(footer);
+		Map<String,Object> re = new HashMap<String,Object>();
+		re.put("total", total);
+		re.put("rows", list);
+		re.put("footer", footerlist);
+		return re;
+	}
+	/**
+	 * 增加配项目的总计
+	 * @param budget_id
+	 * @param name
+	 * @throws Exception
+	 */
+	public static BigDecimal get_budget_package_variation_item_sum(Integer budget_id,String name)throws Exception{
+		List<Object> params=new ArrayList<Object>();
+		StringBuffer sql =new StringBuffer("select sum(bpvi.amount) ") ;
+		sql.append(" from budget_package_variation_item bpvi where bpvi.budget_id = ?");
+		params.add(budget_id);
+		if(StrKit.notBlank(name)){
+			sql.append(" and bpvi.name like ?");
+			params.add("%"+name+"%");
+		}
+		BigDecimal sum = Db.queryBigDecimal(sql.toString(),params.toArray());
+		if(sum==null){
+			return new BigDecimal(0);
+		}else{
+			return sum;
+		}	
 	}
 }
