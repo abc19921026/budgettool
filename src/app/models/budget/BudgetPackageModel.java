@@ -163,4 +163,16 @@ public class BudgetPackageModel extends BudgetPackage{
 			return sum;
 		}	
 	}
+	/**
+	 * 统计一个预算中有几个增减配项目
+	 * @param budget_id
+	 * @return
+	 * @throws Exception
+	 */
+	public static Integer get_budget_package_variation_item_num(Integer budget_id)throws Exception{
+		String sql = "select bpvi.* from budget_package_variation_item bpvi "
+				+"where bpvi.budget_id = ?";
+		List<BudgetPackageVariationItem> list = BudgetPackageVariationItem.dao.find(sql, budget_id);
+		return list.size();
+	}
 }

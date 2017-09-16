@@ -21,6 +21,7 @@ import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetLineItemModel;
 import app.models.budget.BudgetModel;
+import app.models.budget.BudgetPackageModel;
 import system.core.BaseController;
 import system.core.BaseModel;
 import system.core.LoginInterceptor;
@@ -38,6 +39,21 @@ public class BudgetItemController extends BaseController{
 		if(budget == null){
 			renderError(404);
 		}	
+		if(BudgetItemModel.get_budget_item_num(budget_id, 0)>0){
+			setAttr("section_0", 0);
+		}
+		if(BudgetItemModel.get_budget_item_num(budget_id, 1)>0){
+			setAttr("section_1", 1);
+		}
+		if(BudgetItemModel.get_budget_item_num(budget_id, 2)>0){
+			setAttr("section_2", 2);
+		}
+		if(budget.getBudgetPackageId()>0){
+			setAttr("section_4", 4);
+			if(BudgetPackageModel.get_budget_package_variation_item_num(budget_id)>0){
+				setAttr("section_5", 5);
+			}
+		}
 		setAttr("budget", budget);
 		setAttr("section", section);	
 		setAttr("budget_id", budget_id);

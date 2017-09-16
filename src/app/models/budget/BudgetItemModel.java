@@ -240,4 +240,18 @@ public class BudgetItemModel extends BudgetItem{
 			}
 		}
 	}
+	/**
+	 * 查询budget_item个数
+	 * @param budget_id
+	 * @param section
+	 * @return
+	 * @throws Exception
+	 */
+	public static Integer get_budget_item_num(Integer budget_id,Integer section)throws Exception{
+		String sql = "select bi.* from budget_item bi"
+				+" left join budget_class bc on bc.id = bi.budget_class_id"
+				+" where bc.section = ? and bc.budget_id = ?";
+		List<BudgetItem> list = BudgetItem.dao.find(sql, section,budget_id);
+		return list.size();
+	}
 }

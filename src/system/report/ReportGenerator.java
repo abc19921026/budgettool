@@ -82,6 +82,7 @@ public class ReportGenerator {
     //读取jasper模版文件
     public ByteArrayOutputStream  generateJasperReport(Map<String, Object> parameters,String reportName){
     	ByteArrayOutputStream outPut = new ByteArrayOutputStream();
+    	
         String str = "";
         try {
             Connection conn = this.getConnection(); 
