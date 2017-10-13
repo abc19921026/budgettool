@@ -55,13 +55,17 @@ public class BudgetPackageController extends BaseController{
 	 */
 	public void budget_package_list_update()throws Exception{
 		BudgetPackage bp = getModel(BudgetPackage.class,"bp");
+		int uid = current_user_id();
 		boolean flag = false;
 		if(bp.getId()!=null){
 			BaseModel.setUpdateTime(bp);
+			bp.setUpdateUid(uid);
 			flag = bp.update();
 		}else{
 			BaseModel.setCreateTime(bp);
 			BaseModel.setUpdateTime(bp);
+			bp.setCreateUid(uid);
+			bp.setUpdateUid(uid);
 			flag = bp.save();
 		}
 		if(flag==true){

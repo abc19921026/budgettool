@@ -82,14 +82,18 @@ public class BudgetController extends BaseController{
 	 */
 	public void budget_list_update()throws Exception{
 		Budget budget = getModel(Budget.class);
+		int uid = current_user_id();
 		boolean flag = false;
 		if(budget.getName()!=null){
 			if(budget.getId()!=null){
 				BaseModel.setUpdateTime(budget);
+				budget.setUpdateUid(uid);
 				flag = budget.update();
 			}else{
 				BaseModel.setCreateTime(budget);
 				BaseModel.setUpdateTime(budget);
+				budget.setCreateUid(uid);
+				budget.setUpdateUid(uid);
 				budget.setSn(BudgetModel.generate_budget_sn());
 				budget.setType("budget");
 				flag = budget.save();
