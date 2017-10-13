@@ -22,7 +22,6 @@ public class BudgetPackageController extends BaseController{
 	 * 跳转到套餐页面
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_list()throws Exception{
 		set_head_title("预算套餐管理");
 	}
@@ -30,7 +29,6 @@ public class BudgetPackageController extends BaseController{
 	 * 加载套餐列表
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_budget_package_list()throws Exception{
 		String name = getPara("name");
 		Map<String, Object> re = BudgetPackageModel.get_budget_package_list(rows, page, name);
@@ -41,7 +39,6 @@ public class BudgetPackageController extends BaseController{
 	 * 添加、修改套餐
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_add()throws Exception{
 		Integer id = getParaToInt("id",0);
 		BudgetPackage bp = null;
@@ -56,7 +53,6 @@ public class BudgetPackageController extends BaseController{
 	 * 保存套餐的添加，修改
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_list_update()throws Exception{
 		BudgetPackage bp = getModel(BudgetPackage.class,"bp");
 		boolean flag = false;
@@ -78,7 +74,6 @@ public class BudgetPackageController extends BaseController{
 	 * 删除套餐
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_list_delete()throws Exception{
 		String checked_ids = getPara("checked_ids");
 		boolean flag = false;
@@ -106,7 +101,6 @@ public class BudgetPackageController extends BaseController{
 	 * 跳转到套餐明细页面
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_item_list()throws Exception{
 		Integer id = getParaToInt("id",0);
 		if(id==0){
@@ -122,7 +116,6 @@ public class BudgetPackageController extends BaseController{
 	 * 加载套餐细则列表
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_budget_package_item_list()throws Exception{
 		String title = getPara("title");
 		Integer budget_package_id = getParaToInt("budget_package_id");
@@ -135,7 +128,6 @@ public class BudgetPackageController extends BaseController{
 	 * 跳转到套餐细则添加，修改页面
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_item_add()throws Exception{
 		Integer budget_package_id = getParaToInt("budget_package_id",0);
 		Integer id = getParaToInt("id",0);
@@ -158,7 +150,6 @@ public class BudgetPackageController extends BaseController{
 	 * 保存套餐项目的添加，修改
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_item_list_update()throws Exception{
 		BudgetPackageItem bpi = getModel(BudgetPackageItem.class,"bpi");
 		boolean flag = false;
@@ -180,7 +171,6 @@ public class BudgetPackageController extends BaseController{
 	 * 删除套餐项目
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_item_list_delete()throws Exception{
 		String checked_ids = getPara("checked_ids");
 		boolean flag = false;
@@ -207,7 +197,6 @@ public class BudgetPackageController extends BaseController{
 	 * select2选套餐
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_select2()throws Exception{
 		String q = getPara("q");
 		List<Record> list = BudgetPackageModel.get_budget_package(q);
@@ -218,7 +207,6 @@ public class BudgetPackageController extends BaseController{
 	 * 加载某预算的增减配项目
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_budget_package_variation_item_list()throws Exception{
 		Integer budget_id = getParaToInt("budget_id");
 		String name = getPara("name");
@@ -230,7 +218,6 @@ public class BudgetPackageController extends BaseController{
 	 * 新建，修改增减配项目
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_variation_item_edit()throws Exception{
 		Integer budget_id = getParaToInt("budget_id",0);
 		Integer id = getParaToInt("id",0);
@@ -252,7 +239,6 @@ public class BudgetPackageController extends BaseController{
 	 * 保存增减配项目的新建，修改
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_variation_item_update()throws Exception{
 		BudgetPackageVariationItem bpvi = getModel(BudgetPackageVariationItem.class,"bpvi");
 		boolean flag = false;
@@ -274,7 +260,6 @@ public class BudgetPackageController extends BaseController{
 	 * 删除增减配项目
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_variation_item_delete()throws Exception{
 		String checked_ids = getPara("checked_ids");
 		boolean flag = false;

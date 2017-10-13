@@ -28,7 +28,6 @@ import system.core.LoginInterceptor;
 
 public class BudgetItemController extends BaseController{
 	//预算高级编辑
-	@Clear(LoginInterceptor.class)
 	public void advanced_edit() throws Exception{
 		//render("budget_item/advanced_edit.html");
 		int budget_id = getParaToInt(0, 0);
@@ -61,7 +60,6 @@ public class BudgetItemController extends BaseController{
 		set_head_title("预算高级编辑-"+budget.getName());
 	}
 	//预算高级编辑 右边栏工程条目
-	@Clear(LoginInterceptor.class)
 	public void advanced_edit_budget_item_load_json()throws Exception{
 		int budget_class_id = getParaToInt("budget_class_id", 0);
 		Map<String, Object> re = BudgetItemModel.get_budget_item_by_class(budget_class_id, rows, page);
@@ -71,7 +69,6 @@ public class BudgetItemController extends BaseController{
 	/**
 	 * 单条更新预算项目
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_budget_item_details_update()throws Exception{
 		String message = "";
 		boolean re = false;		
@@ -150,7 +147,7 @@ public class BudgetItemController extends BaseController{
 		
 		render_success_message(message);
 	}	
-	@Clear(LoginInterceptor.class)
+	
 	public void json_delete()throws Exception{
 		String checked_ids = getPara("checked_ids");
 		String status = "SUCCESS", message = "删除成功";
@@ -176,7 +173,7 @@ public class BudgetItemController extends BaseController{
 		
 		render_message(status, message);
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void line_item() throws Exception{
 		int budget_id = getParaToInt(0, 0);
 		int budget_class_id = getParaToInt("budget_class_id", 0);
@@ -192,7 +189,7 @@ public class BudgetItemController extends BaseController{
 		setAttr("budget_id", budget_id);
 		setAttr("budget_class_id", budget_class_id);
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void line_item_json(){
 		int budget_id = getParaToInt(0, 0);
 		Map<String, Object> re = BudgetLineItemModel.get_budget_line_item(budget_id, rows, page);
@@ -211,7 +208,6 @@ public class BudgetItemController extends BaseController{
 	/**
 	 * 批量更新预算项目
 	 */
-	@Clear(LoginInterceptor.class)
 	public void advanced_edit_save(){
 		String jsonString = getPara("data", "");
 		int budget_class_id = getParaToInt("budget_class_id", 0);
@@ -251,7 +247,7 @@ public class BudgetItemController extends BaseController{
 		
 		render_success_message("保存成功");
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void line_item_update_json(){
 		String jsonString = getPara("data", "");
 		
@@ -289,7 +285,6 @@ public class BudgetItemController extends BaseController{
 	 * 跳转到项目拖拽页面
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_item_weight_sort()throws Exception{
 		Integer budget_class_id = getParaToInt("budget_class_id");
 		if(budget_class_id==null){
@@ -301,13 +296,13 @@ public class BudgetItemController extends BaseController{
 		}
 	}
 	
-	@Clear(LoginInterceptor.class)
+	
 	public void budget_item_weight_sort_json()throws Exception{
 		int budget_class_id = getParaToInt("budget_class_id", 0);
 		Map<String, Object> re = BudgetItemModel.get_budget_item_for_sort(budget_class_id);
 		renderJson(re);
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void budget_item_weight_sort_update()throws Exception{
 		String data = getPara("data");
 		List<BudgetItem> list = JSON.parseArray(data, BudgetItem.class);
@@ -335,7 +330,6 @@ public class BudgetItemController extends BaseController{
 	 * 跳转到某个工程的套餐项目列表
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_item()throws Exception{
 		int budget_id = getParaToInt(0, 0);
 		int budget_class_id = getParaToInt("budget_class_id", 0);
@@ -354,7 +348,6 @@ public class BudgetItemController extends BaseController{
 	 * 跳转到某个工程的套餐增减配项目列表
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_package_variation_item()throws Exception{
 		int budget_id = getParaToInt(0, 0);
 		int budget_class_id = getParaToInt("budget_class_id", 0);

@@ -36,7 +36,6 @@ public class BudgetController extends BaseController{
 	 * 预算列表页（按项目预算列出）
 	 * @throws Exception 
 	 */
-	@Clear(LoginInterceptor.class)
 	public void index() throws Exception{		
 		String enddate = DateTools.getDate();//获取系统当前日期
 		String startdate = DateTools.daysAgo(enddate,365);//获取系统当前日期一年之前的日期
@@ -50,7 +49,6 @@ public class BudgetController extends BaseController{
 	 * 预算列表数据加载listAll
 	 * @throws Exception 
 	 */
-	@Clear(LoginInterceptor.class)
 	public void index_json() throws Exception{
 		String sn = getPara("sn", "").trim();
 		String startdate = getPara("startdate", "").trim();
@@ -65,7 +63,6 @@ public class BudgetController extends BaseController{
 	 * 跳转到预算新建/修改页面
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_add()throws Exception{
 		Integer id = getParaToInt("id",0);
 		Budget budget = null;
@@ -83,7 +80,6 @@ public class BudgetController extends BaseController{
 	 * 保存预算新建/修改
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_list_update()throws Exception{
 		Budget budget = getModel(Budget.class);
 		boolean flag = false;
@@ -125,7 +121,6 @@ public class BudgetController extends BaseController{
 	 * 批量删除预算
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_list_delete() throws Exception{
 		String checked_ids = getPara("checked_ids");
 		int force_delete = getParaToInt("force_delete", 0);//是否强制删除
@@ -157,7 +152,7 @@ public class BudgetController extends BaseController{
 		render_message(status, message);
 	}
 	
-	@Clear(LoginInterceptor.class)
+
 	public void json_budget_class()throws Exception{
 		int budget_id = getParaToInt(0, 0);
 		int section = getParaToInt("section", 0);
@@ -177,7 +172,7 @@ public class BudgetController extends BaseController{
 		renderJson(jsonList);
 	}
 	
-	@Clear(LoginInterceptor.class)
+
 	public void budget_class_edit()throws Exception{
 		int id = getParaToInt("budget_class_id", 0);
 		int budget_id = getParaToInt("budget_id", 0);
@@ -212,7 +207,6 @@ public class BudgetController extends BaseController{
 	/**
 	 * 工程分类
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_class_catalog_select2()throws Exception{
 		String q = getPara("q", "");
 		int section = getParaToInt("section", 0);
@@ -246,7 +240,7 @@ public class BudgetController extends BaseController{
 			renderJson(jsonList);
 		}
 	}	
-	@Clear(LoginInterceptor.class)
+
 	public void json_budget_class_update()throws Exception{
 		String message = "保存成功";
 		boolean re = false;
@@ -298,7 +292,6 @@ public class BudgetController extends BaseController{
 	/**
 	 * 删除一条预算分类
 	 */
-	@Clear(LoginInterceptor.class)
 	public void json_budget_class_delete()throws Exception{		
 		String checked_ids = getPara("checked_ids");
 		String status = "SUCCESS", message = "删除成功";
@@ -351,7 +344,6 @@ public class BudgetController extends BaseController{
 	/**
 	 * 项目编辑
 	 */
-	@Clear(LoginInterceptor.class)
 	public void budget_item_edit()throws Exception{
 		int id = getParaToInt("id", 0);
 		int budget_class_id = getParaToInt("budget_class_id", 0);		
@@ -373,7 +365,7 @@ public class BudgetController extends BaseController{
 		setAttr("record", budget_item);
 		
 	}	
-	@Clear(LoginInterceptor.class)
+	
 	public void json_budget_item_select2()throws Exception{
 		String q = getPara("keyword");
 		if(StrKit.notBlank(q)){
@@ -386,19 +378,19 @@ public class BudgetController extends BaseController{
 		}
 		
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void check_has_subclass()throws Exception{
 		Integer budget_class_id = getParaToInt("id");
 		List<BudgetClass> list = BudgetClassModel.get_budget_subclass(budget_class_id);
 		renderJson(list.size());
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void check_has_budget_item()throws Exception{
 		Integer budget_class_id = getParaToInt("id");
       	int sum = BudgetItemModel.get_budget_item_num_by_class(budget_class_id);
 		renderJson(sum);
 	}
-	@Clear(LoginInterceptor.class)
+	
 	public void budget_select2()throws Exception{
 		String q = getPara("q");
 		List<Record> list = BudgetModel.get_history_budget(q);
@@ -410,7 +402,7 @@ public class BudgetController extends BaseController{
      * 查看封面
      * @throws Exception
      */
-	@Clear(LoginInterceptor.class)
+	
     public void view_cover() throws Exception{
    	 int budget_id=getParaToInt("budget_id");
    	 Record cover_info=BudgetModel.get_cover_info(budget_id);
@@ -421,7 +413,6 @@ public class BudgetController extends BaseController{
 	 * 页面预览
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void export()throws Exception {
 		int budget_id = getParaToInt("budget_id", 0);
 		if(budget_id <= 0 ){
@@ -438,7 +429,6 @@ public class BudgetController extends BaseController{
 	 * 优惠预览
 	 * @throws Exception
 	 */
-	@Clear(LoginInterceptor.class)
 	public void view_discount()throws Exception{
 		int budget_id = getParaToInt("budget_id", 0);
 		if(budget_id <= 0 ){
