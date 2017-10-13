@@ -17,6 +17,7 @@ import app.dao.BudgetItem;
 import app.dao.BudgetItemAmount;
 import app.dao.BudgetItemCost;
 import app.dao.BudgetLineItem;
+import app.dao.BudgetPackage;
 import app.models.budget.BudgetClassModel;
 import app.models.budget.BudgetItemModel;
 import app.models.budget.BudgetLineItemModel;
@@ -48,6 +49,7 @@ public class BudgetItemController extends BaseController{
 			setAttr("section_2", 2);
 		}
 		if(budget.getBudgetPackageId()>0){
+			setAttr("budget_package", BudgetPackage.dao.findById(budget.getBudgetPackageId()));
 			setAttr("section_4", 4);
 			if(BudgetPackageModel.get_budget_package_variation_item_num(budget_id)>0){
 				setAttr("section_5", 5);

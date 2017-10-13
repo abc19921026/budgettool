@@ -108,7 +108,9 @@ public class BudgetController extends BaseController{
 				
 			}
 			if(flag==true){
-				render_success_message("保存成功");
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", budget.getId());
+				render_success_message("保存成功",map);
 			}else{
 				render_error_message("保存失败，请重新操作");
 			}

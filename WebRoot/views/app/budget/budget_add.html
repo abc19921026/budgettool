@@ -81,6 +81,7 @@ function save_data(){
 	form_data_save("#ff", "/budget/budget_list_update", function(data){
 		$("#list").datagrid("reload");//预算中心页面
 		$("#datagrid").datagrid("reload");//订单预算页面
+		window.open("/budget/item/advanced_edit/"+data.id,"_blank");
 	}, {window_close:true});	
 }
 $(function(){
