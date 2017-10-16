@@ -31,7 +31,8 @@ public class BudgetPackageController extends BaseController{
 	 */
 	public void json_budget_package_list()throws Exception{
 		String name = getPara("name");
-		Map<String, Object> re = BudgetPackageModel.get_budget_package_list(rows, page, name);
+		int uid = current_user_id();
+		Map<String, Object> re = BudgetPackageModel.get_budget_package_list(rows, page, name,uid);
 		String jsonList = JsonKit.toJson(re);
 		renderJson(jsonList);
 	}

@@ -28,12 +28,13 @@ public class BudgetModel extends Budget{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static Map<String, Object> get_json_budget_list(int rows, int page,String sn, String startdate, String enddate,String name) throws Exception{
+	public static Map<String, Object> get_json_budget_list(int rows, int page,String sn, String startdate, String enddate,String name,Integer uid) throws Exception{
 		// TODO Auto-generated method stub
 		List<Object> params=new ArrayList<Object>();
 		String select = "SELECT b.*";
 		StringBuffer sqlExceptSelect = new StringBuffer( " FROM budget b");
-				sqlExceptSelect.append(" WHERE 1=1 ");
+				sqlExceptSelect.append(" WHERE b.create_uid = ? ");
+		params.add(uid);
 		if(StrKit.notBlank(sn)){
 			sqlExceptSelect.append(" and b.sn like ?");
 			params.add("%"+sn+"%");

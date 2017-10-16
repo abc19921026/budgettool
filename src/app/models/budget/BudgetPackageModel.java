@@ -30,10 +30,11 @@ public class BudgetPackageModel extends BudgetPackage{
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<String, Object> get_budget_package_list(int rows, int page,String name)throws Exception{
+	public static Map<String, Object> get_budget_package_list(int rows, int page,String name,Integer uid)throws Exception{
 		List<Object> params=new ArrayList<Object>();
 		String select = "select bp.*";
-		StringBuffer sql = new StringBuffer(" from budget_package bp where bp.deleted = 0");
+		StringBuffer sql = new StringBuffer(" from budget_package bp where bp.deleted = 0 and bp.create_uid = ?");
+		params.add(uid);
 		if(StrKit.notBlank(name)){
 			sql.append(" and bp.name like ?");
 			params.add("%"+name+"%");
