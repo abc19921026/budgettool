@@ -85,9 +85,10 @@ public class BudgetPackageModel extends BudgetPackage{
 	 * @param q
 	 * @throws Exception
 	 */
-	public static List<Record> get_budget_package(String q)throws Exception{
+	public static List<Record> get_budget_package(String q,Integer uid)throws Exception{
 		List<Object> params=new ArrayList<Object>();
-		StringBuffer sql = new StringBuffer("select bp.*,bp.name as text from budget_package bp where 1=1");
+		StringBuffer sql = new StringBuffer("select bp.*,bp.name as text from budget_package bp where bp.create_uid = ? and deleted = 0");
+		params.add(uid);
 		if(StrKit.notBlank(q)){
 			sql.append(" and bp.name like ?");
 			params.add("%"+q+"%");

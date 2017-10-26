@@ -400,7 +400,8 @@ public class BudgetController extends BaseController{
 	
 	public void budget_select2()throws Exception{
 		String q = getPara("q");
-		List<Record> list = BudgetModel.get_history_budget(q);
+		int uid = current_user_id();
+		List<Record> list = BudgetModel.get_history_budget(q,uid);
 		String jsonList = JsonKit.toJson(list);
 		renderJson(jsonList);
 	}

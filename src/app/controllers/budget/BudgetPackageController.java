@@ -204,7 +204,8 @@ public class BudgetPackageController extends BaseController{
 	 */
 	public void budget_package_select2()throws Exception{
 		String q = getPara("q");
-		List<Record> list = BudgetPackageModel.get_budget_package(q);
+		int uid = current_user_id();
+		List<Record> list = BudgetPackageModel.get_budget_package(q,uid);
 		String jsonList = JsonKit.toJson(list);
 		renderJson(jsonList);
 	}

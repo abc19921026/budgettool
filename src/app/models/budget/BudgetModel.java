@@ -126,9 +126,10 @@ public class BudgetModel extends Budget{
 	 * @param q
 	 * @throws Exception
 	 */
-	public static List<Record> get_history_budget(String q)throws Exception{
+	public static List<Record> get_history_budget(String q,Integer uid)throws Exception{
 		List<Object> params=new ArrayList<Object>();
-		StringBuffer sql = new StringBuffer("select b.*,b.name as text from budget b where 1=1");
+		StringBuffer sql = new StringBuffer("select b.*,b.name as text from budget b where b.create_uid = ?");
+		params.add(uid);
 		if(StrKit.notBlank(q)){
 			sql.append(" and b.name like ?");
 			params.add("%"+q+"%");
